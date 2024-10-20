@@ -43,13 +43,13 @@ class _SplashScreenState extends State<SplashScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(image: AssetImage('lib/assets/images/biks-logo.png')),
+            Image(image: AssetImage('lib/assets/images/BIKS_industriopplaering_oransje.png'), width: 150, height: 150),
             Padding(
-              padding: const EdgeInsets.only(top: 300),
+              padding: const EdgeInsets.only(top: 150),
               child: Image(
-                image: AssetImage("lib/assets/Entellix_transparent-.png"),
-                width: 130,
-                height: 130,
+                image: AssetImage("lib/assets/Entellix_transparent-.png", ),
+                width: 120,
+                height: 120,
               ),
             ),
           ],
@@ -59,18 +59,3 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-class WarningMessage extends StatefulWidget {
-  const WarningMessage({super.key});
-
-  @override
-  State<WarningMessage> createState() => _WarningMessageState();
-}
-
-class _WarningMessageState extends State<WarningMessage> {
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: (Center()),
-    );
-  }
-}

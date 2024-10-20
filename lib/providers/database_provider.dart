@@ -53,12 +53,7 @@ class EquipmentConfigFetcher extends _$EquipmentConfigFetcher {
   }
 
   Future<Database> _initDatabase() async {
-    //final platform = PathProviderPlatform.instance;
-    final Directory? path = await getApplicationDocumentsDirectory();
-    if (path == null) {
-      throw MissingPlatformDirectoryException(
-          'Unable to get library directory');
-    }
+    final Directory path = await getApplicationDocumentsDirectory();
     return await openDatabase('$path/$filename', version: 1,
         onCreate: (Database db, int version) async {
       await db.execute('''

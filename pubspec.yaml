@@ -61,7 +61,6 @@ dev_dependencies:
 flutter:
   assets:
     - lib/assets/images/1.png
-    - lib/assets/images/lift_tables.pdf
     - lib/assets/images/2.png
     - lib/assets/images/3.png
     - lib/assets/images/4.png
@@ -73,22 +72,16 @@ flutter:
     - lib/assets/images/10.png
     - lib/assets/images/11.png
     - lib/assets/images/12.png
-    - lib/assets/images/dk_skjema.pdf
-    - lib/assets/images/biks-logo.png
-    - lib/assets/images/unnamed.png
-    - lib/assets/images/appstore.png
     - lib/assets/Løftetabeller/Kjetting (80).csv
     - lib/assets/Løftetabeller/Kjetting (100).csv
     - lib/assets/Løftetabeller/Fiberstropp.csv
     - lib/assets/Løftetabeller/Ståltau (fc).csv
     - lib/assets/Løftetabeller/Ståltau (iwrc).csv
     - lib/assets/gjengetabell.pdf
-    - lib/assets/organizedN.pdf
-    - lib/assets/organizedN_rotated.pdf
-    - lib/assets/final_organized.pdf
     - lib/assets/ilovepdf_merged.pdf
     - lib/assets/Entellix_transparent-.png
     - lib/assets/Entellix-.png
+    - lib/assets/images/BIKS_industriopplaering_oransje.png
 
 
 

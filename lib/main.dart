@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:loftetabell/views/control_scheme.dart';
 import 'package:loftetabell/views/saver.dart';
 import 'package:loftetabell/splash_screen.dart';
 import 'package:loftetabell/views/lift_data_view.dart';
@@ -47,7 +46,7 @@ class _SecondScreenState extends State<SecondScreen> {
                   end: Alignment.bottomCenter,
                   colors: [Colors.blueGrey[900]!, Colors.blue[900]!])),
         ),
-        title: Image.asset('lib/assets/images/biks-logo.png', height: 45),
+        title: Image.asset('lib/assets/images/BIKS_industriopplaering_oransje.png', height: 45),
       ),
       body: ListView(
             padding: EdgeInsets.only(left: 20),
@@ -55,7 +54,7 @@ class _SecondScreenState extends State<SecondScreen> {
               SizedBox(
                 height: 0,
                 child: DrawerHeader(
-                  child: Image.asset("lib/assets/images/biks-logo.png"),
+                  child: Image.asset("lib/assets/images/BIKS_industriopplaering_oransje.png"),
                 ),
               ),
               ListTile(
@@ -92,14 +91,6 @@ class _SecondScreenState extends State<SecondScreen> {
                 Navigator.push(context,
                       MaterialPageRoute(builder: (context) => GTable()));
               },),
-              ListTile(
-                leading: Icon(Icons.checklist_rtl_rounded),
-                title: Text("Kontrollskjema"),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ControlScheme()));
-                },
-              ),
               ListTile(
                 leading: Icon(Icons.iron),
                 title: Text(("Mine løft")),
@@ -142,7 +133,7 @@ late PdfControllerPinch _controller;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text("Løftetabeller"),),
+    return Scaffold(appBar: AppBar(title: Text("Gjengetabell"),),
     body: _buildUI());
   }
 
@@ -177,7 +168,7 @@ class _LiftingWState extends State<LiftingW> {
             return AlertDialog(title: Text("Hvordan gjør du utregninger?"), content: Text("Enhet er tonn, skal du regne ut med kilo skrives dette som desimal. Eksempel: 0.2 = 200kg", maxLines: 3,),);
           });
         }, icon: Icon(Icons.info)),],
-      title: Image.asset("lib/assets/images/biks-logo.png", height: 700, width: 70,),
+      title: Image.asset("lib/assets/images/BIKS_industriopplaering_oransje.png", height: 700, width: 70,),
       ),
     body: LiftDataView(),
     );
@@ -206,7 +197,7 @@ late PdfControllerPinch _controller;
     return Scaffold(appBar: AppBar(title: Text("Løftetabeller"),),
     body: _buildUI());
   }
-
+  
 
 Widget _buildUI () {
   return Column(
