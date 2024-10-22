@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:loftetabell/main.dart';
+import 'package:Biks/main.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,12 +16,11 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     Future.delayed(Duration(milliseconds: 1350), () {
-          if (!mounted) return;
+      if (!mounted) return;
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (_) => SecondScreen()));
     });
   }
-  
 
   @override
   void dispose() {
@@ -43,11 +42,17 @@ class _SplashScreenState extends State<SplashScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(image: AssetImage('lib/assets/images/BIKS_industriopplaering_oransje.png'), width: 150, height: 150),
+            Image(
+                image: AssetImage(
+                    'lib/assets/images/BIKS_industriopplaering_oransje.png'),
+                width: 150,
+                height: 150),
             Padding(
               padding: const EdgeInsets.only(top: 150),
               child: Image(
-                image: AssetImage("lib/assets/Entellix_transparent-.png", ),
+                image: AssetImage(
+                  "lib/assets/Entellix_transparent-.png",
+                ),
                 width: 120,
                 height: 120,
               ),
@@ -58,4 +63,3 @@ class _SplashScreenState extends State<SplashScreen>
     );
   }
 }
-

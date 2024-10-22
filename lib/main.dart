@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:loftetabell/views/saver.dart';
-import 'package:loftetabell/splash_screen.dart';
-import 'package:loftetabell/views/lift_data_view.dart';
+import 'package:Biks/views/saver.dart';
+import 'package:Biks/splash_screen.dart';
+import 'package:Biks/views/lift_data_view.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+
 
 void main() {
   runApp(ProviderScope(

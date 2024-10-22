@@ -1,4 +1,4 @@
-package com.example.loftetabell_2
+package com.entellix.Biks
 
 import io.flutter.embedding.android.FlutterActivity
 

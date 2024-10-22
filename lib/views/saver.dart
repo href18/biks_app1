@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:loftetabell/providers/database_provider.dart';
+import 'package:Biks/providers/database_provider.dart';
 
 class Saver extends ConsumerWidget {
-
   const Saver({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,9 +45,9 @@ class Saver extends ConsumerWidget {
                                                     equipmentConfigFetcherProvider
                                                         .notifier)
                                                 .delete(value[index]);
-                                                if (context.mounted){
-                                            Navigator.pop(context);
-                                                }
+                                            if (context.mounted) {
+                                              Navigator.pop(context);
+                                            }
                                           },
                                           child: Text("Ja")),
                                       TextButton(
