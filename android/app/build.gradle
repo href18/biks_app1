@@ -51,10 +51,12 @@ android {
         applicationId "com.entellix.Biks"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion flutter.minSdkVersion 
+        targetSdkVersion flutter.targetSdkVersion 
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
+
     }
    
     signingConfigs {
@@ -77,4 +79,5 @@ flutter {
 }
 
 dependencies {
+    implementation "androidx.multidex:multidex:2.0.1"
 }

@@ -20,7 +20,10 @@ class StrapLiftData extends LiftData {
       required super.diameter,
       required super.weightLimit,
       required super.lift,
+      required this.unsymetricWeightLimit,
       required this.color});
+
+  final double unsymetricWeightLimit;
   final Color color;
 }
 
@@ -58,6 +61,19 @@ int indexFromIndex(int index) {
   return 0;
 }
 
+int toUnsymetricIndex(int symetricIndex) {
+  switch (symetricIndex) {
+    case < 6:
+      return symetricIndex;
+    case < 8:
+      return symetricIndex - 4;
+    case < 10:
+      return symetricIndex - 6;
+    default:
+      return symetricIndex - 4;
+  }
+}
+
 Future<List<LiftData>> readLiftDataFromCSV(String csvPath, bool isChain) async {
   final List<LiftData> liftDatas = [];
   final String csvString = await rootBundle.loadString(csvPath);
@@ -79,7 +95,8 @@ Future<List<LiftData>> readLiftDataFromCSV(String csvPath, bool isChain) async {
                 diameter: double.parse(row[1]),
                 weightLimit: double.parse(row[j]),
                 lift: Lift.fromCSV(headers[j], partsFromIndex(j)),
-                color: row[0].toColor());
+                color: row[0].toColor(),
+                unsymetricWeightLimit: double.parse(row[toUnsymetricIndex(j)]));
         liftDatas.add(liftData);
       }
     }

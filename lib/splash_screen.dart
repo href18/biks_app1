@@ -14,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     Future.delayed(Duration(milliseconds: 1350), () {
       if (!mounted) return;
       Navigator.of(context)
@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
           children: [
             Image(
                 image: AssetImage(
-                    'lib/assets/images/BIKS_industriopplaering_oransje.png'),
+                    'lib/assets/images/Biks_industriopplaering_oransje.png'),
                 width: 150,
                 height: 150),
             Padding(

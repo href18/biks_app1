@@ -9,12 +9,22 @@ class Saver extends ConsumerWidget {
     final configs = ref.watch(equipmentConfigFetcherProvider);
 
     return Scaffold(
-        backgroundColor: Colors.grey[400],
+        backgroundColor: Colors.grey[200],
         appBar: AppBar(
-          backgroundColor: Colors.orange,
-          title: Text("Mine løft"),
+          backgroundColor: Colors.blueGrey,
           centerTitle: true,
           elevation: 0,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.blue[900]!, Colors.blueGrey[900]!])),
+          ),
+          title: Text(
+            "Mine løft",
+            style: TextStyle(color: Colors.grey.shade200),
+          ),
         ),
         body: switch (configs) {
           AsyncError(:final error) => Text('Error: $error'),
@@ -49,11 +59,19 @@ class Saver extends ConsumerWidget {
                                               Navigator.pop(context);
                                             }
                                           },
-                                          child: Text("Ja")),
+                                          child: Text(
+                                            "Ja",
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          )),
                                       TextButton(
                                           onPressed: () =>
                                               Navigator.pop(context),
-                                          child: Text("Nei"))
+                                          child: Text(
+                                            "Nei",
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                          ))
                                     ],
                                   ));
                         },

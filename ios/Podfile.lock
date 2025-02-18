@@ -1,54 +1,73 @@
 PODS:
+  - app_tracking_transparency (0.0.1):
+    - Flutter
   - device_info_plus (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_pdfview (1.0.2):
+  - flutter_localization (0.0.1):
     - Flutter
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
   - pdfx (1.0.0):
     - Flutter
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
   - url_launcher_ios (0.0.1):
     - Flutter
+  - webview_cookie_manager (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
+  - app_tracking_transparency (from `.symlinks/plugins/app_tracking_transparency/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - Flutter (from `Flutter`)
-  - flutter_pdfview (from `.symlinks/plugins/flutter_pdfview/ios`)
+  - flutter_localization (from `.symlinks/plugins/flutter_localization/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - pdfx (from `.symlinks/plugins/pdfx/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_cookie_manager (from `.symlinks/plugins/webview_cookie_manager/ios`)
 
 EXTERNAL SOURCES:
+  app_tracking_transparency:
+    :path: ".symlinks/plugins/app_tracking_transparency/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   Flutter:
     :path: Flutter
-  flutter_pdfview:
-    :path: ".symlinks/plugins/flutter_pdfview/ios"
+  flutter_localization:
+    :path: ".symlinks/plugins/flutter_localization/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   pdfx:
     :path: ".symlinks/plugins/pdfx/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_cookie_manager:
+    :path: ".symlinks/plugins/webview_cookie_manager/ios"
 
 SPEC CHECKSUMS:
-  device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
+  app_tracking_transparency: 3d84f147f67ca82d3c15355c36b1fa6b66ca7c92
+  device_info_plus: 71ffc6ab7634ade6267c7a93088ed7e4f74e5896
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_pdfview: 25f53dd6097661e6395b17de506e6060585946bd
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  pdfx: 7b876b09de8b7a0bf444a4f82b439ffcff4ee1ec
-  sqflite_darwin: a553b1fd6fe66f53bbb0fe5b4f5bab93f08d7a13
-  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
+  flutter_localization: 72299fb6cb4e51cae587bd953ed0b958040b71e6
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  pdfx: 77f4dddc48361fbb01486fa2bdee4532cbb97ef3
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  webview_cookie_manager: d63a76cabdf42a7ea3d92768ac67d4853a1367f8
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

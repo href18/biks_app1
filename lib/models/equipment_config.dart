@@ -10,6 +10,7 @@ class EquipmentConfig {
     required this.equipmentType,
     required this.lift,
     required this.weight,
+    required this.isUnsymetric,
     required this.bestLiftData,
     required this.datetime,
   });
@@ -17,6 +18,7 @@ class EquipmentConfig {
   final String equipmentType;
   final Lift lift;
   final double weight;
+  final bool isUnsymetric;
   final LiftData? bestLiftData;
   final DateTime datetime;
   int? id;
@@ -24,7 +26,19 @@ class EquipmentConfig {
   Future<LiftData> findBestLiftData() async {
     final List<LiftData> liftDatas = await readLiftDataFromCSV(
         'lib/assets/Løftetabeller/$equipmentType.csv',
-        equipmentType != EquipmentTypes.fiber);
+        equipmentTypeIsChain(equipmentType));
+
+    if (isUnsymetric && !equipmentTypeIsChain(equipmentType)) {
+      for (LiftData liftData in liftDatas) {
+        StrapLiftData strapLiftData = liftData as StrapLiftData;
+        if (strapLiftData.unsymetricWeightLimit >= weight &&
+            liftData.lift == lift) {
+          return strapLiftData;
+        }
+      }
+      throw Exception('For høy vekt!');
+    }
+
     return liftDatas.firstWhere(
         (liftData) => liftData.weightLimit >= weight && liftData.lift == lift,
         orElse: () => throw Exception('For høy vekt!'));
@@ -35,6 +49,7 @@ class EquipmentConfig {
     final String? equipmentType,
     final Lift? lift,
     final double? weight,
+    final bool? isUnsymetric,
     final LiftData? bestLiftData,
     final DateTime? datetime,
   }) {
@@ -43,6 +58,7 @@ class EquipmentConfig {
         equipmentType: equipmentType ?? this.equipmentType,
         lift: lift ?? this.lift,
         weight: weight ?? this.weight,
+        isUnsymetric: isUnsymetric ?? this.isUnsymetric,
         bestLiftData: bestLiftData ?? this.bestLiftData,
         datetime: datetime ?? this.datetime);
   }
@@ -57,8 +73,12 @@ class EquipmentConfig {
       colDiameter: bestLiftData?.diameter ?? 0.0,
       colWeightLimit: bestLiftData?.weightLimit ?? 0.0,
       colIsChain: bestLiftData is ChainLiftData ? 1 : 0,
+      colIsUnsymetric: isUnsymetric ? 1 : 0,
+      colUnsymetricWeightLimit: bestLiftData is StrapLiftData
+          ? (bestLiftData as StrapLiftData).unsymetricWeightLimit
+          : bestLiftData?.weightLimit ?? 0.0,
       colColor: bestLiftData is StrapLiftData
-          ? (bestLiftData as StrapLiftData).color.value
+          ? (bestLiftData as StrapLiftData).color.r
           : 0,
       colRecomendedDiameter: bestLiftData is ChainLiftData
           ? (bestLiftData as ChainLiftData).recomendedDiameter
@@ -76,6 +96,7 @@ class EquipmentConfig {
       equipmentType: map[colEquipmentType] as String,
       lift: Lift.fromCSV(map[colLiftName] as String, map[colLiftParts] as int),
       weight: map[colWeight] as double,
+      isUnsymetric: (map[colIsUnsymetric] as int) == 1,
       datetime: DateTime.parse(map[coldatetime] as String),
       bestLiftData: (map[colIsChain] as int) == 1
           ? ChainLiftData(
@@ -91,5 +112,6 @@ class EquipmentConfig {
               weightLimit: map[colWeightLimit] as double,
               lift: Lift.fromCSV(
                   map[colLiftName] as String, map[colLiftParts] as int),
+              unsymetricWeightLimit: map[colUnsymetricWeightLimit],
               color: Color(map[colColor] as int)));
 }

@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.1.1+1
+version: 1.3.5+5
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -34,21 +34,25 @@ dependencies:
   provider: 
   flutter_riverpod: 
   riverpod_annotation:
-
-  
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: 
   riverpod: 
   sqflite: 
-  flutter_pdfview: 
   pdfx: 
-  flutter_launcher_icons: ^0.14.1 
-  path_provider: ^2.1.4 
-  path_provider_platform_interface: 
-  path_provider_android: ^2.2.12
-  
+  flutter_launcher_icons: 
+  path_provider: 
+  app_tracking_transparency: 
+  shared_preferences: 
+  google_fonts: 
+  webview_cookie_manager: ^2.0.6
+  mailer: 
+  dio_cookie_manager: ^3.2.0
+  flutter_localization: 
+  intl: any
+  flutter_localizations:
+    sdk: flutter
+
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +63,7 @@ dev_dependencies:
   riverpod_lint:
 
 flutter:
+  generate: true
   assets:
     - lib/assets/images/1.png
     - lib/assets/images/2.png
@@ -81,7 +86,10 @@ flutter:
     - lib/assets/ilovepdf_merged.pdf
     - lib/assets/Entellix_transparent-.png
     - lib/assets/Entellix-.png
-    - lib/assets/images/BIKS_industriopplaering_oransje.png
+    - lib/assets/images/Biks_industriopplaering_oransje.png
+    - lib/assets/images/NORf.png
+    - lib/assets/images/ENGf.png
+    - lib/assets/images/HydraS.png
 
 
 

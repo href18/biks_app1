@@ -9,11 +9,13 @@ part 'equipment_provider.g.dart';
 
 @riverpod
 class Equipment extends _$Equipment {
+  
   @override
   EquipmentConfig build() => EquipmentConfig(
         equipmentType: EquipmentTypes.fiber,
         lift: Lifts.allLifts[0],
         weight: 0,
+        isUnsymetric: false,
         id: null,
         bestLiftData: null,
         datetime: DateTime.now(),
@@ -36,6 +38,10 @@ class Equipment extends _$Equipment {
 
   set weight(double weight) {
     state = state.copyWith(weight: weight);
+  }
+
+  set isUnsymetric(bool isUnsymetric) {
+    state = state.copyWith(isUnsymetric: isUnsymetric);
   }
 
   set lift(Lift lift) {

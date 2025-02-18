@@ -10,7 +10,6 @@ import 'package:Biks/providers/equipment_provider.dart';
 class LiftDataView extends ConsumerWidget {
   const LiftDataView({super.key});
 
-
   void showLiftDataDialog(BuildContext context, WidgetRef ref) async {
     final Widget widget;
     final bool success =
@@ -40,7 +39,7 @@ class LiftDataView extends ConsumerWidget {
           context: context,
           builder: (_) => AlertDialog(
               title: Text(
-                  "Du trenger følgende utstyr for ${ref.read(equipmentProvider).lift.name}"),
+                  "Du trenger følgende utstyr for ${(ref.read(equipmentProvider).isUnsymetric) ? 'usymetrisk' : ''} ${ref.read(equipmentProvider).lift.name}"),
               content: widget),
           barrierDismissible: true);
     }
@@ -52,20 +51,19 @@ class LiftDataView extends ConsumerWidget {
     final padding = MediaQuery.paddingOf(context);
 
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () 
-      {
-        FocusScopeNode currentFocus = FocusScope.of(context);
-        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null)
-        {
-          FocusManager.instance.primaryFocus?.unfocus();
-        }
-      },
-      child: Center(
-        child: Column(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+        },
+        child: Center(
+            child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 15),
               child: DropdownMenu<String>(
                   width: 300,
                   initialSelection: equipmentConfig.equipmentType,
@@ -80,9 +78,9 @@ class LiftDataView extends ConsumerWidget {
                       .toList()),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 15),
               child: DropdownMenu<Lift>(
-                  menuHeight: 500 - padding.top - padding.bottom, 
+                  menuHeight: 500 - padding.top - padding.bottom,
                   width: 300,
                   initialSelection: equipmentConfig.lift,
                   onSelected: (value) {
@@ -101,7 +99,7 @@ class LiftDataView extends ConsumerWidget {
                       )
                       .toList()),
             ),
-            const Padding(padding: EdgeInsets.only(top: 20)),
+            const Padding(padding: EdgeInsets.only(top: 15)),
             SizedBox(
               width: 300,
               child: TextField(
@@ -115,8 +113,8 @@ class LiftDataView extends ConsumerWidget {
                         borderSide: BorderSide(color: Colors.black),
                       )),
                   maxLength: 4,
-                  keyboardType:
-                      TextInputType.numberWithOptions(decimal: true, signed: false),
+                  keyboardType: TextInputType.numberWithOptions(
+                      decimal: true, signed: false),
                   inputFormatters: <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp(r"^[0-9,.]*$"))
                   ],
@@ -133,15 +131,31 @@ class LiftDataView extends ConsumerWidget {
                     showLiftDataDialog(context, ref);
                   }),
             ),
+            Padding(
+                padding: EdgeInsets.only(top: 8, left: 40),
+                child: Center(
+                    child: Row(
+                  children: [
+                    Text("Usymetrisk løft"),
+                    Checkbox(
+                        value: equipmentConfig.isUnsymetric,
+                        onChanged: (value) {
+                          if (value != null) {
+                            ref.read(equipmentProvider.notifier).isUnsymetric =
+                                value;
+                          }
+                        }),
+                  ],
+                ))),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black, foregroundColor: Colors.white),
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white),
                 onPressed: () {
                   showLiftDataDialog(context, ref);
                 },
                 child: const Text("Trykk her for resultat")),
           ],
-        ))
-      );
+        )));
   }
 }

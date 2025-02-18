@@ -17,3 +17,7 @@ abstract final class EquipmentTypes {
     EquipmentTypes.srIwrc
   ];
 }
+
+bool equipmentTypeIsChain(String equipmentType) =>
+    equipmentType == EquipmentTypes.chain80 ||
+    equipmentType == EquipmentTypes.chain100;

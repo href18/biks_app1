@@ -18,6 +18,8 @@ const String colWll = 'wll';
 const String colDiameter = 'diameter';
 const String colWeightLimit = 'weightLimit';
 const String colIsChain = 'isChain';
+const String colIsUnsymetric = 'isUnsymetric';
+const String colUnsymetricWeightLimit = 'unsymetricWeightLimit';
 const String colColor = 'color';
 const String colRecomendedDiameter = 'recomendedDiameter';
 const String coldatetime = 'datetime';
@@ -31,6 +33,8 @@ const List<String> columns = [
   colDiameter,
   colWeightLimit,
   colIsChain,
+  colIsUnsymetric,
+  colUnsymetricWeightLimit,
   colColor,
   colRecomendedDiameter,
   coldatetime,
@@ -52,6 +56,8 @@ class EquipmentConfigFetcher extends _$EquipmentConfigFetcher {
     return queryConfigs();
   }
 
+  //Unsymetric weight limit is not saved for now. Maybe create new saving logic with hash.
+
   Future<Database> _initDatabase() async {
     final Directory path = await getApplicationDocumentsDirectory();
     return await openDatabase('$path/$filename', version: 1,
@@ -67,6 +73,8 @@ CREATE TABLE $tableName (
   $colDiameter REAL NOT NULL,
   $colWeightLimit REAL NOT NULL, 
   $colIsChain INTEGER NOT NULL, 
+  $colIsUnsymetric INTEGER NOT NULL,
+  $colUnsymetricWeightLimit REAL NOT NULL,
   $colColor INTEGER NOT NULL, 
   $colRecomendedDiameter REAL NOT NULL,
   $coldatetime TEXT NOT NULL)
