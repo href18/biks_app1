@@ -6,6 +6,9 @@ import 'package:Biks/models/equipment_type.dart';
 import 'package:Biks/models/lift.dart';
 import 'package:Biks/providers/database_provider.dart';
 import 'package:Biks/providers/equipment_provider.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LiftDataView extends ConsumerWidget {
   const LiftDataView({super.key});
@@ -104,9 +107,9 @@ class LiftDataView extends ConsumerWidget {
               width: 300,
               child: TextField(
                   decoration: InputDecoration(
-                      labelText: "(Tonn)",
+                      labelText: AppLocalizations.of(context)!.tons,
                       labelStyle: TextStyle(color: Colors.black),
-                      helperText: ("Skriv inn vekt"),
+                      helperText: (AppLocalizations.of(context)!.typeWeight),
                       border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.black)),
                       focusedBorder: OutlineInputBorder(
@@ -136,8 +139,10 @@ class LiftDataView extends ConsumerWidget {
                 child: Center(
                     child: Row(
                   children: [
-                    Text("Usymetrisk løft"),
+                    Text(AppLocalizations.of(context)!.unsymmetricLift),
                     Checkbox(
+                        checkColor: Colors.white,
+                        activeColor: Colors.orange[400],
                         value: equipmentConfig.isUnsymetric,
                         onChanged: (value) {
                           if (value != null) {
@@ -154,7 +159,7 @@ class LiftDataView extends ConsumerWidget {
                 onPressed: () {
                   showLiftDataDialog(context, ref);
                 },
-                child: const Text("Trykk her for resultat")),
+                child: Text(AppLocalizations.of(context)!.pressResult)),
           ],
         )));
   }

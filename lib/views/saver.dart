@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Biks/providers/database_provider.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Saver extends ConsumerWidget {
   const Saver({super.key});
@@ -22,7 +25,7 @@ class Saver extends ConsumerWidget {
                     colors: [Colors.blue[900]!, Colors.blueGrey[900]!])),
           ),
           title: Text(
-            "Mine løft",
+            AppLocalizations.of(context)!.myLifts,
             style: TextStyle(color: Colors.grey.shade200),
           ),
         ),
@@ -46,7 +49,8 @@ class Saver extends ConsumerWidget {
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
-                                    title: Text("Vil du slette dette løftet?"),
+                                    title: Text(AppLocalizations.of(context)!
+                                        .deleteLift),
                                     actions: [
                                       TextButton(
                                           onPressed: () async {
@@ -60,7 +64,7 @@ class Saver extends ConsumerWidget {
                                             }
                                           },
                                           child: Text(
-                                            "Ja",
+                                            AppLocalizations.of(context)!.yes,
                                             style:
                                                 TextStyle(color: Colors.black),
                                           )),
@@ -68,7 +72,7 @@ class Saver extends ConsumerWidget {
                                           onPressed: () =>
                                               Navigator.pop(context),
                                           child: Text(
-                                            "Nei",
+                                            AppLocalizations.of(context)!.no,
                                             style:
                                                 TextStyle(color: Colors.black),
                                           ))
