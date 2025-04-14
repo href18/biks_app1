@@ -9,7 +9,6 @@ part 'equipment_provider.g.dart';
 
 @riverpod
 class Equipment extends _$Equipment {
-  
   @override
   EquipmentConfig build() => EquipmentConfig(
         equipmentType: EquipmentTypes.fiber,
@@ -48,7 +47,7 @@ class Equipment extends _$Equipment {
     state = state.copyWith(lift: lift);
   }
 
-  set equipmentType(String equipmentType) {
+  set equipmentType(EquipmentType equipmentType) {
     state = state.copyWith(equipmentType: equipmentType);
   }
 

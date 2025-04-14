@@ -1,15 +1,37 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:Biks/splash_screen.dart';
+import 'package:Biks/views/saver.dart';
+import 'package:Biks/views/lift_data_view.dart';
+
+class EquipmentType {
+  EquipmentType({required this.name});
+  final String name;
+  String? localeName;
+
+  static EquipmentType fromCSV(String name) =>
+      EquipmentTypes.allEquipmentTypes.firstWhere((type) => type.name == name);
+}
+
 abstract final class EquipmentTypes {
-  static String fiber = 'Fiberstropp';
+  static void initEquipmentTypesFromAppLocalizations(AppLocalizations locale) {
+    fiber.localeName = locale.fiberSling;
+    chain80.localeName = locale.chain80;
+    chain100.localeName = locale.chain100;
+    srFc.localeName = locale.steelRope;
+    srIwrc.localeName = locale.steelRopeIWC;
+  }
 
-  static String chain80 = 'Kjetting (80)';
+  static EquipmentType fiber = EquipmentType(name: "Fiberstropp");
 
-  static String chain100 = 'Kjetting (100)';
+  static EquipmentType chain80 = EquipmentType(name: "Kjetting (80)");
 
-  static String srFc = 'Ståltau (fc)';
+  static EquipmentType chain100 = EquipmentType(name: "Kjetting (100)");
 
-  static String srIwrc = 'Ståltau (iwrc)';
+  static EquipmentType srFc = EquipmentType(name: "Ståltau (fc)");
 
-  static List<String> allEquipmentTypes = [
+  static EquipmentType srIwrc = EquipmentType(name: "Ståltau (iwrc)");
+
+  static List<EquipmentType> allEquipmentTypes = [
     EquipmentTypes.fiber,
     EquipmentTypes.chain80,
     EquipmentTypes.chain100,
@@ -18,6 +40,6 @@ abstract final class EquipmentTypes {
   ];
 }
 
-bool equipmentTypeIsChain(String equipmentType) =>
+bool equipmentTypeIsChain(EquipmentType equipmentType) =>
     equipmentType == EquipmentTypes.chain80 ||
     equipmentType == EquipmentTypes.chain100;

@@ -33,7 +33,7 @@ class LiftDataView extends ConsumerWidget {
             height: 100,
           ),
           Text(
-              '${equipmentConfig.bestLiftData?.lift.parts} del ${equipmentConfig.equipmentType} med WLL = ${equipmentConfig.bestLiftData?.wll} tonn og diameter = ${equipmentConfig.bestLiftData?.diameter} mm'),
+              '${equipmentConfig.bestLiftData?.lift.parts} ${AppLocalizations.of(context)!.del} ${equipmentConfig.equipmentType.localeName} ${AppLocalizations.of(context)!.medWLL} ${equipmentConfig.bestLiftData?.wll} ${AppLocalizations.of(context)!.togd} ${equipmentConfig.bestLiftData?.diameter} ${AppLocalizations.of(context)!.mm}'),
         ]),
       );
     }
@@ -42,7 +42,7 @@ class LiftDataView extends ConsumerWidget {
           context: context,
           builder: (_) => AlertDialog(
               title: Text(
-                  "Du trenger følgende utstyr for ${(ref.read(equipmentProvider).isUnsymetric) ? 'usymetrisk' : ''} ${ref.read(equipmentProvider).lift.name}"),
+                  "${AppLocalizations.of(context)!.folgendeU}${(ref.read(equipmentProvider).isUnsymetric) ? "${AppLocalizations.of(context)!.usymetrisk}" : ''} ${ref.read(equipmentProvider).lift.localeName}"),
               content: widget),
           barrierDismissible: true);
     }
@@ -67,7 +67,7 @@ class LiftDataView extends ConsumerWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 15),
-              child: DropdownMenu<String>(
+              child: DropdownMenu<EquipmentType>(
                   width: 300,
                   initialSelection: equipmentConfig.equipmentType,
                   onSelected: (value) {
@@ -75,9 +75,7 @@ class LiftDataView extends ConsumerWidget {
                   },
                   dropdownMenuEntries: EquipmentTypes.allEquipmentTypes
                       .map((type) => DropdownMenuEntry(
-                            value: type,
-                            label: type,
-                          ))
+                          value: type, label: type.localeName ?? 'error'))
                       .toList()),
             ),
             Padding(
@@ -93,7 +91,7 @@ class LiftDataView extends ConsumerWidget {
                       .map(
                         (lift) => DropdownMenuEntry(
                             value: lift,
-                            label: '${lift.name} (${lift.parts})',
+                            label: '${lift.localeName} (${lift.parts})',
                             leadingIcon: Image.asset(
                               lift.image,
                               height: 50,

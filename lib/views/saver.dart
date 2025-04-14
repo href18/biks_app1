@@ -14,6 +14,9 @@ class Saver extends ConsumerWidget {
     return Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
+          leading: BackButton(
+            color: Colors.white,
+          ),
           backgroundColor: Colors.blueGrey,
           centerTitle: true,
           elevation: 0,
@@ -40,9 +43,9 @@ class Saver extends ConsumerWidget {
                     subtitle: Text(
                         "${value[index].datetime.day}/${value[index].datetime.month}/${value[index].datetime.year} ${value[index].datetime.hour}:${value[index].datetime.minute}"),
                     title: Text(
-                        "${value[index].lift.name} med vekt ${value[index].weight} med ${value[index].equipmentType}"),
+                        "${value[index].lift.localeName} ${AppLocalizations.of(context)!.withWeight} ${value[index].weight} ${AppLocalizations.of(context)!.ton} ${AppLocalizations.of(context)!.med} ${value[index].equipmentType.localeName}"),
                     leading: Text(
-                      ("Løft nr: ${index + 1}"),
+                      ("${AppLocalizations.of(context)!.liftNr} ${index + 1}"),
                     ),
                     trailing: IconButton(
                         onPressed: () {

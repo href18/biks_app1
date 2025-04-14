@@ -1,0 +1,2 @@
+/Users/hakonengfeldt/Dev/biks_app1/android/app/.cxx/RelWithDebInfo/6c1v2g3q/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/hakonengfeldt/Dev/biks_app1/android/app/.cxx/RelWithDebInfo/6c1v2g3q/armeabi-v7a/CMakeFiles/rebuild_cache.dir

@@ -43,7 +43,7 @@ const List<String> columns = [
 @riverpod
 class EquipmentConfigFetcher extends _$EquipmentConfigFetcher {
   static Database? _database;
-  final String filename = 'liftDataHistory0.db';
+  final String filename = 'liftDataHistory2';
 
   Future<Database> get database async {
     if (_database != null) return _database!;

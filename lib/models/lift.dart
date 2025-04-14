@@ -1,6 +1,15 @@
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:Biks/splash_screen.dart';
+import 'package:Biks/views/saver.dart';
+import 'package:Biks/views/lift_data_view.dart';
+
 class Lift {
-  const Lift({required this.name, required this.parts, required this.image});
+  Lift({required this.name, required this.parts, required this.image});
   final String name;
+  String? localeName;
   final int parts;
   final String image;
 
@@ -22,30 +31,47 @@ class Lift {
 }
 
 final class Lifts {
+  static void initLiftsFromAppLocalizations(AppLocalizations locale) {
+    straightLift.localeName = locale.straightLift;
+    snareLift.localeName = locale.snareLift;
+    uLift.localeName = locale.uLift;
+    ulv.localeName = locale.ulv;
+    straight.localeName = locale.straight;
+    snare.localeName = locale.snare;
+    direct45_60.localeName = locale.direct4560;
+    snare45_60.localeName = locale.snare4560;
+    direct45_60.localeName = locale.direct4560;
+    direct0_45.localeName = locale.direct3;
+    snare0_45.localeName = locale.snare3;
+    direct451_60.localeName = locale.direct32;
+    snare_451_60.localeName = locale.snare32;
+  }
+
   static Lift straightLift =
-      const Lift(name: 'Rett løft', parts: 1, image: "lib/assets/images/1.png");
-  static Lift snareLift = const Lift(
-      name: 'Snaret løft', parts: 1, image: "lib/assets/images/2.png");
+      Lift(name: "Rett løft", parts: 1, image: "lib/assets/images/1.png");
+
+  static Lift snareLift =
+      Lift(name: 'Snaret løft', parts: 1, image: "lib/assets/images/2.png");
   static Lift uLift =
-      const Lift(name: 'U-løft', parts: 1, image: "lib/assets/images/3.png");
-  static Lift ulv = const Lift(
-      name: 'U-løft vinkel', parts: 1, image: "lib/assets/images/4.png");
-  static Lift straight = const Lift(
-      name: 'Direkte (15-45)', parts: 2, image: "lib/assets/images/5.png");
-  static Lift snare = const Lift(
-      name: 'Snaret (15-45)', parts: 2, image: "lib/assets/images/6.png");
-  static Lift direct45_60 = const Lift(
-      name: 'Direkte (46-60)', parts: 2, image: "lib/assets/images/7.png");
-  static Lift snare45_60 = const Lift(
-      name: 'Snaret (46-60)', parts: 2, image: "lib/assets/images/8.png");
-  static Lift direct0_45 = const Lift(
-      name: 'Direkte (15-45)', parts: 3, image: "lib/assets/images/9.png");
-  static Lift snare0_45 = const Lift(
-      name: 'Snaret (15-45)', parts: 3, image: "lib/assets/images/10.png");
-  static Lift direct451_60 = const Lift(
+      Lift(name: 'U-løft', parts: 1, image: "lib/assets/images/3.png");
+  static Lift ulv =
+      Lift(name: 'U-løft vinkel', parts: 1, image: "lib/assets/images/4.png");
+  static Lift straight =
+      Lift(name: 'Direkte (15-45)', parts: 2, image: "lib/assets/images/5.png");
+  static Lift snare =
+      Lift(name: 'Snaret (15-45)', parts: 2, image: "lib/assets/images/6.png");
+  static Lift direct45_60 =
+      Lift(name: 'Direkte (46-60)', parts: 2, image: "lib/assets/images/7.png");
+  static Lift snare45_60 =
+      Lift(name: 'Snaret (46-60)', parts: 2, image: "lib/assets/images/8.png");
+  static Lift direct0_45 =
+      Lift(name: 'Direkte (15-45)', parts: 3, image: "lib/assets/images/9.png");
+  static Lift snare0_45 =
+      Lift(name: 'Snaret (15-45)', parts: 3, image: "lib/assets/images/10.png");
+  static Lift direct451_60 = Lift(
       name: 'Direkte (46-60)', parts: 3, image: "lib/assets/images/11.png");
-  static Lift snare_451_60 = const Lift(
-      name: 'Snaret (46-60)', parts: 3, image: "lib/assets/images/12.png");
+  static Lift snare_451_60 =
+      Lift(name: 'Snaret (46-60)', parts: 3, image: "lib/assets/images/12.png");
 
   static List<Lift> allLifts = [
     Lifts.straightLift,

@@ -15,7 +15,7 @@ class EquipmentConfig {
     required this.datetime,
   });
 
-  final String equipmentType;
+  final EquipmentType equipmentType;
   final Lift lift;
   final double weight;
   final bool isUnsymetric;
@@ -25,7 +25,7 @@ class EquipmentConfig {
 
   Future<LiftData> findBestLiftData() async {
     final List<LiftData> liftDatas = await readLiftDataFromCSV(
-        'lib/assets/Løftetabeller/$equipmentType.csv',
+        'lib/assets/Løftetabeller/${equipmentType.name}.csv',
         equipmentTypeIsChain(equipmentType));
 
     if (isUnsymetric && !equipmentTypeIsChain(equipmentType)) {
@@ -46,7 +46,7 @@ class EquipmentConfig {
 
   EquipmentConfig copyWith({
     final int? id,
-    final String? equipmentType,
+    final EquipmentType? equipmentType,
     final Lift? lift,
     final double? weight,
     final bool? isUnsymetric,
@@ -54,18 +54,19 @@ class EquipmentConfig {
     final DateTime? datetime,
   }) {
     return EquipmentConfig(
-        id: id,
-        equipmentType: equipmentType ?? this.equipmentType,
-        lift: lift ?? this.lift,
-        weight: weight ?? this.weight,
-        isUnsymetric: isUnsymetric ?? this.isUnsymetric,
-        bestLiftData: bestLiftData ?? this.bestLiftData,
-        datetime: datetime ?? this.datetime);
+      id: id,
+      equipmentType: equipmentType ?? this.equipmentType,
+      lift: lift ?? this.lift,
+      weight: weight ?? this.weight,
+      isUnsymetric: isUnsymetric ?? this.isUnsymetric,
+      bestLiftData: bestLiftData ?? this.bestLiftData,
+      datetime: datetime ?? this.datetime,
+    );
   }
 
   Map<String, Object?> toMap() {
     final Map<String, Object?> sqlMap = {
-      colEquipmentType: equipmentType,
+      colEquipmentType: equipmentType.name,
       colLiftName: lift.name,
       colLiftParts: lift.parts,
       colWeight: weight,
@@ -83,7 +84,7 @@ class EquipmentConfig {
       colRecomendedDiameter: bestLiftData is ChainLiftData
           ? (bestLiftData as ChainLiftData).recomendedDiameter
           : 0.0,
-      coldatetime: datetime.toIso8601String()
+      coldatetime: datetime.toIso8601String(),
     };
     if (id != null) {
       sqlMap[colTableId] = id;
@@ -92,26 +93,28 @@ class EquipmentConfig {
   }
 
   static EquipmentConfig fromMap(Map<dynamic, dynamic> map) => EquipmentConfig(
-      id: map[colTableId] as int,
-      equipmentType: map[colEquipmentType] as String,
-      lift: Lift.fromCSV(map[colLiftName] as String, map[colLiftParts] as int),
-      weight: map[colWeight] as double,
-      isUnsymetric: (map[colIsUnsymetric] as int) == 1,
-      datetime: DateTime.parse(map[coldatetime] as String),
-      bestLiftData: (map[colIsChain] as int) == 1
-          ? ChainLiftData(
-              wll: map[colWll] as double,
-              diameter: map[colDiameter] as double,
-              weightLimit: map[colWeightLimit] as double,
-              lift: Lift.fromCSV(
-                  map[colLiftName] as String, map[colLiftParts] as int),
-              recomendedDiameter: map[colRecomendedDiameter] as double)
-          : StrapLiftData(
-              wll: map[colWll] as double,
-              diameter: map[colDiameter] as double,
-              weightLimit: map[colWeightLimit] as double,
-              lift: Lift.fromCSV(
-                  map[colLiftName] as String, map[colLiftParts] as int),
-              unsymetricWeightLimit: map[colUnsymetricWeightLimit],
-              color: Color(map[colColor] as int)));
+        id: map[colTableId] as int,
+        equipmentType: EquipmentType.fromCSV(map[colEquipmentType] as String),
+        lift:
+            Lift.fromCSV(map[colLiftName] as String, map[colLiftParts] as int),
+        weight: map[colWeight] as double,
+        isUnsymetric: (map[colIsUnsymetric] as int) == 1,
+        datetime: DateTime.parse(map[coldatetime] as String),
+        bestLiftData: (map[colIsChain] as int) == 1
+            ? ChainLiftData(
+                wll: map[colWll] as double,
+                diameter: map[colDiameter] as double,
+                weightLimit: map[colWeightLimit] as double,
+                lift: Lift.fromCSV(
+                    map[colLiftName] as String, map[colLiftParts] as int),
+                recomendedDiameter: map[colRecomendedDiameter] as double)
+            : StrapLiftData(
+                wll: map[colWll] as double,
+                diameter: map[colDiameter] as double,
+                weightLimit: map[colWeightLimit] as double,
+                lift: Lift.fromCSV(
+                    map[colLiftName] as String, map[colLiftParts] as int),
+                unsymetricWeightLimit: map[colUnsymetricWeightLimit],
+                color: Color(map[colColor] as int)),
+      );
 }
