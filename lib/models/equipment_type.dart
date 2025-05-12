@@ -1,7 +1,4 @@
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:Biks/splash_screen.dart';
-import 'package:Biks/views/saver.dart';
-import 'package:Biks/views/lift_data_view.dart';
 
 class EquipmentType {
   EquipmentType({required this.name});

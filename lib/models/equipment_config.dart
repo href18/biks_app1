@@ -1,8 +1,8 @@
+import 'package:biks/models/equipment_type.dart';
+import 'package:biks/models/lift.dart';
+import 'package:biks/models/lift_data.dart';
+import 'package:biks/providers/database_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:Biks/models/equipment_type.dart';
-import 'package:Biks/models/lift.dart';
-import 'package:Biks/models/lift_data.dart';
-import 'package:Biks/providers/database_provider.dart';
 
 class EquipmentConfig {
   EquipmentConfig({

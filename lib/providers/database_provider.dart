@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:biks/models/equipment_config.dart';
+import 'package:biks/providers/equipment_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:Biks/models/equipment_config.dart';
-import 'package:Biks/providers/equipment_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

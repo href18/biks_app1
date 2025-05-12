@@ -1,75 +1,98 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ForkliftInspectionForm extends StatefulWidget {
-  const ForkliftInspectionForm({Key? key}) : super(key: key);
+  const ForkliftInspectionForm({super.key});
 
   @override
   _ForkliftInspectionFormState createState() => _ForkliftInspectionFormState();
 }
 
 class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
+  final Color navyBlue = const Color(0xFF001F3F);
+  final Color accentColor = const Color(0xFF00B4D8);
+
   String truckType = '';
   String truckNumber = '';
   String weekNumber = '';
   DateTime selectedDate = DateTime.now();
   bool showPreview = false;
 
-  final Map<String, Map<String, Map<String, bool>>> checks = {
-    'Motor og chassis': {
-      'Sjekk dieselnivå': _initDayMap(),
-      'Sjekk kjoleveskenivå': _initDayMap(),
-      'Sjekk oljenivå i motor': _initDayMap(),
-      'Sjekk oljenivå i girkasse (hvis pellepinne)': _initDayMap(),
-      'Sjekk olje i hydraulikktank': _initDayMap(),
-      'Sjekk / etterfyll spylevæske': _initDayMap(),
-      'Sjekk startbatteri': _initDayMap(),
-    },
-    'Elektrisk truck': {
-      'Sjekk batteri (fyll veske etter ladning)': _initDayMap(),
-    },
-    'Hjul': {
-      'Inspiser dekk, felger og hjulbolter': _initDayMap(),
-    },
-    'Sikkerhetsutstyr': {
-      'Sjekk lys, lydutstyr og speil': _initDayMap(),
-      'Funksjonstest drifts- og parkeringsbrems': _initDayMap(),
-      'Funksjonstest styring og lofteinmetninger': _initDayMap(),
-      'Sjekk truck for lekkasje, skader og mangler': _initDayMap(),
-      'Sjekk bramslokker og førstehjelpsutstyr': _initDayMap(),
-    },
-    'Tilleggsutstyr': {
-      'Kontrolleres iht. instruksjonsbok': _initDayMap(),
-    },
-    'Annet': {
-      'Sjekk loftekjede og gaffler': _initDayMap(),
-    },
-    'Rengjoring': {
-      'Er trucken ren og presentabel': _initDayMap(),
-    },
-  };
-
+  late Map<String, Map<String, Map<String, bool>>> checks;
   String damageDescription = '';
   String repairDescription = '';
   String signature = '';
 
-  static Map<String, bool> _initDayMap() {
-    return {
-      'Ma': false,
-      'Ti': false,
-      'On': false,
-      'To': false,
-      'Fr': false,
-      'Lø': false,
-      'Sø': false,
-    };
-  }
-
   @override
   void initState() {
     super.initState();
+    checks = _createEmptyChecksMap();
     _loadSavedData();
+  }
+
+  Map<String, Map<String, Map<String, bool>>> _createEmptyChecksMap() {
+    return {
+      'Motor og chassis': {
+        'Sjekk dieselnivå': _initDayMap(),
+        'Sjekk kjoleveskenivå': _initDayMap(),
+        'Sjekk oljenivå i motor': _initDayMap(),
+        'Sjekk oljenivå i girkasse (hvis pellepinne)': _initDayMap(),
+        'Sjekk olje i hydraulikktank': _initDayMap(),
+        'Sjekk / etterfyll spylevæske': _initDayMap(),
+        'Sjekk startbatteri': _initDayMap(),
+      },
+      'Elektrisk truck': {
+        'Sjekk batteri (fyll veske etter ladning)': _initDayMap(),
+      },
+      'Hjul': {
+        'Inspiser dekk, felger og hjulbolter': _initDayMap(),
+      },
+      'Sikkerhetsutstyr': {
+        'Sjekk lys, lydutstyr og speil': _initDayMap(),
+        'Funksjonstest drifts- og parkeringsbrems': _initDayMap(),
+        'Funksjonstest styring og lofteinmetninger': _initDayMap(),
+        'Sjekk truck for lekkasje, skader og mangler': _initDayMap(),
+        'Sjekk brannslokker og førstehjelpsutstyr': _initDayMap(),
+      },
+      'Tilleggsutstyr': {
+        'Kontrolleres iht. instruksjonsbok': _initDayMap(),
+      },
+      'Annet': {
+        'Sjekk loftekjede og gaffler': _initDayMap(),
+      },
+      'Rengjøring': {
+        'Er trucken ren og presentabel': _initDayMap(),
+      },
+    };
+  }
+
+  Map<String, bool> _initDayMap() {
+    return {
+      'Mon': false,
+      'Tue': false,
+      'Wed': false,
+      'Thu': false,
+      'Fri': false,
+      'Sat': false,
+      'Sun': false,
+    };
+  }
+
+  List<String> _getLocalizedDaysOfWeek(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return l10n != null
+        ? [
+            l10n.monday,
+            l10n.tuesday,
+            l10n.wednesday,
+            l10n.thursday,
+            l10n.friday,
+            l10n.saturday,
+            l10n.sunday
+          ]
+        : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   }
 
   Future<void> _loadSavedData() async {
@@ -84,11 +107,13 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
         selectedDate = DateTime.parse(savedDate);
       }
 
+      // Initialize checks with default false values if null
       for (var category in checks.keys) {
         for (var task in checks[category]!.keys) {
           for (var day in checks[category]![task]!.keys) {
             final key = '$category-$task-$day';
-            checks[category]![task]![day] = prefs.getBool(key) ?? false;
+            bool? savedValue = prefs.getBool(key);
+            checks[category]![task]![day] = savedValue ?? false;
           }
         }
       }
@@ -120,40 +145,9 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
     await prefs.setString('signature', signature);
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.orange,
-              onPrimary: Colors.white,
-              onSurface: Colors.black,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.orange,
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-        _saveData();
-      });
-    }
-  }
-
-  Widget _buildInputForm() {
-    final days = ['Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'];
+  Widget _buildInputForm(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final days = _getLocalizedDaysOfWeek(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
@@ -163,17 +157,17 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
+              color: navyBlue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.orange.withOpacity(0.3)),
+              border: Border.all(color: navyBlue),
             ),
             child: Column(
               children: [
-                const Text(
-                  'Utføres av truckforer for oppstart',
+                Text(
+                  l10n?.performedBy ?? 'Utføres av truckfører for oppstart',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange,
+                    color: navyBlue,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -182,11 +176,11 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                     Expanded(
                       child: TextField(
                         decoration: InputDecoration(
-                          labelText: 'Truck type',
-                          labelStyle: const TextStyle(color: Colors.orange),
+                          labelText: l10n?.truckType ?? 'Truck type',
+                          labelStyle: TextStyle(color: navyBlue),
                           border: const OutlineInputBorder(),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.orange),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: navyBlue),
                           ),
                         ),
                         onChanged: (value) {
@@ -202,11 +196,11 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                     Expanded(
                       child: TextField(
                         decoration: InputDecoration(
-                          labelText: 'Truck nr',
-                          labelStyle: const TextStyle(color: Colors.orange),
+                          labelText: l10n?.truckNumber ?? 'Truck nr',
+                          labelStyle: TextStyle(color: navyBlue),
                           border: const OutlineInputBorder(),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.orange),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: navyBlue),
                           ),
                         ),
                         onChanged: (value) {
@@ -226,11 +220,11 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                     Expanded(
                       child: TextField(
                         decoration: InputDecoration(
-                          labelText: 'Uke nr',
-                          labelStyle: const TextStyle(color: Colors.orange),
+                          labelText: l10n?.weekNumber ?? 'Uke nr',
+                          labelStyle: TextStyle(color: navyBlue),
                           border: const OutlineInputBorder(),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.orange),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: navyBlue),
                           ),
                         ),
                         keyboardType: TextInputType.number,
@@ -249,11 +243,11 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                         onTap: () => _selectDate(context),
                         child: InputDecorator(
                           decoration: InputDecoration(
-                            labelText: 'Dato',
-                            labelStyle: const TextStyle(color: Colors.orange),
+                            labelText: l10n?.date ?? 'Dato',
+                            labelStyle: TextStyle(color: navyBlue),
                             border: const OutlineInputBorder(),
-                            focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.orange),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: navyBlue),
                             ),
                           ),
                           child: Row(
@@ -261,8 +255,7 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                             children: [
                               Text(DateFormat('dd/MM/yyyy')
                                   .format(selectedDate)),
-                              const Icon(Icons.calendar_today,
-                                  color: Colors.orange),
+                              Icon(Icons.calendar_today, color: navyBlue),
                             ],
                           ),
                         ),
@@ -277,27 +270,26 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.05),
-              border: Border.all(color: Colors.orange.withOpacity(0.2)),
+              color: navyBlue.withOpacity(0.1),
+              border: Border.all(color: navyBlue),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
               children: [
                 Row(
                   children: [
-                    const SizedBox(
+                    SizedBox(
                         width: 150,
-                        child: Text('Kategori/Arbeid',
-                            style: TextStyle(color: Colors.orange))),
+                        child: Text(l10n?.category ?? 'Kategori',
+                            style: TextStyle(color: navyBlue))),
                     ...days.map((day) => Expanded(
                           child: Center(
-                            child: Text(day,
-                                style: TextStyle(color: Colors.orange[700])),
+                            child: Text(day, style: TextStyle(color: navyBlue)),
                           ),
                         )),
                   ],
                 ),
-                const Divider(color: Colors.orange),
+                Divider(color: navyBlue),
                 ...checks.entries.map((category) {
                   return Column(
                     children: [
@@ -314,6 +306,9 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                                 ),
                               ),
                               ...days.map((day) {
+                                final currentValue = checks[category.key]
+                                        ?[task.key]?[day] ??
+                                    false;
                                 return Expanded(
                                   child: Center(
                                     child: Theme(
@@ -321,8 +316,7 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                                         unselectedWidgetColor: Colors.grey,
                                       ),
                                       child: Checkbox(
-                                        value: checks[category.key]![task.key]![
-                                            day],
+                                        value: currentValue,
                                         onChanged: (value) {
                                           setState(() {
                                             checks[category.key]![task.key]![
@@ -330,7 +324,7 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                                           });
                                           _saveData();
                                         },
-                                        activeColor: Colors.orange,
+                                        activeColor: navyBlue,
                                         checkColor: Colors.white,
                                       ),
                                     ),
@@ -341,7 +335,7 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                           ),
                         );
                       }),
-                      const Divider(color: Colors.orange),
+                      Divider(color: navyBlue),
                     ],
                   );
                 }),
@@ -352,32 +346,34 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.orange.withOpacity(0.1),
+              color: navyBlue.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.orange.withOpacity(0.3)),
+              border: Border.all(color: navyBlue),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'UNORMALE FORHOLD MELDES OVERORDNET FOR VURDERING/UTBEDRING',
+                Text(
+                  l10n?.abnormalConditions ??
+                      'UNORMALE FORHOLD MELDES OVERORDNET FOR VURDERING/UTBEDRING',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange,
+                    color: navyBlue,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Skadet/mangler beskrivelse:',
-                  style: TextStyle(color: Colors.orange),
+                Text(
+                  l10n?.damageDescription ?? 'Skadet/mangler beskrivelse:',
+                  style: TextStyle(color: navyBlue),
                 ),
                 TextField(
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.orange),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: navyBlue),
                     ),
-                    hintText: 'Beskriv eventuelle skader eller mangler',
+                    hintText: l10n?.describeDamage ??
+                        'Beskriv eventuelle skader eller mangler',
                   ),
                   maxLines: 3,
                   onChanged: (value) {
@@ -389,17 +385,18 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                   controller: TextEditingController(text: damageDescription),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'Reparett:',
-                  style: TextStyle(color: Colors.orange),
+                Text(
+                  l10n?.repairDescription ?? 'Reparett:',
+                  style: TextStyle(color: navyBlue),
                 ),
                 TextField(
                   decoration: InputDecoration(
                     border: const OutlineInputBorder(),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.orange),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: navyBlue),
                     ),
-                    hintText: 'Beskriv eventuelle reparasjoner',
+                    hintText: l10n?.describeRepairs ??
+                        'Beskriv eventuelle reparasjoner',
                   ),
                   maxLines: 2,
                   onChanged: (value) {
@@ -416,11 +413,11 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
           const SizedBox(height: 16),
           TextField(
             decoration: InputDecoration(
-              labelText: 'Signatur',
-              labelStyle: const TextStyle(color: Colors.orange),
+              labelText: l10n?.signature ?? 'Signatur',
+              labelStyle: TextStyle(color: navyBlue),
               border: const OutlineInputBorder(),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.orange),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: navyBlue),
               ),
             ),
             onChanged: (value) {
@@ -442,12 +439,12 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange.withOpacity(0.8),
+                    backgroundColor: navyBlue.withOpacity(0.1),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text(
-                    'Forhåndsvisning',
-                    style: TextStyle(fontSize: 16),
+                  child: Text(
+                    l10n?.preview ?? 'Forhåndsvisning',
+                    style: const TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ),
               ),
@@ -456,12 +453,12 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                 child: ElevatedButton(
                   onPressed: _sendEmail,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: navyBlue,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text(
-                    'Send inspeksjon',
-                    style: TextStyle(fontSize: 16),
+                  child: Text(
+                    l10n?.sendInspection ?? 'Send inspeksjon',
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),
@@ -472,8 +469,9 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
     );
   }
 
-  Widget _buildSheetPreview() {
-    final days = ['Ma', 'Ti', 'On', 'To', 'Fr', 'Lø', 'Sø'];
+  Widget _buildSheetPreview(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final days = _getLocalizedDaysOfWeek(context);
     final now = DateTime.now();
     final formattedDate = DateFormat('dd/MM-yyyy').format(now);
 
@@ -483,21 +481,21 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            '# Daglig kontroll av gaffeltruck',
+            '# ${l10n?.dailyInspection ?? 'Daglig kontroll'} ${l10n?.truckType?.toLowerCase() ?? 'gaffeltruck'}',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.orange[800],
+              color: navyBlue,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            '**Utføres av truckforer for oppstart**',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Text(
+            '**${l10n?.performedBy ?? 'Utføres av truckfører for oppstart'}**',
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Text(
-            '## Truck type: $truckType Truck nr: $truckNumber Uke nr: $weekNumber',
+            '## ${l10n?.truckType ?? 'Truck type'}: $truckType ${l10n?.truckNumber ?? 'Truck nr'}: $truckNumber ${l10n?.weekNumber ?? 'Uke nr'}: $weekNumber',
             style: const TextStyle(fontSize: 16),
           ),
           const SizedBox(height: 16),
@@ -513,33 +511,23 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
               },
               children: [
                 TableRow(
-                  decoration:
-                      BoxDecoration(color: Colors.orange.withOpacity(0.2)),
+                  decoration: BoxDecoration(color: navyBlue.withOpacity(0.1)),
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('Kategori',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(l10n?.category ?? 'Kategori',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('Arbeid',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(l10n?.work ?? 'Arbeid',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
                     ...List.generate(
                         7,
                         (index) => Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Center(
-                                  child: Text([
-                                'Ma',
-                                'Ti',
-                                'On',
-                                'To',
-                                'Fr',
-                                'Lø',
-                                'Sø'
-                              ][index])),
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(child: Text(days[index])),
                             )),
                   ],
                 ),
@@ -557,9 +545,10 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
                         ),
                         ...days.map((day) {
                           return Center(
-                            child: checks[category.key]![task.key]![day]!
-                                ? Icon(Icons.check, color: Colors.orange)
-                                : const Text(''),
+                            child:
+                                (checks[category.key]?[task.key]?[day] ?? false)
+                                    ? Icon(Icons.check, color: navyBlue)
+                                    : const Text(''),
                           );
                         }),
                       ],
@@ -570,17 +559,18 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
             ),
           ),
           const SizedBox(height: 24),
-          const Text(
-            '**UNORMALE FORHOLD MELDES OVERORDNET FOR VURDERING/UTBEDRING**',
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Text(
+            '**${l10n?.abnormalConditions ?? 'UNORMALE FORHOLD MELDES OVERORDNET FOR VURDERING/UTBEDRING'}**',
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          const Text('**Skadet/mangler beskrivelse:**'),
+          Text(
+              '**${l10n?.damageDescription ?? 'Skadet/mangler beskrivelse:'}**'),
           Text(damageDescription.isEmpty
               ? '________________________'
               : damageDescription),
           const SizedBox(height: 16),
-          const Text('Reparett:'),
+          Text('${l10n?.repairDescription ?? 'Reparett:'}'),
           Text(repairDescription.isEmpty
               ? '________________________'
               : repairDescription),
@@ -588,14 +578,14 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Dato: $formattedDate'),
-              Text('Sign: $signature'),
+              Text('${l10n?.date ?? 'Dato'}: $formattedDate'),
+              Text('${l10n?.signature ?? 'Sign'}: $signature'),
             ],
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Ved ukens slutt skal utfylt ark arkiveres',
-            style: TextStyle(fontStyle: FontStyle.italic),
+          Text(
+            l10n?.archiveNote ?? 'Ved ukens slutt skal utfylt ark arkiveres',
+            style: const TextStyle(fontStyle: FontStyle.italic),
           ),
           const SizedBox(height: 24),
           ElevatedButton(
@@ -605,12 +595,12 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
               });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
+              backgroundColor: navyBlue,
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
-            child: const Text(
-              'Tilbake til skjema',
-              style: TextStyle(fontSize: 16),
+            child: Text(
+              l10n?.backToForm ?? 'Tilbake til skjema',
+              style: const TextStyle(fontSize: 16),
             ),
           ),
         ],
@@ -618,22 +608,58 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
     );
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: navyBlue,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: navyBlue,
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        _saveData();
+      });
+    }
+  }
+
   Future<void> _sendEmail() async {
-    // Email sending implementation would go here
+    final l10n = AppLocalizations.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Rapport klar for sending!'),
-        backgroundColor: Colors.orange[800],
+        content: Text(l10n?.reportReady ?? 'Rapport klar for sending!'),
+        backgroundColor: navyBlue,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(showPreview ? 'Forhåndsvisning' : 'Daglig kontroll'),
-        backgroundColor: Colors.orange[800],
+        title: Text(showPreview
+            ? l10n?.preview ?? 'Forhåndsvisning'
+            : l10n?.dailyInspection ?? 'Daglig kontroll'),
+        backgroundColor: navyBlue,
         actions: [
           if (!showPreview)
             IconButton(
@@ -643,7 +669,8 @@ class _ForkliftInspectionFormState extends State<ForkliftInspectionForm> {
             ),
         ],
       ),
-      body: showPreview ? _buildSheetPreview() : _buildInputForm(),
+      body:
+          showPreview ? _buildSheetPreview(context) : _buildInputForm(context),
     );
   }
 }

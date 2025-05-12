@@ -1,8 +1,8 @@
+import 'package:biks/models/equipment_config.dart';
+import 'package:biks/models/equipment_type.dart';
+import 'package:biks/models/lift.dart';
+import 'package:biks/models/lift_data.dart';
 import 'package:flutter/material.dart';
-import 'package:Biks/models/equipment_config.dart';
-import 'package:Biks/models/equipment_type.dart';
-import 'package:Biks/models/lift.dart';
-import 'package:Biks/models/lift_data.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'equipment_provider.g.dart';

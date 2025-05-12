@@ -1,6 +1,6 @@
+import 'package:biks/models/lift.dart';
+import 'package:biks/utils/utils.dart';
 import 'package:flutter/services.dart';
-import 'package:Biks/models/lift.dart';
-import 'package:Biks/utils/utils.dart';
 
 abstract class LiftData {
   const LiftData(

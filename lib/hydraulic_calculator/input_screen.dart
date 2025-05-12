@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class HydraKalk extends StatefulWidget {
+  const HydraKalk({super.key});
+
   @override
   _HydraKalkState createState() => _HydraKalkState();
 }
