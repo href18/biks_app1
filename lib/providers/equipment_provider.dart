@@ -11,7 +11,7 @@ part 'equipment_provider.g.dart';
 class Equipment extends _$Equipment {
   @override
   EquipmentConfig build() => EquipmentConfig(
-        equipmentType: EquipmentTypes.fiber,
+        equipmentType: EquipmentTypes.fiberSling,
         lift: Lifts.allLifts[0],
         weight: 0,
         isUnsymetric: false,
@@ -53,5 +53,9 @@ class Equipment extends _$Equipment {
 
   set datetime(DateTime datetime) {
     state = state.copyWith(datetime: datetime);
+  }
+
+  set userImagePath(String? path) {
+    state = state.copyWith(userImagePath: path);
   }
 }

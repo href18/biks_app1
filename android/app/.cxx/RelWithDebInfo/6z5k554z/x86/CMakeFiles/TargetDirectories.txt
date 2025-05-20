@@ -1,0 +1,2 @@
+/Users/hakonengfeldt/Dev/biks_app1/android/app/.cxx/RelWithDebInfo/6z5k554z/x86/CMakeFiles/edit_cache.dir
+/Users/hakonengfeldt/Dev/biks_app1/android/app/.cxx/RelWithDebInfo/6z5k554z/x86/CMakeFiles/rebuild_cache.dir

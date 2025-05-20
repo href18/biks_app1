@@ -1,3 +1,6 @@
+import 'package:biks/hydraulic_calculator/main_menu.dart';
+import 'package:biks/models/equipment_type.dart';
+import 'package:biks/models/lift.dart';
 import 'package:biks/splash_screen.dart';
 import 'package:biks/views/daily_check.dart';
 import 'package:biks/views/lift_data_view.dart';
@@ -14,7 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // --- Constants ---
 final Uri _urlMS = Uri.parse('https://biks.no/medlem/innlogging/');
 final Uri _course = Uri.parse('https://biks.no/kurs/');
-final Color navyBlue = Color.fromRGBO(4, 33, 90, 1.0);
+final Color navyBlue = Color(0xFF040D3C); // Updated to new color
 final Color accentColor = Color(0xFF00B4D8);
 
 // --- Providers ---
@@ -25,8 +28,13 @@ final sharedPreferencesProvider =
   return await SharedPreferences.getInstance();
 });
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final l10n = await AppLocalizations.delegate.load(const Locale('no'));
+
+  EquipmentTypes.initialize(l10n);
+  Lifts.initializeLocalizations(l10n); // Initialize Lifts localization
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -35,20 +43,29 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentLocale = ref.watch(localeProvider);
-
     return MaterialApp(
-      locale: currentLocale,
+      locale: ref.watch(localeProvider),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: 'DM Sans', // Set DM Sans as the default font
         colorScheme: ColorScheme.light(
           primary: navyBlue,
           secondary: accentColor,
-          surface: Colors.white,
-          background: Colors.grey[50]!,
+          surface: Colors
+              .white, // Used for surfaces of components like Cards, Dialogs
+          // The 'background' parameter in ColorScheme.light() is deprecated.
         ),
+        scaffoldBackgroundColor:
+            Colors.grey[50], // Sets default background for Scaffolds
         cardTheme: CardTheme(
           elevation: 2,
           shape: RoundedRectangleBorder(
@@ -74,13 +91,6 @@ class MyApp extends ConsumerWidget {
           },
         ),
       ),
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }
@@ -187,141 +197,192 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
     }
   }
 
-  void _navigateWithAnimation(Widget page, {String animationType = 'slide'}) {
-    switch (animationType) {
-      case 'fade':
-        Navigator.push(context, FadePageRoute(page: page));
-        break;
-      case 'scale':
-        Navigator.push(context, ScalePageRoute(page: page));
-        break;
-      default:
-        Navigator.push(context, SlidePageRoute(page: page));
-    }
+  void _navigateWithAnimation(Widget page) {
+    Navigator.push(context, SlidePageRoute(page: page));
   }
 
   @override
   Widget build(BuildContext context) {
     final currentLocale = ref.watch(localeProvider);
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context); // Get theme for styling
 
     final menuItems = [
       _MenuItem(
         title: l10n?.firstMenu ?? 'Lift calculator',
-        icon: Icons.calculate_outlined,
-        action: () => _navigateWithAnimation(
-          const LiftingW(),
-          animationType: 'slide',
+        // Use Image.asset for the custom icon
+        leadingWidget: Image.asset(
+          'lib/assets/icons/crane.png', // Changed to crane.png
+          width: 30,
+          height: 30,
+          color: theme.colorScheme.primary, // Apply theme color
         ),
+        action: () => _navigateWithAnimation(const LiftingW()),
       ),
       _MenuItem(
         title: l10n?.secondMenu ?? 'My page',
-        icon: Icons.person_outline,
+        leadingWidget: Icon(
+          Icons.account_circle,
+          color: theme.colorScheme.primary,
+          size: 30,
+        ),
         action: () => _launchUrl(_urlMS),
       ),
       _MenuItem(
+        title: l10n?.hydraulicCalculator ?? 'Hydraulic calculator',
+        leadingWidget: Icon(
+          Icons.opacity,
+          color: theme.colorScheme.primary,
+          size: 30,
+        ),
+        action: () => _navigateWithAnimation(const HydraulicCalculator()),
+      ),
+      _MenuItem(
         title: l10n?.courseMenu ?? 'Courses',
-        icon: Icons.school_outlined,
+        leadingWidget: Icon(
+          Icons.school,
+          color: theme.colorScheme.primary,
+          size: 30,
+        ),
         action: () => _launchUrl(_course),
       ),
       _MenuItem(
         title: l10n?.liftingTable ?? 'Lifting chart',
-        icon: Icons.insert_chart_outlined,
-        action: () => _navigateWithAnimation(
-          const LifttabellFinal(),
-          animationType: 'fade',
+        leadingWidget: Image.asset(
+          'lib/assets/icons/chart.png', // Using your chart icon
+          width: 30,
+          height: 30,
+          color: theme.colorScheme.primary,
         ),
+        action: () => _navigateWithAnimation(const LifttabellFinal()),
       ),
       _MenuItem(
         title: l10n?.threadChart ?? 'Thread chart',
-        icon: Icons.settings_outlined,
-        action: () => _navigateWithAnimation(
-          const GTable(),
-          animationType: 'fade',
+        leadingWidget: Icon(
+          Icons.settings_input_component,
+          color: theme.colorScheme.primary,
+          size: 30,
         ),
+        action: () => _navigateWithAnimation(const GTable()),
       ),
       _MenuItem(
         title: l10n?.myLifts ?? 'My lifts',
-        icon: Icons.history_outlined,
-        action: () => _navigateWithAnimation(
-          const Saver(),
-          animationType: 'scale',
+        leadingWidget: Icon(
+          Icons.history,
+          color: theme.colorScheme.primary,
+          size: 30,
         ),
+        action: () => _navigateWithAnimation(const Saver()),
       ),
       _MenuItem(
         title: l10n?.dailyCheck ?? "Daily check",
-        icon: Icons.checklist_outlined,
+        leadingWidget: Icon(
+          Icons.check,
+          color: theme.colorScheme.primary,
+          size: 30,
+        ),
         action: () => _navigateWithAnimation(
-          const ForkliftInspectionForm(),
-          animationType: 'slide',
+          const DailyCheckScreen(), // Updated to the new screen name
         ),
       ),
       _MenuItem(
         title: l10n?.typeControl ?? "Type control",
-        icon: Icons.construction_outlined,
-        action: () => _navigateWithAnimation(
-          const TruckInspectionForm(),
-          animationType: 'slide',
+        leadingWidget: Icon(
+          Icons.engineering,
+          color: theme.colorScheme.primary,
+          size: 30,
         ),
+        action: () => _navigateWithAnimation(const TypeControlScreen()),
       ),
     ];
+
+    // Sort menu items alphabetically by title
+    menuItems.sort((a, b) => a.title.compareTo(b.title));
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 120,
+            expandedHeight: 105.0, // Increased height for logo when expanded
+            pinned: true, // Keeps the app bar visible when scrolling
+            backgroundColor: navyBlue, // Ensures collapsed app bar is navy blue
             flexibleSpace: FlexibleSpaceBar(
-              title: Text("Biks"),
-              centerTitle: true,
+              title: Image.asset(
+                'lib/assets/images/biks_logo.png',
+                height: 35.0, // This is the approximate height when collapsed
+                fit: BoxFit.contain,
+              ),
+              centerTitle: true, // Horizontally centers the logo
+              titlePadding: EdgeInsets.only(
+                  bottom: 16.0), // Positions logo in collapsed bar
               background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [navyBlue, accentColor],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
+                color: navyBlue, // Solid navyBlue background
               ),
             ),
             actions: [
+              // Moved actions to be a direct child of SliverAppBar
               Padding(
-                padding: const EdgeInsets.only(right: 16),
+                padding: const EdgeInsets.only(right: 16.0),
                 child: IconButton(
-                  icon: Container(
-                    padding: EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white),
-                    ),
-                    child: Image.asset(
-                      currentLocale.languageCode == 'no'
-                          ? "lib/assets/images/ENGf.png"
-                          : "lib/assets/images/NORf.png",
-                      height: 20,
-                      width: 20,
-                    ),
+                  icon: Image.asset(
+                    // The flag image is now the direct icon
+                    currentLocale.languageCode == 'no'
+                        ? "lib/assets/images/ENGf.png"
+                        : "lib/assets/images/NORf.png",
+                    height: 30, // Increased height for a bigger flag
+                    width: 30, // Increased width for a bigger flag
                   ),
-                  onPressed: () => ref.read(localeProvider.notifier).state =
-                      currentLocale.languageCode == 'no'
-                          ? const Locale('en')
-                          : const Locale('no'),
+                  // IconButton's default padding will still provide a good tap area
+                  onPressed: () {
+                    final newLocale = currentLocale.languageCode == 'no'
+                        ? const Locale('en')
+                        : const Locale('no');
+                    ref.read(localeProvider.notifier).state = newLocale;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      final l10n = AppLocalizations.of(context);
+                      if (l10n != null) {
+                        Lifts.updateLocalizations(l10n);
+                        EquipmentTypes.updateLocalizations(l10n);
+                        if (mounted) setState(() {});
+                      }
+                    });
+                  },
                 ),
               ),
             ],
           ),
           SliverPadding(
-            padding: EdgeInsets.all(20),
-            sliver: SliverGrid(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
-                childAspectRatio: 1.2,
-              ),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) => _ModernMenuCard(item: menuItems[index]),
+                (context, index) {
+                  final item = menuItems[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 6.0),
+                    shape: RoundedRectangleBorder(
+                      // Sharpened corners for main menu items
+                      borderRadius: BorderRadius.circular(4.0),
+                    ),
+                    child: ListTile(
+                      leading: item.leadingWidget, // Use the widget directly
+                      title: Text(
+                        item.title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold, // Made title bold
+                          color: navyBlue, // Use the new primary color for text
+                        ),
+                      ),
+                      trailing: Icon(Icons.chevron_right,
+                          color: navyBlue.withAlpha((0.6 * 255)
+                              .round())), // Use new primary color for trailing icon
+                      onTap: item.action,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                    ),
+                  );
+                },
                 childCount: menuItems.length,
               ),
             ),
@@ -332,14 +393,14 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
         height: 80,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.white.withOpacity(0.9)],
+            colors: [Colors.white, Colors.white.withAlpha((0.9 * 255).round())],
           ),
         ),
         child: Center(
           child: Text(
             l10n?.createdBy ?? 'Created by Entellix.no',
             style: TextStyle(
-              color: navyBlue.withOpacity(0.7),
+              color: navyBlue.withAlpha((0.7 * 255).round()),
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -352,73 +413,17 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
 
 class _MenuItem {
   final String title;
-  final IconData icon;
+  final Widget leadingWidget; // Changed from IconData to Widget
   final VoidCallback action;
 
   const _MenuItem({
     required this.title,
-    required this.icon,
+    required this.leadingWidget, // Updated constructor
     required this.action,
   });
 }
 
-class _ModernMenuCard extends StatelessWidget {
-  final _MenuItem item;
-
-  const _ModernMenuCard({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: item.action,
-        splashColor: accentColor.withOpacity(0.2),
-        highlightColor: accentColor.withOpacity(0.1),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                navyBlue.withOpacity(0.8),
-                navyBlue.withOpacity(0.95),
-              ],
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  item.icon,
-                  size: 32,
-                  color: Colors.white.withOpacity(0.9),
-                ),
-                SizedBox(height: 12),
-                Text(
-                  item.title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// The _ModernMenuCard widget is no longer needed and can be removed.
 
 class LifttabellFinal extends StatelessWidget {
   const LifttabellFinal({super.key});
@@ -489,7 +494,7 @@ class LiftingW extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: navyBlue,
+                          color: navyBlue, // Updated color
                         ),
                       ),
                       SizedBox(height: 16),
@@ -501,7 +506,7 @@ class LiftingW extends StatelessWidget {
                       SizedBox(height: 24),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: navyBlue,
+                          backgroundColor: navyBlue, // Updated color
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -519,8 +524,11 @@ class LiftingW extends StatelessWidget {
                 ),
               ),
             ),
-            icon: Icon(Icons.info_outline, color: Colors.white),
-          ),
+            icon: Icon(
+              Icons.info,
+              color: Colors.white, // To match the app bar icon color
+            ),
+          )
         ],
       ),
       body: const LiftDataView(),

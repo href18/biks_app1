@@ -1,42 +1,56 @@
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EquipmentType {
-  EquipmentType({required this.name});
+  EquipmentType({required this.name, this.localeName});
   final String name;
-  String? localeName;
+  final String? localeName;
+
+  String get displayName => localeName ?? name;
+
+  EquipmentType copyWith({String? name, String? localeName}) {
+    return EquipmentType(
+      name: name ?? this.name,
+      localeName: localeName ?? this.localeName,
+    );
+  }
 
   static EquipmentType fromCSV(String name) =>
       EquipmentTypes.allEquipmentTypes.firstWhere((type) => type.name == name);
 }
 
-abstract final class EquipmentTypes {
-  static void initEquipmentTypesFromAppLocalizations(AppLocalizations locale) {
-    fiber.localeName = locale.fiberSling;
-    chain80.localeName = locale.chain80;
-    chain100.localeName = locale.chain100;
-    srFc.localeName = locale.steelRope;
-    srIwrc.localeName = locale.steelRopeIWC;
+class EquipmentTypes {
+  static late EquipmentType fiberSling;
+  static late EquipmentType grade80Chain;
+  static late EquipmentType grade100Chain;
+  static late EquipmentType steelRopeFc;
+  static late EquipmentType steelRopeIwrc;
+
+  static List<EquipmentType> get allEquipmentTypes => [
+        fiberSling,
+        grade80Chain,
+        grade100Chain,
+        steelRopeFc,
+        steelRopeIwrc,
+      ];
+
+  static void initialize(AppLocalizations l10n) {
+    updateLocalizations(l10n);
   }
 
-  static EquipmentType fiber = EquipmentType(name: "Fiberstropp");
+  static void updateLocalizations(AppLocalizations l10n) {
+    fiberSling =
+        EquipmentType(name: "Fiberstropp", localeName: l10n.fiberSling);
+    grade80Chain =
+        EquipmentType(name: "Kjetting (80)", localeName: l10n.chain80);
+    grade100Chain =
+        EquipmentType(name: "Kjetting (100)", localeName: l10n.chain100);
+    steelRopeFc =
+        EquipmentType(name: "Ståltau (fc)", localeName: l10n.steelRope);
+    steelRopeIwrc =
+        EquipmentType(name: "Ståltau (iwrc)", localeName: l10n.steelRopeIWC);
+  }
 
-  static EquipmentType chain80 = EquipmentType(name: "Kjetting (80)");
-
-  static EquipmentType chain100 = EquipmentType(name: "Kjetting (100)");
-
-  static EquipmentType srFc = EquipmentType(name: "Ståltau (fc)");
-
-  static EquipmentType srIwrc = EquipmentType(name: "Ståltau (iwrc)");
-
-  static List<EquipmentType> allEquipmentTypes = [
-    EquipmentTypes.fiber,
-    EquipmentTypes.chain80,
-    EquipmentTypes.chain100,
-    EquipmentTypes.srFc,
-    EquipmentTypes.srIwrc
-  ];
+  static bool isChain(EquipmentType type) {
+    return type == grade80Chain || type == grade100Chain;
+  }
 }
-
-bool equipmentTypeIsChain(EquipmentType equipmentType) =>
-    equipmentType == EquipmentTypes.chain80 ||
-    equipmentType == EquipmentTypes.chain100;

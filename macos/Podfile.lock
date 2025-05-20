@@ -1,13 +1,20 @@
 PODS:
-  - device_info_plus (0.0.1):
+  - file_selector_macos (0.0.1):
     - FlutterMacOS
   - flutter_localization (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
+  - open_file_mac (0.0.1):
+    - FlutterMacOS
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - pdfrx (0.0.3):
+    - Flutter
+    - FlutterMacOS
   - pdfx (1.0.0):
+    - FlutterMacOS
+  - printing (1.0.0):
     - FlutterMacOS
   - shared_preferences_foundation (0.0.1):
     - Flutter
@@ -19,26 +26,35 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
-  - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
+  - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
   - flutter_localization (from `Flutter/ephemeral/.symlinks/plugins/flutter_localization/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
+  - open_file_mac (from `Flutter/ephemeral/.symlinks/plugins/open_file_mac/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
+  - pdfrx (from `Flutter/ephemeral/.symlinks/plugins/pdfrx/darwin`)
   - pdfx (from `Flutter/ephemeral/.symlinks/plugins/pdfx/macos`)
+  - printing (from `Flutter/ephemeral/.symlinks/plugins/printing/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
 
 EXTERNAL SOURCES:
-  device_info_plus:
-    :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos
+  file_selector_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
   flutter_localization:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_localization/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
+  open_file_mac:
+    :path: Flutter/ephemeral/.symlinks/plugins/open_file_mac/macos
   path_provider_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
+  pdfrx:
+    :path: Flutter/ephemeral/.symlinks/plugins/pdfrx/darwin
   pdfx:
     :path: Flutter/ephemeral/.symlinks/plugins/pdfx/macos
+  printing:
+    :path: Flutter/ephemeral/.symlinks/plugins/printing/macos
   shared_preferences_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   sqflite_darwin:
@@ -47,11 +63,14 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
 
 SPEC CHECKSUMS:
-  device_info_plus: a56e6e74dbbd2bb92f2da12c64ddd4f67a749041
+  file_selector_macos: 6280b52b459ae6c590af5d78fc35c7267a3c4b31
   flutter_localization: 3cda759884c7dab4466fe963d97fba723a492666
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  open_file_mac: 01874b6d6a2c1485ac9b126d7105b99102dea2cf
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  pdfrx: f02453e8acfc97f5cd0e29aa33f658ea6c12e71d
   pdfx: 1e79f57f7a6ce2f4a4c30f21fa54d3dc82441b51
+  printing: c4cf83c78fd684f9bc318e6aadc18972aa48f617
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
