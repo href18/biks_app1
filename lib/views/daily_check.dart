@@ -173,7 +173,7 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
           SnackBar(content: Text(l10n.formSnackbarProgressLoaded)),
         );
       } catch (e) {
-        print("Error loading forklift form progress: $e");
+        debugPrint("Error loading forklift form progress: $e");
       }
     }
   }
@@ -411,10 +411,13 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
             decoration: InputDecoration(labelText: l10n.formFieldEmail),
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
-              if (value == null || value.isEmpty)
+              if (value == null || value.isEmpty) {
                 return l10n.formValidationNotEmpty;
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value))
+              }
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                  .hasMatch(value)) {
                 return l10n.formValidationValidEmail;
+              }
               return null;
             },
           ),

@@ -34,19 +34,14 @@ dependencies:
   provider: 
   flutter_riverpod: 
   riverpod_annotation:
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   riverpod: 
   sqflite: 
   pdfx: 
   flutter_launcher_icons: 
   path_provider: 
-  app_tracking_transparency: 
   shared_preferences: 
   google_fonts: 
-  # webview_cookie_manager: ^2.0.6
   mailer: 
-  # dio_cookie_manager: ^3.2.0
   flutter_localization: 
   intl: any
   flutter_localizations:
