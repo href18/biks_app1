@@ -1,4 +1,4 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:biks/l10n/app_localizations.dart';
 
 class Lift {
   final String name; // Internal identifier
@@ -34,7 +34,7 @@ class Lift {
     return Lifts.allLifts.firstWhere(
       (lift) =>
           lift.name.toLowerCase() == searchNameLower && lift.parts == parts,
-      orElse: () => throw Exception('Lift not found: $name (${parts} parts)'),
+      orElse: () => throw Exception('Lift not found: $name ($parts parts)'),
     );
   }
 

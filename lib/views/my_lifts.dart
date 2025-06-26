@@ -1,10 +1,10 @@
+import 'package:biks/l10n/app_localizations.dart';
 import 'package:biks/providers/database_provider.dart';
 import 'package:biks/models/equipment_config.dart'; // Assuming EquipmentConfig model path
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io'; // Required for File
 import 'dart:developer' as developer; // For logging
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Saver extends ConsumerWidget {
   // Renamed class for clarity if needed, or keep as Saver

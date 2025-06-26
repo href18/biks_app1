@@ -1,15 +1,16 @@
 import 'package:biks/hydraulic_calculator/main_menu.dart';
+import 'package:biks/hydraulic_v2.dart';
+import 'package:biks/l10n/app_localizations.dart';
 import 'package:biks/models/equipment_type.dart';
 import 'package:biks/models/lift.dart';
 import 'package:biks/splash_screen.dart';
 import 'package:biks/views/daily_check.dart';
 import 'package:biks/views/lift_data_view.dart';
 import 'package:biks/views/my_lifts.dart';
-import 'package:biks/views/type_control.dart';
+import 'package:biks/views/typeControlTruck.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,7 +67,7 @@ class MyApp extends ConsumerWidget {
         ),
         scaffoldBackgroundColor:
             Colors.grey[50], // Sets default background for Scaffolds
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           elevation: 2,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -159,6 +160,73 @@ class ScalePageRoute extends PageRouteBuilder {
         );
 }
 
+class InspectionsMenuScreen extends StatelessWidget {
+  const InspectionsMenuScreen({super.key});
+
+  void _navigateWithAnimation(BuildContext context, Widget page) {
+    Navigator.push(context, SlidePageRoute(page: page));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(l10n?.inspectionsAndChecks ?? 'Inspections & Checks'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+        children: [
+          Card(
+            margin: const EdgeInsets.symmetric(vertical: 6.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: ListTile(
+              leading:
+                  Icon(Icons.check, color: theme.colorScheme.primary, size: 30),
+              title: Text(
+                l10n?.dailyCheck ?? "Daily check",
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold, color: navyBlue),
+              ),
+              trailing:
+                  Icon(Icons.chevron_right, color: navyBlue.withAlpha(150)),
+              onTap: () =>
+                  _navigateWithAnimation(context, const DailyCheckScreen()),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+          ),
+          Card(
+            margin: const EdgeInsets.symmetric(vertical: 6.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: ListTile(
+              leading: Icon(Icons.engineering,
+                  color: theme.colorScheme.primary, size: 30),
+              title: Text(
+                l10n?.typeControl ?? "Type control",
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold, color: navyBlue),
+              ),
+              trailing:
+                  Icon(Icons.chevron_right, color: navyBlue.withAlpha(150)),
+              onTap: () =>
+                  _navigateWithAnimation(context, const TypeControlScreen()),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class SecondScreen extends ConsumerStatefulWidget {
   const SecondScreen({super.key});
 
@@ -235,7 +303,7 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
           color: theme.colorScheme.primary,
           size: 30,
         ),
-        action: () => _navigateWithAnimation(const HydraulicCalculator()),
+        action: () => _navigateWithAnimation(const HydraulicHomeScreen()),
       ),
       _MenuItem(
         title: l10n?.courseMenu ?? 'Courses',
@@ -256,15 +324,15 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
         ),
         action: () => _navigateWithAnimation(const LifttabellFinal()),
       ),
-      _MenuItem(
-        title: l10n?.threadChart ?? 'Thread chart',
-        leadingWidget: Icon(
-          Icons.settings_input_component,
-          color: theme.colorScheme.primary,
-          size: 30,
-        ),
-        action: () => _navigateWithAnimation(const GTable()),
-      ),
+      // _MenuItem(
+      //   title: l10n?.threadChart ?? 'Thread chart',
+      //   leadingWidget: Icon(
+      //     Icons.settings_input_component,
+      //     color: theme.colorScheme.primary,
+      //     size: 30,
+      //   ),
+      //   action: () => _navigateWithAnimation(const threadChart()),
+      // ),
       _MenuItem(
         title: l10n?.myLifts ?? 'My lifts',
         leadingWidget: Icon(
@@ -275,24 +343,13 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
         action: () => _navigateWithAnimation(const Saver()),
       ),
       _MenuItem(
-        title: l10n?.dailyCheck ?? "Daily check",
+        title: l10n?.inspectionsAndChecks ?? "Inspections & Checks",
         leadingWidget: Icon(
-          Icons.check,
+          Icons.checklist_rtl_outlined,
           color: theme.colorScheme.primary,
           size: 30,
         ),
-        action: () => _navigateWithAnimation(
-          const DailyCheckScreen(), // Updated to the new screen name
-        ),
-      ),
-      _MenuItem(
-        title: l10n?.typeControl ?? "Type control",
-        leadingWidget: Icon(
-          Icons.engineering,
-          color: theme.colorScheme.primary,
-          size: 30,
-        ),
-        action: () => _navigateWithAnimation(const TypeControlScreen()),
+        action: () => _navigateWithAnimation(const InspectionsMenuScreen()),
       ),
     ];
 
@@ -437,26 +494,7 @@ class LifttabellFinal extends StatelessWidget {
       ),
       body: PdfViewPinch(
         controller: PdfControllerPinch(
-          document: PdfDocument.openAsset("lib/assets/ilovepdf_merged.pdf"),
-        ),
-      ),
-    );
-  }
-}
-
-class GTable extends StatelessWidget {
-  const GTable({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n?.threadChart ?? 'Thread chart'),
-      ),
-      body: PdfViewPinch(
-        controller: PdfControllerPinch(
-          document: PdfDocument.openAsset("lib/assets/gjengetabell.pdf"),
+          document: PdfDocument.openAsset("lib/assets/loftetabell_merged.pdf"),
         ),
       ),
     );

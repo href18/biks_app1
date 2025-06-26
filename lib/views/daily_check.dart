@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:biks/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pdf/pdf.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -509,7 +509,7 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
             final String label =
                 l10n.getString(l10nKey) ?? key; // Use l10n.getString()
             return _buildChecklistItem(label, key);
-          }).toList(),
+          }),
           const SizedBox(height: 16),
 
           // Improvements
@@ -572,7 +572,7 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
         _formatInspectionDataForDisplay(inspectionData, l10n);
 
     // Helper to add a text row
-    pw.Widget _buildPdfRow(String label, String? value) {
+    pw.Widget buildPdfRow(String label, String? value) {
       return pw.Padding(
         padding: const pw.EdgeInsets.symmetric(vertical: 2),
         child: pw.Row(
@@ -602,24 +602,24 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
                   fontWeight: pw.FontWeight.bold,
                   color: PdfColors.blueGrey800),
             ),
-            _buildPdfRow(l10n.emailFieldDate, inspectionData['date']),
+            buildPdfRow(l10n.emailFieldDate, inspectionData['date']),
             pw.SizedBox(height: 10),
             pw.Header(level: 1, text: l10n.formSectionOperatorInfo),
-            _buildPdfRow(l10n.formFieldName, inspectionData['name']),
-            _buildPdfRow(l10n.formFieldEmail, inspectionData['email']),
-            _buildPdfRow(l10n.formFieldPhoneNumber, inspectionData['phone']),
-            _buildPdfRow(l10n.formFieldBirthdate, inspectionData['birthdate']),
+            buildPdfRow(l10n.formFieldName, inspectionData['name']),
+            buildPdfRow(l10n.formFieldEmail, inspectionData['email']),
+            buildPdfRow(l10n.formFieldPhoneNumber, inspectionData['phone']),
+            buildPdfRow(l10n.formFieldBirthdate, inspectionData['birthdate']),
             pw.SizedBox(height: 10),
             pw.Header(level: 1, text: l10n.formSectionForkliftInfo),
-            _buildPdfRow(l10n.formFieldForkliftModel, inspectionData['model']),
+            buildPdfRow(l10n.formFieldForkliftModel, inspectionData['model']),
             pw.SizedBox(height: 10),
             pw.Header(level: 1, text: l10n.formSectionDocumentation),
-            _buildPdfRow(
+            buildPdfRow(
                 l10n.emailFieldCertificate,
                 (inspectionData['hasCertificate'] as bool? ?? false)
                     ? l10n.formAnswerYes
                     : l10n.formAnswerNo),
-            _buildPdfRow(
+            buildPdfRow(
                 l10n.emailFieldManual,
                 (inspectionData['hasManual'] as bool? ?? false)
                     ? l10n.formAnswerYes
@@ -635,7 +635,7 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
             final itemName = l10n.getString(
                     'forkliftChecklistItem${itemKey.substring(4).capitalize()}') ??
                 key;
-            content.add(_buildPdfRow(
+            content.add(buildPdfRow(
                 itemName,
                 value
                     ? l10n.emailChecklistItemStatusChecked
@@ -1084,10 +1084,13 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
             decoration: InputDecoration(labelText: l10n.formFieldEmail),
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
-              if (value == null || value.isEmpty)
+              if (value == null || value.isEmpty) {
                 return l10n.formValidationNotEmpty;
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value))
+              }
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                  .hasMatch(value)) {
                 return l10n.formValidationValidEmail;
+              }
               return null;
             },
           ),
@@ -1184,7 +1187,7 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
             final String localizedLabel = l10n.getString(itemKey) ??
                 item['label']!; // Use l10n.getString()
             return _buildGenericCraneChecklistItem(localizedLabel, itemKey);
-          }).toList(),
+          }),
           const SizedBox(height: 16),
 
           // Improvements/Remarks
@@ -1246,7 +1249,7 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
     // final Map<String, String> displayData = _formatInspectionDataForDisplay(inspectionData, l10n);
 
     // Helper to add a text row
-    pw.Widget _buildPdfRow(String label, String? value) {
+    pw.Widget buildPdfRow(String label, String? value) {
       return pw.Padding(
         padding: const pw.EdgeInsets.symmetric(vertical: 2),
         child: pw.Row(
@@ -1276,27 +1279,26 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
                   fontWeight: pw.FontWeight.bold,
                   color: PdfColors.blueGrey800),
             ),
-            _buildPdfRow(l10n.emailFieldDate, inspectionData['date']),
+            buildPdfRow(l10n.emailFieldDate, inspectionData['date']),
             pw.SizedBox(height: 10),
             pw.Header(level: 1, text: l10n.formSectionOperatorInfo),
-            _buildPdfRow(
+            buildPdfRow(
                 l10n.formFieldOperatorName, inspectionData['operatorName']),
-            _buildPdfRow(l10n.formFieldEmail, inspectionData['email']),
-            _buildPdfRow(l10n.formFieldPhoneNumber, inspectionData['phone']),
-            _buildPdfRow(l10n.formFieldBirthdate, inspectionData['birthdate']),
+            buildPdfRow(l10n.formFieldEmail, inspectionData['email']),
+            buildPdfRow(l10n.formFieldPhoneNumber, inspectionData['phone']),
+            buildPdfRow(l10n.formFieldBirthdate, inspectionData['birthdate']),
             pw.SizedBox(height: 10),
             pw.Header(level: 1, text: l10n.formSectionCraneInfo),
-            _buildPdfRow(
-                l10n.formFieldCraneModel, inspectionData['craneModel']),
-            _buildPdfRow(l10n.formFieldCraneID, inspectionData['craneID']),
+            buildPdfRow(l10n.formFieldCraneModel, inspectionData['craneModel']),
+            buildPdfRow(l10n.formFieldCraneID, inspectionData['craneID']),
             pw.SizedBox(height: 10),
             pw.Header(level: 1, text: l10n.formSectionDocumentation),
-            _buildPdfRow(
+            buildPdfRow(
                 l10n.emailFieldCertificate,
                 (inspectionData['hasCertificate'] as bool? ?? false)
                     ? l10n.formAnswerYes
                     : l10n.formAnswerNo),
-            _buildPdfRow(
+            buildPdfRow(
                 l10n.emailFieldManual,
                 (inspectionData['hasManual'] as bool? ?? false)
                     ? l10n.formAnswerYes
@@ -1309,7 +1311,7 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
               (inspectionData['checklist'] as Map<String, bool>?) ?? {};
           checklist.forEach((key, value) {
             final itemName = l10n.getString(key) ?? key;
-            content.add(_buildPdfRow(
+            content.add(buildPdfRow(
                 itemName,
                 value
                     ? l10n.emailChecklistItemStatusChecked
@@ -1378,35 +1380,49 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
 
 extension AppLocalizationsExtension on AppLocalizations {
   String? getString(String key) {
-    if (key == 'craneChecklistItemHoistTrolley')
+    if (key == 'craneChecklistItemHoistTrolley') {
       return craneChecklistItemHoistTrolley;
-    if (key == 'craneChecklistItemRopesChains')
+    }
+    if (key == 'craneChecklistItemRopesChains') {
       return craneChecklistItemRopesChains;
-    if (key == 'craneChecklistItemLimitSwitches')
+    }
+    if (key == 'craneChecklistItemLimitSwitches') {
       return craneChecklistItemLimitSwitches;
-    if (key == 'craneChecklistItemLoadChart')
+    }
+    if (key == 'craneChecklistItemLoadChart') {
       return craneChecklistItemLoadChart;
-    if (key == 'craneChecklistItemHooksLatches')
+    }
+    if (key == 'craneChecklistItemHooksLatches') {
       return craneChecklistItemHooksLatches;
-    if (key == 'craneChecklistItemOutriggers')
+    }
+    if (key == 'craneChecklistItemOutriggers') {
       return craneChecklistItemOutriggers;
-    if (key == 'craneChecklistItemEmergencyStop')
+    }
+    if (key == 'craneChecklistItemEmergencyStop') {
       return craneChecklistItemEmergencyStop;
-    if (key == 'craneChecklistItemControlSystem')
+    }
+    if (key == 'craneChecklistItemControlSystem') {
       return craneChecklistItemControlSystem;
-    if (key == 'craneChecklistItemStructuralComponents')
+    }
+    if (key == 'craneChecklistItemStructuralComponents') {
       return craneChecklistItemStructuralComponents;
-    if (key == 'craneChecklistItemFluidLevels')
+    }
+    if (key == 'craneChecklistItemFluidLevels') {
       return craneChecklistItemFluidLevels;
-    if (key == 'craneChecklistItemSlewingMechanism')
+    }
+    if (key == 'craneChecklistItemSlewingMechanism') {
       return craneChecklistItemSlewingMechanism;
+    }
     if (key == 'craneChecklistItemBrakes') return craneChecklistItemBrakes;
-    if (key == 'craneChecklistItemElectricalSystems')
+    if (key == 'craneChecklistItemElectricalSystems') {
       return craneChecklistItemElectricalSystems;
-    if (key == 'craneChecklistItemWarningDevices')
+    }
+    if (key == 'craneChecklistItemWarningDevices') {
       return craneChecklistItemWarningDevices;
-    if (key == 'craneChecklistItemLogsReview')
+    }
+    if (key == 'craneChecklistItemLogsReview') {
       return craneChecklistItemLogsReview;
+    }
 
     // Forklift items
     if (key == 'forkliftChecklistItem5') return forkliftChecklistItem5;

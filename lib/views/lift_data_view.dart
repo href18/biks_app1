@@ -1,3 +1,4 @@
+import 'package:biks/l10n/app_localizations.dart';
 import 'package:biks/models/equipment_type.dart';
 import 'package:biks/models/lift.dart';
 import 'package:biks/providers/database_provider.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:developer' as developer; // For logging
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:biks/models/equipment_config.dart'; // For EquipmentConfig type
 import 'package:intl/intl.dart'; // For date formatting
 
@@ -224,9 +224,9 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                 l10n.del,
                 equipmentConfig.equipmentType.displayName,
                 l10n.medWLL,
-                equipmentConfig.bestLiftData?.wll?.toString(),
+                equipmentConfig.bestLiftData?.wll.toString(),
                 l10n.togd,
-                equipmentConfig.bestLiftData?.diameter?.toString(),
+                equipmentConfig.bestLiftData?.diameter.toString(),
                 l10n.mm
               ].where((s) => s != null).join(' '),
               textAlign: TextAlign.center,
@@ -404,7 +404,8 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                     borderSide: BorderSide(color: theme.dividerColor),
                   ),
                   filled: true,
-                  fillColor: theme.colorScheme.surfaceVariant.withOpacity(0.5),
+                  fillColor: theme.colorScheme.surfaceContainerHighest
+                      .withOpacity(0.5),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,

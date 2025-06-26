@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Needed to connect to Flutter debugging tools (Hot Reload, DevTools) during development.</string>
 	<key>NSBonjourServices</key>
 	<array>
     <string>_dartobservatory._tcp</string>
@@ -38,8 +36,6 @@
 	<string>This app needs camera access to allow you to take photos for lift documentation and inspection reports.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs photo library access to allow you to select photos for lift documentation and inspection reports.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs microphone access if you intend to record videos with sound; camera access may also request this permission.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

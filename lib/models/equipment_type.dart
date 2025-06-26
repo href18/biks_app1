@@ -1,4 +1,4 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:biks/l10n/app_localizations.dart';
 
 class EquipmentType {
   EquipmentType({required this.name, this.localeName});
