@@ -195,7 +195,7 @@ class _InputRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, color: Theme.of(context).colorScheme.secondary, size: 28),
+          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 28),
           const SizedBox(width: 16),
           Expanded(
             child: TextField(

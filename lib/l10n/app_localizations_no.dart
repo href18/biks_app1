@@ -976,7 +976,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get rodDiameter => 'Stangdiameter';
 
   @override
-  String get pressure => 'Trykk (Pa)';
+  String get pressure => 'Bar';
 
   @override
   String get oilFlow => 'Oljestrøm';

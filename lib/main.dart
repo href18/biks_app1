@@ -1,4 +1,3 @@
-import 'package:biks/hydraulic_calculator/main_menu.dart';
 import 'package:biks/hydraulic_v2.dart';
 import 'package:biks/l10n/app_localizations.dart';
 import 'package:biks/models/equipment_type.dart';
@@ -352,9 +351,6 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
         action: () => _navigateWithAnimation(const InspectionsMenuScreen()),
       ),
     ];
-
-    // Sort menu items alphabetically by title
-    menuItems.sort((a, b) => a.title.compareTo(b.title));
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
