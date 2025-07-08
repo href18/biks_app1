@@ -481,13 +481,240 @@ class AppLocalizationsNo extends AppLocalizations {
   String get thankYou => 'Takk for at du fullførte inspeksjonen.';
 
   @override
+  String get convertFromLabel => 'Konverter Fra';
+
+  @override
+  String get convertToLabel => 'Konverter Til';
+
+  @override
+  String get resultLabel => 'Resultat';
+
+  @override
+  String get dnSystem => 'DN (Metrisk)';
+
+  @override
+  String get dashSystem => 'Dash (16-deler)';
+
+  @override
+  String get inchesFractionSystem => 'Tommer (Brøk)';
+
+  @override
+  String get inchesDecimalSystem => 'Tommer (Desimal)';
+
+  @override
+  String get mmSystem => 'Millimeter (mm)';
+
+  @override
   String get ok => 'OK';
 
   @override
   String get notesHint => 'Skriv inn eventuelle tilleggsnotater eller feil som er funnet...';
 
   @override
+  String get convertionTool => 'Konverteringsverktøy';
+
+  @override
+  String get instructionText => 'Velg en standardstørrelse for å se ekvivalenter.';
+
+  @override
+  String get selectSizeLabel => 'Velg kjent størrelse';
+
+  @override
+  String get resultsTitle => 'Konverteringsresultater';
+
+  @override
+  String get dnLabel => 'DN (Metrisk):';
+
+  @override
+  String get dashLabel => 'Dash (16-deler):';
+
+  @override
+  String get inchesFractionLabel => 'Tommer (Brøk):';
+
+  @override
+  String get inchesDecimalLabel => 'Tommer (Desimal):';
+
+  @override
+  String get mmLabel => 'Millimeter (mm):';
+
+  @override
   String get liftNr => 'Løft Nr.';
+
+  @override
+  String get riskAssessmentTruck => 'Risikovurdering Truck';
+
+  @override
+  String get formSnackbarProgressLoaded => 'Skjema-fremdrift lastet.';
+
+  @override
+  String get formSnackbarProgressSaved => 'Skjema-fremdrift lagret.';
+
+  @override
+  String get formSnackbarFormCleared => 'Skjema tømt.';
+
+  @override
+  String get formSnackbarPleaseCompleteFields => 'Vennligst fyll ut alle obligatoriske felt.';
+
+  @override
+  String get formSnackbarReportShared => 'Rapporten er klar for deling.';
+
+  @override
+  String formSnackbarEmailFailed(String error) {
+    return 'Klarte ikke å sende e-post: $error';
+  }
+
+  @override
+  String get assessedBy => 'Vurdert av';
+
+  @override
+  String get truckDriverName => 'Truckfører (Navn)';
+
+  @override
+  String get area => 'Område';
+
+  @override
+  String get notProvided => 'Ikke oppgitt';
+
+  @override
+  String get notSelected => 'Ikke valgt';
+
+  @override
+  String get done => 'Utført';
+
+  @override
+  String get notDone => 'Ikke utført';
+
+  @override
+  String get actionsAndComments => 'Tiltak / Kommentarer';
+
+  @override
+  String get noComments => 'Ingen kommentarer';
+
+  @override
+  String get previewRiskAssessment => 'Forhåndsvisning: Risikovurdering';
+
+  @override
+  String get generalInformation => 'Generell Informasjon';
+
+  @override
+  String get assessedByName => 'Vurdert av (Navn)';
+
+  @override
+  String get formValidationNotEmpty => 'Dette feltet kan ikke være tomt';
+
+  @override
+  String get areaForRiskAssessment => 'Område for risikovurdering';
+
+  @override
+  String get truckInformation => 'Truck Informasjon';
+
+  @override
+  String get selectTruckType => 'Velg truck type';
+
+  @override
+  String get pleaseSelectAType => 'Vennligst velg en type';
+
+  @override
+  String get specifyOtherType => 'Spesifiser annen type/utstyr';
+
+  @override
+  String get powerSource => 'Drift';
+
+  @override
+  String get electric => 'El';
+
+  @override
+  String get diesel => 'Diesel';
+
+  @override
+  String get pleaseSelectPowerSource => 'Vennligst velg driftstype';
+
+  @override
+  String get riskAssessment => 'Risikovurdering';
+
+  @override
+  String get driverAndDocumentation => 'Fører og Dokumentasjon';
+
+  @override
+  String get describeActionsOrComments => 'Beskriv nødvendige tiltak eller andre kommentarer';
+
+  @override
+  String get formButtonSaveProgress => 'Lagre Fremdrift';
+
+  @override
+  String get formButtonClearForm => 'Tøm Skjema';
+
+  @override
+  String get shareRiskAssessment => 'Del Risikovurdering';
+
+  @override
+  String get unknown => 'Ukjent';
+
+  @override
+  String get truckTypeT1 => 'T1 Lede-palletruck';
+
+  @override
+  String get truckTypeT2 => 'T2 Skyvemast eller støttebenstruck';
+
+  @override
+  String get truckTypeT3 => 'T3 Høytløftende plukk eller svinggaffeltruck';
+
+  @override
+  String get truckTypeT4 => 'T4 Motvekt-truck';
+
+  @override
+  String get truckTypeT5 => 'T5 Sidelaster';
+
+  @override
+  String get truckTypeOther => 'Andre typer / tilleggsutstyr';
+
+  @override
+  String get checkAreaLabel => 'Sjekk av område trucken skal bevege seg på';
+
+  @override
+  String get secureAreaLabel => 'Merke / Sikre område med kjegler';
+
+  @override
+  String get stableLoadLabel => 'Last som er lagret i området er stabilt og sikret';
+
+  @override
+  String get trafficInOutLabel => 'Trafikk inn og ut av området';
+
+  @override
+  String get visualContactLabel => 'Visuell kontakt med instruktør / truckfører';
+
+  @override
+  String get winterConditionsLabel => 'Vinter – Glatt, is, snø og slaps';
+
+  @override
+  String get deicingSaltLabel => 'Er det tilgjengelig strøsalt ved glatt kjøreområde';
+
+  @override
+  String get hillDrivingLabel => 'Bakkekjøring';
+
+  @override
+  String get darknessLabel => 'Høst / vinter, mørke';
+
+  @override
+  String get infoOnDangersLabel => 'Har kursdeltaker fått informasjon om farer i området';
+
+  @override
+  String get racksCertifiedLabel => 'Er pallereol sertifisert og kontrollert';
+
+  @override
+  String get preUseCheckLabel => 'Kontroll før bruk';
+
+  @override
+  String get truckCheckLabel => 'Sjekk av truck';
+
+  @override
+  String get typeTrainingLabel => 'Typeopplæring';
+
+  @override
+  String get competenceCertLabel => 'Kompetansebevis';
+
+  @override
+  String get instructorPresentLabel => 'Instruktør';
 
   @override
   String get typeControlTitle => 'Typekontroll';
@@ -757,9 +984,6 @@ class AppLocalizationsNo extends AppLocalizations {
   String get formButtonSubmitCraneInspection => 'SEND INN KRANINSPEKSJON';
 
   @override
-  String get formSnackbarPleaseCompleteFields => 'Vennligst fyll ut alle obligatoriske felt.';
-
-  @override
   String get formSnackbarForkliftSubmissionSuccess => 'Truckinspeksjon sendt';
 
   @override
@@ -823,27 +1047,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get formFieldRequiredValidator => 'Dette feltet er påkrevd';
 
   @override
-  String get formButtonSaveProgress => 'Lagre Fremdrift';
-
-  @override
-  String get formButtonClearForm => 'Tøm Skjema';
-
-  @override
-  String get formSnackbarProgressSaved => 'Skjema-fremdrift lagret.';
-
-  @override
-  String get formSnackbarProgressLoaded => 'Skjema-fremdrift lastet.';
-
-  @override
-  String get formSnackbarFormCleared => 'Skjema tømt.';
-
-  @override
   String get formSnackbarEmailSent => 'Inspeksjonsrapport sendt!';
-
-  @override
-  String formSnackbarEmailFailed(String error) {
-    return 'Klarte ikke å sende e-post: $error';
-  }
 
   @override
   String emailSubjectForkliftInspection(String date) {
@@ -1258,9 +1462,6 @@ class AppLocalizationsNo extends AppLocalizations {
   String get formSectionOperatorInfo => 'Operatørinformasjon';
 
   @override
-  String get formValidationNotEmpty => 'Dette feltet kan ikke være tomt';
-
-  @override
   String get formValidationValidEmail => 'Vennligst skriv inn en gyldig e-postadresse';
 
   @override
@@ -1441,9 +1642,6 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get helloWorld => 'Hallo Verden!';
-
-  @override
-  String get formSnackbarReportShared => 'Rapport delt';
 
   @override
   String get formAnswerNotProvided => 'Ikke oppgitt';

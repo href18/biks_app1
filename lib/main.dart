@@ -6,6 +6,7 @@ import 'package:biks/splash_screen.dart';
 import 'package:biks/views/daily_check.dart';
 import 'package:biks/views/lift_data_view.dart';
 import 'package:biks/views/my_lifts.dart';
+import 'package:biks/views/risk_assesment.dart';
 import 'package:biks/views/typeControlTruck.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -216,6 +217,27 @@ class InspectionsMenuScreen extends StatelessWidget {
                   Icon(Icons.chevron_right, color: navyBlue.withAlpha(150)),
               onTap: () =>
                   _navigateWithAnimation(context, const TypeControlScreen()),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
+          ),
+          Card(
+            margin: const EdgeInsets.symmetric(vertical: 6.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4.0),
+            ),
+            child: ListTile(
+              leading: Icon(Icons.assignment_late,
+                  color: theme.colorScheme.primary, size: 30),
+              title: Text(
+                l10n?.riskAssessment ?? "Risikovurdering Truck",
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold, color: navyBlue),
+              ),
+              trailing:
+                  Icon(Icons.chevron_right, color: navyBlue.withAlpha(150)),
+              onTap: () =>
+                  _navigateWithAnimation(context, const RiskAssessmentScreen()),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),

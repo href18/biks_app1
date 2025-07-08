@@ -1031,6 +1031,54 @@ abstract class AppLocalizations {
   /// **'Thank you for completing the inspection.'**
   String get thankYou;
 
+  /// No description provided for @convertFromLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert From'**
+  String get convertFromLabel;
+
+  /// No description provided for @convertToLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert To'**
+  String get convertToLabel;
+
+  /// No description provided for @resultLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Result'**
+  String get resultLabel;
+
+  /// No description provided for @dnSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'DN (Metric)'**
+  String get dnSystem;
+
+  /// No description provided for @dashSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Dash (16ths)'**
+  String get dashSystem;
+
+  /// No description provided for @inchesFractionSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Inches (Fraction)'**
+  String get inchesFractionSystem;
+
+  /// No description provided for @inchesDecimalSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Inches (Decimal)'**
+  String get inchesDecimalSystem;
+
+  /// No description provided for @mmSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Millimeters (mm)'**
+  String get mmSystem;
+
   /// No description provided for @ok.
   ///
   /// In en, this message translates to:
@@ -1043,11 +1091,413 @@ abstract class AppLocalizations {
   /// **'Enter any additional notes or defects found...'**
   String get notesHint;
 
+  /// No description provided for @convertionTool.
+  ///
+  /// In en, this message translates to:
+  /// **'Hose & Pipe Converter'**
+  String get convertionTool;
+
+  /// No description provided for @instructionText.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a standard size to see its equivalents.'**
+  String get instructionText;
+
+  /// No description provided for @selectSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Known Size'**
+  String get selectSizeLabel;
+
+  /// No description provided for @resultsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversion Results'**
+  String get resultsTitle;
+
+  /// No description provided for @dnLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'DN (Metric):'**
+  String get dnLabel;
+
+  /// No description provided for @dashLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Dash (16ths):'**
+  String get dashLabel;
+
+  /// No description provided for @inchesFractionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Inches (Fraction):'**
+  String get inchesFractionLabel;
+
+  /// No description provided for @inchesDecimalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Inches (Decimal):'**
+  String get inchesDecimalLabel;
+
+  /// No description provided for @mmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Millimeters (mm):'**
+  String get mmLabel;
+
   /// No description provided for @liftNr.
   ///
   /// In en, this message translates to:
   /// **'Lift No.'**
   String get liftNr;
+
+  /// No description provided for @riskAssessmentTruck.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck Risk Assessment'**
+  String get riskAssessmentTruck;
+
+  /// No description provided for @formSnackbarProgressLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Form progress loaded.'**
+  String get formSnackbarProgressLoaded;
+
+  /// No description provided for @formSnackbarProgressSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Form progress saved.'**
+  String get formSnackbarProgressSaved;
+
+  /// No description provided for @formSnackbarFormCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Form cleared.'**
+  String get formSnackbarFormCleared;
+
+  /// No description provided for @formSnackbarPleaseCompleteFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete all required fields.'**
+  String get formSnackbarPleaseCompleteFields;
+
+  /// Snackbar message shown when a report has been successfully shared via native share options.
+  ///
+  /// In en, this message translates to:
+  /// **'Report shared successfully'**
+  String get formSnackbarReportShared;
+
+  /// No description provided for @formSnackbarEmailFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send email: {error}'**
+  String formSnackbarEmailFailed(String error);
+
+  /// No description provided for @assessedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessed by'**
+  String get assessedBy;
+
+  /// No description provided for @truckDriverName.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck Driver (Name)'**
+  String get truckDriverName;
+
+  /// No description provided for @area.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get area;
+
+  /// No description provided for @notProvided.
+  ///
+  /// In en, this message translates to:
+  /// **'Not provided'**
+  String get notProvided;
+
+  /// No description provided for @notSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Not selected'**
+  String get notSelected;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @notDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Done'**
+  String get notDone;
+
+  /// No description provided for @actionsAndComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions / Comments'**
+  String get actionsAndComments;
+
+  /// No description provided for @noComments.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments'**
+  String get noComments;
+
+  /// No description provided for @previewRiskAssessment.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview: Risk Assessment'**
+  String get previewRiskAssessment;
+
+  /// No description provided for @generalInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'General Information'**
+  String get generalInformation;
+
+  /// No description provided for @assessedByName.
+  ///
+  /// In en, this message translates to:
+  /// **'Assessed by (Name)'**
+  String get assessedByName;
+
+  /// No description provided for @formValidationNotEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This field cannot be empty'**
+  String get formValidationNotEmpty;
+
+  /// No description provided for @areaForRiskAssessment.
+  ///
+  /// In en, this message translates to:
+  /// **'Area for risk assessment'**
+  String get areaForRiskAssessment;
+
+  /// No description provided for @truckInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck Information'**
+  String get truckInformation;
+
+  /// No description provided for @selectTruckType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select truck type'**
+  String get selectTruckType;
+
+  /// No description provided for @pleaseSelectAType.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a type'**
+  String get pleaseSelectAType;
+
+  /// No description provided for @specifyOtherType.
+  ///
+  /// In en, this message translates to:
+  /// **'Specify other type/equipment'**
+  String get specifyOtherType;
+
+  /// No description provided for @powerSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Power Source'**
+  String get powerSource;
+
+  /// No description provided for @electric.
+  ///
+  /// In en, this message translates to:
+  /// **'Electric'**
+  String get electric;
+
+  /// No description provided for @diesel.
+  ///
+  /// In en, this message translates to:
+  /// **'Diesel'**
+  String get diesel;
+
+  /// No description provided for @pleaseSelectPowerSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a power source'**
+  String get pleaseSelectPowerSource;
+
+  /// No description provided for @riskAssessment.
+  ///
+  /// In en, this message translates to:
+  /// **'Risk Assessment'**
+  String get riskAssessment;
+
+  /// No description provided for @driverAndDocumentation.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver and Documentation'**
+  String get driverAndDocumentation;
+
+  /// No description provided for @describeActionsOrComments.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe necessary actions or other comments'**
+  String get describeActionsOrComments;
+
+  /// No description provided for @formButtonSaveProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Progress'**
+  String get formButtonSaveProgress;
+
+  /// No description provided for @formButtonClearForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Form'**
+  String get formButtonClearForm;
+
+  /// No description provided for @shareRiskAssessment.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Risk Assessment'**
+  String get shareRiskAssessment;
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// No description provided for @truckTypeT1.
+  ///
+  /// In en, this message translates to:
+  /// **'T1 Pedestrian-operated pallet truck'**
+  String get truckTypeT1;
+
+  /// No description provided for @truckTypeT2.
+  ///
+  /// In en, this message translates to:
+  /// **'T2 Reach truck or stacker truck'**
+  String get truckTypeT2;
+
+  /// No description provided for @truckTypeT3.
+  ///
+  /// In en, this message translates to:
+  /// **'T3 High-level order picker or turret truck'**
+  String get truckTypeT3;
+
+  /// No description provided for @truckTypeT4.
+  ///
+  /// In en, this message translates to:
+  /// **'T4 Counterbalance truck'**
+  String get truckTypeT4;
+
+  /// No description provided for @truckTypeT5.
+  ///
+  /// In en, this message translates to:
+  /// **'T5 Sideloaders'**
+  String get truckTypeT5;
+
+  /// No description provided for @truckTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other types / additional equipment'**
+  String get truckTypeOther;
+
+  /// No description provided for @checkAreaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the area where the truck will operate'**
+  String get checkAreaLabel;
+
+  /// No description provided for @secureAreaLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark / Secure the area with cones'**
+  String get secureAreaLabel;
+
+  /// No description provided for @stableLoadLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Load stored in the area is stable and secured'**
+  String get stableLoadLabel;
+
+  /// No description provided for @trafficInOutLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Traffic in and out of the area'**
+  String get trafficInOutLabel;
+
+  /// No description provided for @visualContactLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Visual contact with instructor / truck driver'**
+  String get visualContactLabel;
+
+  /// No description provided for @winterConditionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Winter – Slippery, ice, snow, and slush'**
+  String get winterConditionsLabel;
+
+  /// No description provided for @deicingSaltLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Is de-icing salt available for slippery driving areas'**
+  String get deicingSaltLabel;
+
+  /// No description provided for @hillDrivingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hill driving'**
+  String get hillDrivingLabel;
+
+  /// No description provided for @darknessLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Autumn / winter, darkness'**
+  String get darknessLabel;
+
+  /// No description provided for @infoOnDangersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Has the course participant been informed about dangers in the area'**
+  String get infoOnDangersLabel;
+
+  /// No description provided for @racksCertifiedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Are pallet racks certified and inspected'**
+  String get racksCertifiedLabel;
+
+  /// No description provided for @preUseCheckLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pre-use check'**
+  String get preUseCheckLabel;
+
+  /// No description provided for @truckCheckLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck check'**
+  String get truckCheckLabel;
+
+  /// No description provided for @typeTrainingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type-specific training'**
+  String get typeTrainingLabel;
+
+  /// No description provided for @competenceCertLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate of competence'**
+  String get competenceCertLabel;
+
+  /// No description provided for @instructorPresentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Instructor'**
+  String get instructorPresentLabel;
 
   /// No description provided for @typeControlTitle.
   ///
@@ -1583,12 +2033,6 @@ abstract class AppLocalizations {
   /// **'SUBMIT CRANE INSPECTION'**
   String get formButtonSubmitCraneInspection;
 
-  /// No description provided for @formSnackbarPleaseCompleteFields.
-  ///
-  /// In en, this message translates to:
-  /// **'Please complete all required fields.'**
-  String get formSnackbarPleaseCompleteFields;
-
   /// No description provided for @formSnackbarForkliftSubmissionSuccess.
   ///
   /// In en, this message translates to:
@@ -1715,47 +2159,11 @@ abstract class AppLocalizations {
   /// **'This field is required'**
   String get formFieldRequiredValidator;
 
-  /// No description provided for @formButtonSaveProgress.
-  ///
-  /// In en, this message translates to:
-  /// **'Save Progress'**
-  String get formButtonSaveProgress;
-
-  /// No description provided for @formButtonClearForm.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear Form'**
-  String get formButtonClearForm;
-
-  /// No description provided for @formSnackbarProgressSaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Form progress saved.'**
-  String get formSnackbarProgressSaved;
-
-  /// No description provided for @formSnackbarProgressLoaded.
-  ///
-  /// In en, this message translates to:
-  /// **'Form progress loaded.'**
-  String get formSnackbarProgressLoaded;
-
-  /// No description provided for @formSnackbarFormCleared.
-  ///
-  /// In en, this message translates to:
-  /// **'Form cleared.'**
-  String get formSnackbarFormCleared;
-
   /// No description provided for @formSnackbarEmailSent.
   ///
   /// In en, this message translates to:
   /// **'Inspection report sent successfully!'**
   String get formSnackbarEmailSent;
-
-  /// No description provided for @formSnackbarEmailFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed to send email: {error}'**
-  String formSnackbarEmailFailed(String error);
 
   /// No description provided for @emailSubjectForkliftInspection.
   ///
@@ -2573,12 +2981,6 @@ abstract class AppLocalizations {
   /// **'Operator Information'**
   String get formSectionOperatorInfo;
 
-  /// No description provided for @formValidationNotEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'This field cannot be empty'**
-  String get formValidationNotEmpty;
-
   /// No description provided for @formValidationValidEmail.
   ///
   /// In en, this message translates to:
@@ -2938,12 +3340,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hello World!'**
   String get helloWorld;
-
-  /// Snackbar message shown when a report has been successfully shared via native share options.
-  ///
-  /// In en, this message translates to:
-  /// **'Report shared successfully'**
-  String get formSnackbarReportShared;
 
   /// Text to display when a form field or answer was not provided by the user, e.g., in a PDF report.
   ///

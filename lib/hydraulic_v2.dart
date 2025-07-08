@@ -2,6 +2,7 @@ import 'package:biks/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:biks/views/hydraulic_conversion.dart';
 import 'package:pdfx/pdfx.dart';
 
 // --- Home Screen for the Hydraulic Calculator Feature ---
@@ -39,6 +40,11 @@ class HydraulicHomeScreen extends StatelessWidget {
         'title': l10n?.threadChart ?? 'Thread Chart',
         'icon': Icons.settings_input_component_outlined,
         'page': const ThreadChartPage(), // Renamed for consistency
+      },
+      {
+        'title': l10n?.convertionTool ?? 'Hose & Pipe Conversion',
+        'icon': Icons.swap_horiz,
+        'page': const ConverterHomePage(),
       },
     ];
     return Scaffold(

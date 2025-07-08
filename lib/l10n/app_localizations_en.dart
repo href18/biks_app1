@@ -481,13 +481,240 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thankYou => 'Thank you for completing the inspection.';
 
   @override
+  String get convertFromLabel => 'Convert From';
+
+  @override
+  String get convertToLabel => 'Convert To';
+
+  @override
+  String get resultLabel => 'Result';
+
+  @override
+  String get dnSystem => 'DN (Metric)';
+
+  @override
+  String get dashSystem => 'Dash (16ths)';
+
+  @override
+  String get inchesFractionSystem => 'Inches (Fraction)';
+
+  @override
+  String get inchesDecimalSystem => 'Inches (Decimal)';
+
+  @override
+  String get mmSystem => 'Millimeters (mm)';
+
+  @override
   String get ok => 'OK';
 
   @override
   String get notesHint => 'Enter any additional notes or defects found...';
 
   @override
+  String get convertionTool => 'Hose & Pipe Converter';
+
+  @override
+  String get instructionText => 'Select a standard size to see its equivalents.';
+
+  @override
+  String get selectSizeLabel => 'Select Known Size';
+
+  @override
+  String get resultsTitle => 'Conversion Results';
+
+  @override
+  String get dnLabel => 'DN (Metric):';
+
+  @override
+  String get dashLabel => 'Dash (16ths):';
+
+  @override
+  String get inchesFractionLabel => 'Inches (Fraction):';
+
+  @override
+  String get inchesDecimalLabel => 'Inches (Decimal):';
+
+  @override
+  String get mmLabel => 'Millimeters (mm):';
+
+  @override
   String get liftNr => 'Lift No.';
+
+  @override
+  String get riskAssessmentTruck => 'Truck Risk Assessment';
+
+  @override
+  String get formSnackbarProgressLoaded => 'Form progress loaded.';
+
+  @override
+  String get formSnackbarProgressSaved => 'Form progress saved.';
+
+  @override
+  String get formSnackbarFormCleared => 'Form cleared.';
+
+  @override
+  String get formSnackbarPleaseCompleteFields => 'Please complete all required fields.';
+
+  @override
+  String get formSnackbarReportShared => 'Report shared successfully';
+
+  @override
+  String formSnackbarEmailFailed(String error) {
+    return 'Failed to send email: $error';
+  }
+
+  @override
+  String get assessedBy => 'Assessed by';
+
+  @override
+  String get truckDriverName => 'Truck Driver (Name)';
+
+  @override
+  String get area => 'Area';
+
+  @override
+  String get notProvided => 'Not provided';
+
+  @override
+  String get notSelected => 'Not selected';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get notDone => 'Not Done';
+
+  @override
+  String get actionsAndComments => 'Actions / Comments';
+
+  @override
+  String get noComments => 'No comments';
+
+  @override
+  String get previewRiskAssessment => 'Preview: Risk Assessment';
+
+  @override
+  String get generalInformation => 'General Information';
+
+  @override
+  String get assessedByName => 'Assessed by (Name)';
+
+  @override
+  String get formValidationNotEmpty => 'This field cannot be empty';
+
+  @override
+  String get areaForRiskAssessment => 'Area for risk assessment';
+
+  @override
+  String get truckInformation => 'Truck Information';
+
+  @override
+  String get selectTruckType => 'Select truck type';
+
+  @override
+  String get pleaseSelectAType => 'Please select a type';
+
+  @override
+  String get specifyOtherType => 'Specify other type/equipment';
+
+  @override
+  String get powerSource => 'Power Source';
+
+  @override
+  String get electric => 'Electric';
+
+  @override
+  String get diesel => 'Diesel';
+
+  @override
+  String get pleaseSelectPowerSource => 'Please select a power source';
+
+  @override
+  String get riskAssessment => 'Risk Assessment';
+
+  @override
+  String get driverAndDocumentation => 'Driver and Documentation';
+
+  @override
+  String get describeActionsOrComments => 'Describe necessary actions or other comments';
+
+  @override
+  String get formButtonSaveProgress => 'Save Progress';
+
+  @override
+  String get formButtonClearForm => 'Clear Form';
+
+  @override
+  String get shareRiskAssessment => 'Share Risk Assessment';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get truckTypeT1 => 'T1 Pedestrian-operated pallet truck';
+
+  @override
+  String get truckTypeT2 => 'T2 Reach truck or stacker truck';
+
+  @override
+  String get truckTypeT3 => 'T3 High-level order picker or turret truck';
+
+  @override
+  String get truckTypeT4 => 'T4 Counterbalance truck';
+
+  @override
+  String get truckTypeT5 => 'T5 Sideloaders';
+
+  @override
+  String get truckTypeOther => 'Other types / additional equipment';
+
+  @override
+  String get checkAreaLabel => 'Check the area where the truck will operate';
+
+  @override
+  String get secureAreaLabel => 'Mark / Secure the area with cones';
+
+  @override
+  String get stableLoadLabel => 'Load stored in the area is stable and secured';
+
+  @override
+  String get trafficInOutLabel => 'Traffic in and out of the area';
+
+  @override
+  String get visualContactLabel => 'Visual contact with instructor / truck driver';
+
+  @override
+  String get winterConditionsLabel => 'Winter – Slippery, ice, snow, and slush';
+
+  @override
+  String get deicingSaltLabel => 'Is de-icing salt available for slippery driving areas';
+
+  @override
+  String get hillDrivingLabel => 'Hill driving';
+
+  @override
+  String get darknessLabel => 'Autumn / winter, darkness';
+
+  @override
+  String get infoOnDangersLabel => 'Has the course participant been informed about dangers in the area';
+
+  @override
+  String get racksCertifiedLabel => 'Are pallet racks certified and inspected';
+
+  @override
+  String get preUseCheckLabel => 'Pre-use check';
+
+  @override
+  String get truckCheckLabel => 'Truck check';
+
+  @override
+  String get typeTrainingLabel => 'Type-specific training';
+
+  @override
+  String get competenceCertLabel => 'Certificate of competence';
+
+  @override
+  String get instructorPresentLabel => 'Instructor';
 
   @override
   String get typeControlTitle => 'Type Control';
@@ -757,9 +984,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get formButtonSubmitCraneInspection => 'SUBMIT CRANE INSPECTION';
 
   @override
-  String get formSnackbarPleaseCompleteFields => 'Please complete all required fields.';
-
-  @override
   String get formSnackbarForkliftSubmissionSuccess => 'Forklift inspection submitted successfully';
 
   @override
@@ -823,27 +1047,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get formFieldRequiredValidator => 'This field is required';
 
   @override
-  String get formButtonSaveProgress => 'Save Progress';
-
-  @override
-  String get formButtonClearForm => 'Clear Form';
-
-  @override
-  String get formSnackbarProgressSaved => 'Form progress saved.';
-
-  @override
-  String get formSnackbarProgressLoaded => 'Form progress loaded.';
-
-  @override
-  String get formSnackbarFormCleared => 'Form cleared.';
-
-  @override
   String get formSnackbarEmailSent => 'Inspection report sent successfully!';
-
-  @override
-  String formSnackbarEmailFailed(String error) {
-    return 'Failed to send email: $error';
-  }
 
   @override
   String emailSubjectForkliftInspection(String date) {
@@ -1258,9 +1462,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get formSectionOperatorInfo => 'Operator Information';
 
   @override
-  String get formValidationNotEmpty => 'This field cannot be empty';
-
-  @override
   String get formValidationValidEmail => 'Please enter a valid email address';
 
   @override
@@ -1441,9 +1642,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helloWorld => 'Hello World!';
-
-  @override
-  String get formSnackbarReportShared => 'Report shared successfully';
 
   @override
   String get formAnswerNotProvided => 'Not provided';
