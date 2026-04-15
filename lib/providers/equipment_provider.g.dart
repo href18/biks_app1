@@ -6,7 +6,7 @@ part of 'equipment_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$equipmentHash() => r'a292738f140fab0af62d3f915c9527ed0b0f64a7';
+String _$equipmentHash() => r'd7f75da0c9354cc4d7e509974e988ddb190b0aa0';
 
 /// See also [Equipment].
 @ProviderFor(Equipment)
@@ -22,4 +22,4 @@ final equipmentProvider =
 
 typedef _$Equipment = AutoDisposeNotifier<EquipmentConfig>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -8,16 +8,20 @@ import 'package:biks/views/lift_data_view.dart';
 import 'package:biks/views/my_lifts.dart';
 import 'package:biks/views/risk_assesment.dart';
 import 'package:biks/views/typeControlTruck.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 // --- Constants ---
 final Uri _urlMS = Uri.parse('https://biks.no/medlem/innlogging/');
 final Uri _course = Uri.parse('https://biks.no/kurs/');
+final Uri _fireSafetyChecklist = Uri.parse(
+    'https://brannvernforeningen.no/sertifisering/varme-arbeider/om-sertifiseringsordningen-og-varme-arbeider/sikkerhetsforskrift-og-sjekkliste-gjeldende-fra-1.1.2024');
 final Color navyBlue = Color(0xFF040D3C); // Updated to new color
 final Color accentColor = Color(0xFF00B4D8);
 
@@ -31,10 +35,6 @@ final sharedPreferencesProvider =
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final l10n = await AppLocalizations.delegate.load(const Locale('no'));
-
-  EquipmentTypes.initialize(l10n);
-  Lifts.initializeLocalizations(l10n); // Initialize Lifts localization
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -53,6 +53,14 @@ class MyApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      builder: (context, child) {
+        final l10n = AppLocalizations.of(context);
+        if (l10n != null) {
+          EquipmentTypes.updateLocalizations(l10n);
+          Lifts.updateLocalizations(l10n);
+        }
+        return child ?? const SizedBox.shrink();
+      },
       home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -171,76 +179,51 @@ class InspectionsMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final items = [
+      _MenuItem(
+        title: l10n?.dailyCheck ?? "Daily check",
+        subtitle: 'Daglig kontroll og sjekklister',
+        leadingWidget: Icon(
+          Icons.check,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
+        ),
+        action: () => _navigateWithAnimation(context, const DailyCheckScreen()),
+      ),
+      _MenuItem(
+        title: l10n?.typeControl ?? "Type control",
+        subtitle: 'Kontroll og dokumentasjon',
+        leadingWidget: Icon(
+          Icons.engineering,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
+        ),
+        action: () =>
+            _navigateWithAnimation(context, const TypeControlScreen()),
+      ),
+      _MenuItem(
+        title: l10n?.riskAssessment ?? "Risikovurdering Truck",
+        subtitle: 'Sikkerhetsvurdering før arbeid',
+        leadingWidget: Icon(
+          Icons.assignment_late,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
+        ),
+        action: () =>
+            _navigateWithAnimation(context, const RiskAssessmentScreen()),
+      ),
+    ];
 
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n?.inspectionsAndChecks ?? 'Inspections & Checks'),
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         children: [
-          Card(
-            margin: const EdgeInsets.symmetric(vertical: 6.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: ListTile(
-              leading:
-                  Icon(Icons.check, color: theme.colorScheme.primary, size: 30),
-              title: Text(
-                l10n?.dailyCheck ?? "Daily check",
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold, color: navyBlue),
-              ),
-              trailing:
-                  Icon(Icons.chevron_right, color: navyBlue.withAlpha(150)),
-              onTap: () =>
-                  _navigateWithAnimation(context, const DailyCheckScreen()),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            ),
-          ),
-          Card(
-            margin: const EdgeInsets.symmetric(vertical: 6.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: ListTile(
-              leading: Icon(Icons.engineering,
-                  color: theme.colorScheme.primary, size: 30),
-              title: Text(
-                l10n?.typeControl ?? "Type control",
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold, color: navyBlue),
-              ),
-              trailing:
-                  Icon(Icons.chevron_right, color: navyBlue.withAlpha(150)),
-              onTap: () =>
-                  _navigateWithAnimation(context, const TypeControlScreen()),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            ),
-          ),
-          Card(
-            margin: const EdgeInsets.symmetric(vertical: 6.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: ListTile(
-              leading: Icon(Icons.assignment_late,
-                  color: theme.colorScheme.primary, size: 30),
-              title: Text(
-                l10n?.riskAssessment ?? "Risikovurdering Truck",
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold, color: navyBlue),
-              ),
-              trailing:
-                  Icon(Icons.chevron_right, color: navyBlue.withAlpha(150)),
-              onTap: () =>
-                  _navigateWithAnimation(context, const RiskAssessmentScreen()),
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            ),
+          _AppMenuSection(
+            title: l10n?.inspectionsAndChecks ?? 'Inspections & Checks',
+            children: items.map((item) => _AppMenuTile(item: item)).toList(),
           ),
         ],
       ),
@@ -294,83 +277,90 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
   Widget build(BuildContext context) {
     final currentLocale = ref.watch(localeProvider);
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context); // Get theme for styling
+    final theme = Theme.of(context);
 
     final menuItems = [
       _MenuItem(
-        title: l10n?.firstMenu ?? 'Lift calculator',
-        // Use Image.asset for the custom icon
-        leadingWidget: Image.asset(
-          'lib/assets/icons/crane.png', // Changed to crane.png
-          width: 30,
-          height: 30,
-          color: theme.colorScheme.primary, // Apply theme color
-        ),
-        action: () => _navigateWithAnimation(const LiftingW()),
-      ),
-      _MenuItem(
-        title: l10n?.secondMenu ?? 'My page',
-        leadingWidget: Icon(
-          Icons.account_circle,
-          color: theme.colorScheme.primary,
-          size: 30,
-        ),
-        action: () => _launchUrl(_urlMS),
-      ),
-      _MenuItem(
-        title: l10n?.hydraulicCalculator ?? 'Hydraulic calculator',
-        leadingWidget: Icon(
-          Icons.opacity,
-          color: theme.colorScheme.primary,
-          size: 30,
-        ),
-        action: () => _navigateWithAnimation(const HydraulicHomeScreen()),
-      ),
-      _MenuItem(
-        title: l10n?.courseMenu ?? 'Courses',
+        title: l10n?.courseMenu ?? 'Our courses',
+        subtitle: 'Kurs og opplaering',
         leadingWidget: Icon(
           Icons.school,
-          color: theme.colorScheme.primary,
-          size: 30,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
         ),
         action: () => _launchUrl(_course),
       ),
       _MenuItem(
-        title: l10n?.liftingTable ?? 'Lifting chart',
+        title: l10n?.secondMenu ?? 'My pages',
+        subtitle: 'Medlemssider og konto',
+        leadingWidget: Icon(
+          Icons.account_circle,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
+        ),
+        action: () => _launchUrl(_urlMS),
+      ),
+      _MenuItem(
+        title: l10n?.firstMenu ?? 'Lift calculator',
+        subtitle: 'Beregning av loft og vinkler',
         leadingWidget: Image.asset(
-          'lib/assets/icons/chart.png', // Using your chart icon
-          width: 30,
-          height: 30,
-          color: theme.colorScheme.primary,
+          'lib/assets/icons/crane.png',
+          width: 24,
+          height: 24,
+          color: theme.colorScheme.onPrimaryContainer,
+        ),
+        action: () => _navigateWithAnimation(const LiftingW()),
+      ),
+      _MenuItem(
+        title: l10n?.liftingTable ?? 'Lifting chart',
+        subtitle: 'Oppslag for tabeller og last',
+        leadingWidget: Image.asset(
+          'lib/assets/icons/chart.png',
+          width: 24,
+          height: 24,
+          color: theme.colorScheme.onPrimaryContainer,
         ),
         action: () => _navigateWithAnimation(const LifttabellFinal()),
       ),
-      // _MenuItem(
-      //   title: l10n?.threadChart ?? 'Thread chart',
-      //   leadingWidget: Icon(
-      //     Icons.settings_input_component,
-      //     color: theme.colorScheme.primary,
-      //     size: 30,
-      //   ),
-      //   action: () => _navigateWithAnimation(const threadChart()),
-      // ),
       _MenuItem(
         title: l10n?.myLifts ?? 'My lifts',
+        subtitle: 'Historikk og lagrede loft',
         leadingWidget: Icon(
           Icons.history,
-          color: theme.colorScheme.primary,
-          size: 30,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
         ),
         action: () => _navigateWithAnimation(const Saver()),
       ),
       _MenuItem(
+        title: l10n?.hydraulicCalculator ?? 'Hydraulic',
+        subtitle: 'Hydraulikk, gjenger og slanger',
+        leadingWidget: Icon(
+          Icons.opacity,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
+        ),
+        action: () => _navigateWithAnimation(const HydraulicHomeScreen()),
+      ),
+      _MenuItem(
         title: l10n?.inspectionsAndChecks ?? "Inspections & Checks",
+        subtitle: 'Daglig kontroll, typekontroll og risiko',
         leadingWidget: Icon(
           Icons.checklist_rtl_outlined,
-          color: theme.colorScheme.primary,
-          size: 30,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
         ),
         action: () => _navigateWithAnimation(const InspectionsMenuScreen()),
+      ),
+      _MenuItem(
+        title: l10n?.hotWork ?? 'Hot Work',
+        subtitle: 'Forskrift og sjekkliste',
+        leadingWidget: Icon(
+          Icons.folder_open,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
+        ),
+        action: () => _launchUrl(_fireSafetyChecklist),
       ),
     ];
 
@@ -414,70 +404,243 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
                         ? const Locale('en')
                         : const Locale('no');
                     ref.read(localeProvider.notifier).state = newLocale;
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      final l10n = AppLocalizations.of(context);
-                      if (l10n != null) {
-                        Lifts.updateLocalizations(l10n);
-                        EquipmentTypes.updateLocalizations(l10n);
-                        if (mounted) setState(() {});
-                      }
-                    });
                   },
                 ),
               ),
             ],
           ),
           SliverPadding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
             sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final item = menuItems[index];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 6.0),
-                    shape: RoundedRectangleBorder(
-                      // Sharpened corners for main menu items
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
-                    child: ListTile(
-                      leading: item.leadingWidget, // Use the widget directly
-                      title: Text(
-                        item.title,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold, // Made title bold
-                          color: navyBlue, // Use the new primary color for text
-                        ),
-                      ),
-                      trailing: Icon(Icons.chevron_right,
-                          color: navyBlue.withAlpha((0.6 * 255)
-                              .round())), // Use new primary color for trailing icon
-                      onTap: item.action,
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                    ),
-                  );
-                },
-                childCount: menuItems.length,
-              ),
+              delegate: SliverChildListDelegate.fixed([
+                _AppMenuSection(
+                  title: '',
+                  children: menuItems
+                      .map((item) => _AppMenuTile(item: item))
+                      .toList(),
+                ),
+              ]),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.white.withAlpha((0.9 * 255).round())],
-          ),
+      bottomNavigationBar: kIsWeb
+          ? Container(
+              height: 220,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white,
+                    Colors.white.withAlpha((0.9 * 255).round())
+                  ],
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n?.qrDownloadTitle ?? 'Last ned mobilversjon',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: 90,
+                            width: 90,
+                            child: QrImageView(
+                              data:
+                                  'https://play.google.com/store/apps/details?id=com.entellix.Biks&pcampaignid=web_share',
+                              backgroundColor: Colors.white,
+                              gapless: true,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            l10n?.qrAndroidLabel ?? 'Android (Play Store)',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 24),
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: 90,
+                            width: 90,
+                            child: QrImageView(
+                              data:
+                                  'https://apps.apple.com/no/app/biks/id6502571502',
+                              backgroundColor: Colors.white,
+                              gapless: true,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            l10n?.qrIOSLabel ?? 'iPhone (App Store)',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Text(
+                      l10n?.qrDownloadHint ??
+                          'Skann med telefonen for å åpne BIKS i din butikk.',
+                      style: const TextStyle(fontSize: 12),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    l10n?.createdBy ?? 'Created by Entellix.no',
+                    style: TextStyle(
+                      color: navyBlue.withAlpha((0.7 * 255).round()),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                child: Text(
+                  l10n?.createdBy ?? 'Created by Entellix.no',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: navyBlue.withAlpha((0.7 * 255).round()),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+    );
+  }
+}
+
+class _MenuItem {
+  final String title;
+  final String? subtitle;
+  final Widget leadingWidget;
+  final VoidCallback action;
+
+  const _MenuItem({
+    required this.title,
+    this.subtitle,
+    required this.leadingWidget,
+    required this.action,
+  });
+}
+
+class _AppMenuSection extends StatelessWidget {
+  const _AppMenuSection({
+    required this.title,
+    required this.children,
+  });
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasTitle = title.trim().isNotEmpty;
+    return Card(
+      elevation: 0,
+      color: theme.colorScheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(12, hasTitle ? 12 : 8, 12, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (hasTitle) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                child: Text(
+                  title,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: navyBlue,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+            ],
+            ...children,
+          ],
         ),
-        child: Center(
-          child: Text(
-            l10n?.createdBy ?? 'Created by Entellix.no',
-            style: TextStyle(
-              color: navyBlue.withAlpha((0.7 * 255).round()),
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+}
+
+class _AppMenuTile extends StatelessWidget {
+  const _AppMenuTile({required this.item});
+
+  final _MenuItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: item.action,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  alignment: Alignment.center,
+                  child: item.leadingWidget,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.title,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: navyBlue,
+                        ),
+                      ),
+                      if (item.subtitle != null) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          item.subtitle!,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right, color: theme.colorScheme.outline),
+              ],
             ),
           ),
         ),
@@ -485,20 +648,6 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
     );
   }
 }
-
-class _MenuItem {
-  final String title;
-  final Widget leadingWidget; // Changed from IconData to Widget
-  final VoidCallback action;
-
-  const _MenuItem({
-    required this.title,
-    required this.leadingWidget, // Updated constructor
-    required this.action,
-  });
-}
-
-// The _ModernMenuCard widget is no longer needed and can be removed.
 
 class LifttabellFinal extends StatelessWidget {
   const LifttabellFinal({super.key});

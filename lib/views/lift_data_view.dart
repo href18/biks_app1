@@ -1,6 +1,7 @@
 import 'package:biks/l10n/app_localizations.dart';
 import 'package:biks/models/equipment_type.dart';
 import 'package:biks/models/lift.dart';
+import 'package:biks/models/lift_data.dart';
 import 'package:biks/providers/database_provider.dart';
 import 'package:biks/providers/equipment_provider.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:developer' as developer; // For logging
 import 'package:biks/models/equipment_config.dart'; // For EquipmentConfig type
 import 'package:intl/intl.dart'; // For date formatting
@@ -142,6 +144,58 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
     ref.read(equipmentProvider.notifier).datetime = DateTime.now();
     final equipmentConfig = ref.read(equipmentProvider);
 
+    final bestLiftData = equipmentConfig.bestLiftData;
+    final bool isUnsymmetric = equipmentConfig.isUnsymetric;
+    final numberFormat = NumberFormat("0.0#");
+    final factorFormat = NumberFormat("0.00");
+    final double? workingLoadFactor =
+        EquipmentConfig.workingLoadFactorForLift(equipmentConfig.lift);
+    final double? tensionPerSling = (workingLoadFactor != null &&
+            workingLoadFactor > 0 &&
+            equipmentConfig.weight > 0)
+        ? equipmentConfig.weight / workingLoadFactor
+        : null;
+
+    double? symmetricLimit =
+        equipmentConfig.symmetricWeightLimit ?? bestLiftData?.weightLimit;
+    double? unsymmetricLimit;
+
+    if (bestLiftData is StrapLiftData) {
+      unsymmetricLimit = bestLiftData.unsymetricWeightLimit;
+    } else if (bestLiftData is ChainLiftData) {
+      unsymmetricLimit = bestLiftData.unsymetricWeightLimit;
+    }
+
+    double? appliedLimit = equipmentConfig.appliedWeightLimit;
+    double? referenceLimit = equipmentConfig.unsymmetricReferenceLimit;
+    if (appliedLimit == null) {
+      if (isUnsymmetric && symmetricLimit != null && unsymmetricLimit != null) {
+        appliedLimit = math.min(symmetricLimit, unsymmetricLimit);
+      } else {
+        appliedLimit = symmetricLimit;
+      }
+    }
+
+    referenceLimit ??= symmetricLimit;
+
+    if (symmetricLimit == null && bestLiftData != null) {
+      symmetricLimit = bestLiftData.weightLimit;
+    }
+
+    final double? reductionFactor = (isUnsymmetric &&
+            referenceLimit != null &&
+            referenceLimit > 0 &&
+            appliedLimit != null)
+        ? appliedLimit / referenceLimit
+        : null;
+
+    final String? strapGuidance = (isUnsymmetric &&
+            bestLiftData != null &&
+            bestLiftData.wll > 0 &&
+            bestLiftData.lift.parts > 0)
+        ? '${bestLiftData.lift.parts}x ${equipmentConfig.equipmentType.displayName} ${l10n.medWLL} ${numberFormat.format(bestLiftData.wll)} ${l10n.ton}'
+        : null;
+
     if (!mounted) return;
     showDialog(
       context: context,
@@ -189,18 +243,28 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
             ),
           ],
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Display user-selected image if available, otherwise default lift image
-            (equipmentConfig.userImagePath != null &&
-                    equipmentConfig.userImagePath!.isNotEmpty)
-                ? Image.file(
-                    File(equipmentConfig.userImagePath!),
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Image.asset(
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Display user-selected image if available, otherwise default lift image
+              (equipmentConfig.userImagePath != null &&
+                      equipmentConfig.userImagePath!.isNotEmpty)
+                  ? Image.file(
+                      File(equipmentConfig.userImagePath!),
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Image.asset(
+                        equipmentConfig.lift.image,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.error_outline, size: 50),
+                      ),
+                    )
+                  : Image.asset(
                       equipmentConfig.lift.image,
                       width: 100,
                       height: 100,
@@ -208,31 +272,39 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                       errorBuilder: (_, __, ___) =>
                           const Icon(Icons.error_outline, size: 50),
                     ),
-                  )
-                : Image.asset(
-                    equipmentConfig.lift.image,
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) =>
-                        const Icon(Icons.error_outline, size: 50),
-                  ),
-            const SizedBox(height: 16),
-            Text(
-              [
-                equipmentConfig.bestLiftData?.lift.parts,
-                l10n.del,
-                equipmentConfig.equipmentType.displayName,
-                l10n.medWLL,
-                equipmentConfig.bestLiftData?.wll.toString(),
-                l10n.togd,
-                equipmentConfig.bestLiftData?.diameter.toString(),
-                l10n.mm
-              ].where((s) => s != null).join(' '),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
+              const SizedBox(height: 16),
+              Text(
+                [
+                  equipmentConfig.bestLiftData?.lift.parts,
+                  l10n.del,
+                  equipmentConfig.equipmentType.displayName,
+                  l10n.medWLL,
+                  equipmentConfig.bestLiftData?.wll.toString(),
+                  l10n.togd,
+                  equipmentConfig.bestLiftData?.diameter.toString(),
+                  l10n.mm
+                ].where((s) => s != null).join(' '),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 16),
+              _buildCapacitySummary(
+                context: context,
+                l10n: l10n,
+                capacityFormat: numberFormat,
+                factorFormat: factorFormat,
+                symmetricLimit: symmetricLimit,
+                appliedLimit: appliedLimit,
+                reductionFactor: reductionFactor,
+                referenceLimit: referenceLimit,
+                isUnsymmetric: isUnsymmetric,
+                unsymmetricGuidance: strapGuidance,
+                workingLoadFactor: workingLoadFactor,
+                tensionPerSling: tensionPerSling,
+                enteredWeight: equipmentConfig.weight,
+              ),
+            ],
+          ),
         ),
         actions: [
           FilledButton(
@@ -280,6 +352,296 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
     );
   }
 
+  Widget _buildCapacitySummary({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required NumberFormat capacityFormat,
+    required NumberFormat factorFormat,
+    required double? symmetricLimit,
+    required double? appliedLimit,
+    required double? referenceLimit,
+    required double? reductionFactor,
+    required bool isUnsymmetric,
+    required double? workingLoadFactor,
+    required double? tensionPerSling,
+    required double enteredWeight,
+    String? unsymmetricGuidance,
+  }) {
+    String formatCapacity(double? value) {
+      if (value == null) return '–';
+      return '${capacityFormat.format(value)} ${l10n.ton}';
+    }
+
+    final bool showUnsymmetric = isUnsymmetric && appliedLimit != null;
+    final bool showReduction = showUnsymmetric && reductionFactor != null;
+    final theme = Theme.of(context);
+    final unsymmetricLabel = _unsymmetricCapacityLabel(
+      l10n,
+      showUnsymmetric,
+      reductionFactor,
+    );
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle(
+            context,
+            l10n.localeName.startsWith('no') ? 'Kapasitet' : 'Capacity',
+          ),
+          _buildCapacityRow(
+            context,
+            label: l10n.capacitySymmetricLabel,
+            value: formatCapacity(symmetricLimit),
+            emphasis: !showUnsymmetric,
+          ),
+          if (showUnsymmetric && referenceLimit != null) ...[
+            const SizedBox(height: 8),
+            _buildCapacityRow(
+              context,
+              label: l10n.capacityReferenceLabel,
+              value: formatCapacity(referenceLimit),
+            ),
+          ],
+          if (showUnsymmetric) ...[
+            const SizedBox(height: 8),
+            _buildCapacityRow(
+              context,
+              label: unsymmetricLabel,
+              value: formatCapacity(appliedLimit),
+              emphasis: true,
+            ),
+          ],
+          if (showReduction) ...[
+            const SizedBox(height: 8),
+            _buildCapacityRow(
+              context,
+              label: l10n.capacityReductionFactorLabel,
+              value: factorFormat.format(reductionFactor),
+            ),
+          ],
+          if (workingLoadFactor != null && tensionPerSling != null) ...[
+            const SizedBox(height: 16),
+            _buildSectionTitle(
+              context,
+              l10n.localeName.startsWith('no')
+                  ? 'Strekkbelastning'
+                  : 'Tension load',
+            ),
+            _buildHighlightedMetric(
+              context,
+              label: _tensionPerSlingLabel(l10n),
+              value: formatCapacity(tensionPerSling),
+            ),
+            const SizedBox(height: 12),
+            _buildMiniMetricsRow(
+              context,
+              items: [
+                (
+                  _workingLoadFactorLabel(l10n),
+                  factorFormat.format(workingLoadFactor)
+                ),
+                (
+                  l10n.localeName.startsWith('no') ? 'Last' : 'Load',
+                  '${capacityFormat.format(enteredWeight)} ${l10n.ton}'
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(
+              '${capacityFormat.format(enteredWeight)} ${l10n.ton} / ${factorFormat.format(workingLoadFactor)} = ${capacityFormat.format(tensionPerSling)} ${l10n.ton}',
+              style: theme.textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            _TensionTriangle(
+              loadLabel: l10n.localeName.startsWith('no') ? 'Last' : 'Load',
+              loadValue: '${capacityFormat.format(enteredWeight)} ${l10n.ton}',
+              factorLabel: _workingLoadFactorLabel(l10n),
+              factorValue: factorFormat.format(workingLoadFactor),
+              tensionLabel: _tensionPerSlingLabel(l10n),
+              tensionValue:
+                  '${capacityFormat.format(tensionPerSling)} ${l10n.ton}',
+            ),
+          ],
+          if (unsymmetricGuidance != null) ...[
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.12),
+                ),
+              ),
+              child: Text(
+                unsymmetricGuidance,
+                style: theme.textTheme.bodyMedium,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCapacityRow(
+    BuildContext context, {
+    required String label,
+    required String value,
+    bool emphasis = false,
+  }) {
+    final textTheme = Theme.of(context).textTheme;
+    final TextStyle? labelStyle = emphasis
+        ? textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)
+        : textTheme.bodyMedium;
+    final TextStyle? valueStyle = emphasis
+        ? textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)
+        : textTheme.bodyMedium;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: Text(label, style: labelStyle)),
+        const SizedBox(width: 12),
+        Text(value, style: valueStyle),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        title,
+        style: Theme.of(
+          context,
+        ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+
+  Widget _buildHighlightedMetric(
+    BuildContext context, {
+    required String label,
+    required String value,
+  }) {
+    final theme = Theme.of(context);
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(alpha: 0.18),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: theme.colorScheme.primary,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMiniMetricsRow(
+    BuildContext context, {
+    required List<(String, String)> items,
+  }) {
+    final theme = Theme.of(context);
+    return Row(
+      children: items
+          .map(
+            (item) => Expanded(
+              child: Container(
+                margin: EdgeInsets.only(
+                  right: item == items.last ? 0 : 8,
+                ),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.$1, style: theme.textTheme.bodySmall),
+                    const SizedBox(height: 2),
+                    Text(
+                      item.$2,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  String _unsymmetricCapacityLabel(
+    AppLocalizations l10n,
+    bool showUnsymmetric,
+    double? reductionFactor,
+  ) {
+    if (!showUnsymmetric) return l10n.capacityUnsymmetricLabel;
+
+    if (reductionFactor != null && reductionFactor >= 1) {
+      final baseLabel = l10n.capacityUnsymmetricLabel;
+      final spaceIndex = baseLabel.indexOf(' ');
+
+      if (spaceIndex != -1 && spaceIndex < baseLabel.length - 1) {
+        final remainder = baseLabel.substring(spaceIndex + 1).trimLeft();
+        if (remainder.isNotEmpty) {
+          return _capitalizeFirstLetter(remainder);
+        }
+      }
+    }
+
+    return l10n.capacityUnsymmetricLabel;
+  }
+
+  String _capitalizeFirstLetter(String value) {
+    for (int i = 0; i < value.length; i++) {
+      final char = value[i];
+      if (char.toUpperCase() != char.toLowerCase()) {
+        final upper = char.toUpperCase();
+        return '${value.substring(0, i)}$upper${value.substring(i + 1)}';
+      }
+    }
+    return value;
+  }
+
+  String _workingLoadFactorLabel(AppLocalizations l10n) {
+    return l10n.localeName.startsWith('no') ? 'Faktor' : 'Factor';
+  }
+
+  String _tensionPerSlingLabel(AppLocalizations l10n) {
+    return l10n.localeName.startsWith('no')
+        ? 'Strekkbelastning per stropp'
+        : 'Tension per sling';
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -304,7 +666,6 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Equipment Type Dropdown
               Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(
@@ -330,7 +691,7 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                           .map((type) => DropdownMenuItem(
                                 value: type,
                                 child: Text(
-                                  type.displayName, // Use displayName
+                                  type.displayName,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ))
@@ -340,8 +701,6 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Lift Type Dropdown
               Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(
@@ -378,7 +737,7 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                                     const SizedBox(width: 12),
                                     Flexible(
                                       child: Text(
-                                        '${lift.displayName} (${lift.parts})', // Use displayName
+                                        '${lift.displayName} (${lift.parts})',
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
@@ -391,8 +750,6 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // Weight Input
               TextField(
                 controller: _weightController,
                 focusNode: _focusNode,
@@ -405,7 +762,7 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                   ),
                   filled: true,
                   fillColor: theme.colorScheme.surfaceContainerHighest
-                      .withOpacity(0.5),
+                      .withValues(alpha: 0.5),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 14,
@@ -432,16 +789,13 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                 onSubmitted: (_) => showLiftDataDialog(context),
               ),
               const SizedBox(height: 16),
-
-              // Optional Image Picker
               if (_selectedImagePath != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Column(
                     children: [
-                      Text(l10n?.customImageLabel ?? "Selected Image:",
-                          style: theme.textTheme
-                              .titleSmall), // Add "customImageLabel" to l10n
+                      Text(l10n.customImageLabel,
+                          style: theme.textTheme.titleSmall),
                       const SizedBox(height: 8),
                       Image.file(
                         File(_selectedImagePath!),
@@ -465,17 +819,13 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
               OutlinedButton.icon(
                 icon: const Icon(Icons.image_search),
                 label: Text(_selectedImagePath == null
-                    ? (l10n?.addImageOptional ??
-                        "Add Optional Image") // Add "addImageOptional" to l10n
-                    : (l10n?.changeImageOptional ??
-                        "Change Optional Image")), // Add "changeImageOptional" to l10n
+                    ? l10n.addImageOptional
+                    : l10n.changeImageOptional),
                 onPressed: _pickImage,
                 style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12)),
               ),
               const SizedBox(height: 16),
-
-              // Unsymmetric Lift Toggle
               Row(
                 children: [
                   Expanded(
@@ -494,8 +844,6 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                 ],
               ),
               const SizedBox(height: 32),
-
-              // Calculate Button
               FilledButton(
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -511,11 +859,9 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                   ),
                 ),
               ),
-              const SizedBox(height: 32), // Spacer
-
-              // Section for Previous Lifts
+              const SizedBox(height: 32),
               Text(
-                l10n.previousLiftsTitle, // Example: "Previous Lifts"
+                l10n.previousLiftsTitle,
                 style: theme.textTheme.headlineSmall,
               ),
               const SizedBox(height: 16),
@@ -530,6 +876,8 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
   Widget _buildSavedLiftsList(
       BuildContext context, AppLocalizations l10n, ThemeData theme) {
     final savedLiftsAsyncValue = ref.watch(equipmentConfigFetcherProvider);
+    final capacityFormat = NumberFormat('0.0#');
+    final factorFormat = NumberFormat('0.00');
 
     return savedLiftsAsyncValue.when(
       data: (lifts) {
@@ -537,7 +885,7 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
           return Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 20.0),
-              child: Text(l10n.noSavedLifts), // Example: "No saved lifts yet."
+              child: Text(l10n.noSavedLifts),
             ),
           );
         }
@@ -549,6 +897,13 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
           itemCount: lifts.length,
           itemBuilder: (context, index) {
             final liftEntry = lifts[index];
+            final workingLoadFactor =
+                EquipmentConfig.workingLoadFactorForLift(liftEntry.lift);
+            final tensionPerSling = (workingLoadFactor != null &&
+                    workingLoadFactor > 0 &&
+                    liftEntry.weight > 0)
+                ? liftEntry.weight / workingLoadFactor
+                : null;
             Widget imageWidget;
             if (liftEntry.userImagePath != null &&
                 liftEntry.userImagePath!.isNotEmpty) {
@@ -599,33 +954,33 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              liftEntry.lift
-                                  .displayName, // Use displayName from Lift object
+                              liftEntry.lift.displayName,
                               style: theme.textTheme.titleMedium,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 4),
                             Text(
-                                "${l10n.weightLabel}: ${liftEntry.weight.toStringAsFixed(2)} ${l10n.tons}", // Added toStringAsFixed for consistent display
+                                "${l10n.weightLabel}: ${liftEntry.weight.toStringAsFixed(2)} ${l10n.tons}",
                                 style: theme.textTheme.bodyMedium),
-                            // Assuming lift.parts is always relevant if present
-                            Text(
-                                "${l10n.partsLabel}: ${liftEntry.lift.parts}", // Use parts from Lift object
+                            Text("${l10n.partsLabel}: ${liftEntry.lift.parts}",
                                 style: theme.textTheme.bodyMedium),
-                            if ((liftEntry.bestLiftData?.wll ?? 0.0) >
-                                0) // Safely check WLL
+                            if ((liftEntry.bestLiftData?.wll ?? 0.0) > 0)
                               Text(
-                                  "${l10n.wllLabel}: ${liftEntry.bestLiftData!.wll.toStringAsFixed(2)} ${l10n.tons}", // Safe access due to condition
+                                  "${l10n.wllLabel}: ${liftEntry.bestLiftData!.wll.toStringAsFixed(2)} ${l10n.tons}",
                                   style: theme.textTheme.bodyMedium),
-                            if ((liftEntry.bestLiftData?.diameter ?? 0.0) >
-                                0) // Safely check diameter
+                            if ((liftEntry.bestLiftData?.diameter ?? 0.0) > 0)
                               Text(
-                                  "${l10n.diameterLabel}: ${liftEntry.bestLiftData!.diameter.toStringAsFixed(1)} mm", // Safe access due to condition
+                                  "${l10n.diameterLabel}: ${liftEntry.bestLiftData!.diameter.toStringAsFixed(1)} mm",
                                   style: theme.textTheme.bodyMedium),
+                            if (tensionPerSling != null)
+                              Text(
+                                "${_tensionPerSlingLabel(l10n)}: ${capacityFormat.format(tensionPerSling)} ${l10n.ton} (${_workingLoadFactorLabel(l10n)} ${factorFormat.format(workingLoadFactor)})",
+                                style: theme.textTheme.bodyMedium,
+                              ),
                             const SizedBox(height: 4),
                             Text(
-                                "${l10n.dateLabel}: ${DateFormat.yMMMd(l10n.localeName).add_jm().format(liftEntry.datetime)}", // Use datetime
+                                "${l10n.dateLabel}: ${DateFormat.yMMMd(l10n.localeName).add_jm().format(liftEntry.datetime)}",
                                 style: theme.textTheme.bodySmall),
                           ],
                         ),
@@ -685,5 +1040,181 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
         ],
       ),
     );
+  }
+}
+
+class _TensionTriangle extends StatelessWidget {
+  final String loadLabel;
+  final String loadValue;
+  final String factorLabel;
+  final String factorValue;
+  final String tensionLabel;
+  final String tensionValue;
+
+  const _TensionTriangle({
+    required this.loadLabel,
+    required this.loadValue,
+    required this.factorLabel,
+    required this.factorValue,
+    required this.tensionLabel,
+    required this.tensionValue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          loadLabel == 'Last'
+              ? 'Trekant for strekkbelastning'
+              : 'Tension triangle',
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 190,
+          width: double.infinity,
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: _TrianglePainter(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                    strokeColor: theme.colorScheme.primary,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: _TriangleNode(
+                    label: loadLabel,
+                    value: loadValue,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                bottom: 0,
+                child: _TriangleNode(
+                  label: factorLabel,
+                  value: factorValue,
+                  alignStart: true,
+                ),
+              ),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: _TriangleNode(
+                  label: tensionLabel,
+                  value: tensionValue,
+                  alignEnd: true,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TriangleNode extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool alignStart;
+  final bool alignEnd;
+
+  const _TriangleNode({
+    required this.label,
+    required this.value,
+    this.alignStart = false,
+    this.alignEnd = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final textAlign = alignStart
+        ? TextAlign.left
+        : alignEnd
+            ? TextAlign.right
+            : TextAlign.center;
+
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 140),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: theme.colorScheme.primary.withValues(alpha: 0.25),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: alignStart
+            ? CrossAxisAlignment.start
+            : alignEnd
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.center,
+        children: [
+          Text(
+            label,
+            textAlign: textAlign,
+            style: theme.textTheme.bodySmall,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            textAlign: textAlign,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrianglePainter extends CustomPainter {
+  final Color color;
+  final Color strokeColor;
+
+  const _TrianglePainter({
+    required this.color,
+    required this.strokeColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final path = Path()
+      ..moveTo(size.width / 2, 24)
+      ..lineTo(40, size.height - 36)
+      ..lineTo(size.width - 40, size.height - 36)
+      ..close();
+
+    final fillPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+    final strokePaint = Paint()
+      ..color = strokeColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+
+    canvas.drawPath(path, fillPaint);
+    canvas.drawPath(path, strokePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _TrianglePainter oldDelegate) {
+    return oldDelegate.color != color || oldDelegate.strokeColor != strokeColor;
   }
 }

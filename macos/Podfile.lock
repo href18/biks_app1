@@ -4,13 +4,7 @@ PODS:
   - flutter_localization (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
-  - open_file_mac (0.0.1):
-    - FlutterMacOS
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - pdfrx (0.0.3):
-    - Flutter
+  - open_file_mac (1.0.3):
     - FlutterMacOS
   - pdfx (1.0.0):
     - FlutterMacOS
@@ -32,8 +26,6 @@ DEPENDENCIES:
   - flutter_localization (from `Flutter/ephemeral/.symlinks/plugins/flutter_localization/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - open_file_mac (from `Flutter/ephemeral/.symlinks/plugins/open_file_mac/macos`)
-  - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
-  - pdfrx (from `Flutter/ephemeral/.symlinks/plugins/pdfrx/darwin`)
   - pdfx (from `Flutter/ephemeral/.symlinks/plugins/pdfx/macos`)
   - printing (from `Flutter/ephemeral/.symlinks/plugins/printing/macos`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
@@ -50,10 +42,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral
   open_file_mac:
     :path: Flutter/ephemeral/.symlinks/plugins/open_file_mac/macos
-  path_provider_foundation:
-    :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
-  pdfrx:
-    :path: Flutter/ephemeral/.symlinks/plugins/pdfrx/darwin
   pdfx:
     :path: Flutter/ephemeral/.symlinks/plugins/pdfx/macos
   printing:
@@ -68,19 +56,17 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
 
 SPEC CHECKSUMS:
-  file_selector_macos: 6280b52b459ae6c590af5d78fc35c7267a3c4b31
+  file_selector_macos: 9e9e068e90ebee155097d00e89ae91edb2374db7
   flutter_localization: 3cda759884c7dab4466fe963d97fba723a492666
-  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  open_file_mac: 01874b6d6a2c1485ac9b126d7105b99102dea2cf
-  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  pdfrx: f02453e8acfc97f5cd0e29aa33f658ea6c12e71d
+  FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
+  open_file_mac: 76f06c8597551249bdb5e8fd8827a98eae0f4585
   pdfx: 1e79f57f7a6ce2f4a4c30f21fa54d3dc82441b51
   printing: c4cf83c78fd684f9bc318e6aadc18972aa48f617
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
-  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
-  url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
+  url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
 
-PODFILE CHECKSUM: 236401fc2c932af29a9fcf0e97baeeb2d750d367
+PODFILE CHECKSUM: 9ebaf0ce3d369aaa26a9ea0e159195ed94724cf3
 
 COCOAPODS: 1.16.2

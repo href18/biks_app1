@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:biks/l10n/app_localizations.dart';
+import 'package:biks/utils/share_origin_extension.dart';
+import 'package:biks/widgets/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,6 +13,14 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+String _sanitizeRiskPdfPart(String? value, {String fallback = 'ukjent'}) {
+  final sanitized = (value ?? '')
+      .trim()
+      .replaceAll(RegExp(r'\s+'), '_')
+      .replaceAll(RegExp(r'[^\w.-]'), '');
+  return sanitized.isEmpty ? fallback : sanitized;
+}
 
 /// A dedicated data class for the Risk Assessment.
 class RiskAssessment {
@@ -75,6 +86,7 @@ class RiskAssessmentScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        
         title: Text(l10n.riskAssessmentTruck),
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -113,6 +125,8 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
   final Map<String, bool> _checklist = {};
   bool _isLoading = true;
   bool _showPreview = false;
+  Timer? _autosaveTimer;
+  bool _autosaveNotified = false;
 
   // These lists will be populated in didChangeDependencies
   late List<String> _truckTypes;
@@ -128,6 +142,17 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
       WidgetsBinding.instance.addPostFrameCallback((_) => _loadFormProgress());
       _isLoading = false;
     }
+  }
+
+  @override
+  void dispose() {
+    _autosaveTimer?.cancel();
+    _assessorNameController.dispose();
+    _operatorNameController.dispose();
+    _locationController.dispose();
+    _otherTruckTypeController.dispose();
+    _commentsController.dispose();
+    super.dispose();
   }
 
   void _initializeLists() {
@@ -207,19 +232,39 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
           SnackBar(content: Text(l10n.formSnackbarProgressLoaded)),
         );
       } catch (e) {
-        print("Error loading risk assessment form progress: $e");
+        debugPrint("Error loading risk assessment form progress: $e");
       }
     }
   }
 
-  Future<void> _saveFormProgress() async {
+  Future<void> _saveFormProgress({bool showMessage = true}) async {
     final l10n = AppLocalizations.of(context)!;
     final prefs = await SharedPreferences.getInstance();
     final assessment = _getAssessmentData();
     await prefs.setString(_formProgressKey, jsonEncode(assessment.toJson()));
+    if (showMessage) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.formSnackbarProgressSaved)),
+      );
+    } else {
+      _notifyAutoSaved(l10n);
+    }
+  }
+
+  void _notifyAutoSaved(AppLocalizations l10n) {
+    if (_autosaveNotified) return;
+    _autosaveNotified = true;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.formSnackbarProgressSaved)),
     );
+  }
+
+  void _scheduleAutoSave() {
+    if (_isLoading) return;
+    _autosaveTimer?.cancel();
+    _autosaveTimer = Timer(const Duration(seconds: 1), () {
+      _saveFormProgress(showMessage: false);
+    });
   }
 
   Future<void> _clearSavedProgress() async {
@@ -245,6 +290,28 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(l10n.formSnackbarFormCleared)),
     );
+  }
+
+  Future<void> _confirmAndClearForm() async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.formButtonClearForm),
+        content: const Text('Er du sikker på at du vil tømme skjemaet?'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(l10n.cancel)),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: Text(l10n.formButtonClearForm)),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      _clearForm();
+    }
   }
 
   void _togglePreview() {
@@ -313,47 +380,38 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
     final assessmentData = _getAssessmentData();
     final formattedData = _formatAssessmentDataForDisplay(assessmentData, l10n);
 
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.all(16),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.previewRiskAssessment,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor)),
-            const SizedBox(height: 16),
-            ...formattedData.entries.map((entry) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(entry.key,
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      Text(entry.value),
-                      const Divider(),
-                    ],
-                  ),
-                )),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                    onPressed: () => setState(() => _showPreview = false),
-                    child: Text(l10n.formButtonBackToForm)),
-                ElevatedButton(
-                    onPressed: () => _sharePdfReport(context),
-                    child: Text(l10n.formButtonSend,
-                        style: const TextStyle(color: Colors.black))),
-              ],
-            ),
-          ],
-        ),
+    return AppSectionCard(
+      title: l10n.previewRiskAssessment,
+      margin: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...formattedData.entries.map((entry) => Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(entry.key,
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(entry.value),
+                    const Divider(),
+                  ],
+                ),
+              )),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                  onPressed: () => setState(() => _showPreview = false),
+                  child: Text(l10n.formButtonBackToForm)),
+              ElevatedButton(
+                  onPressed: () => _sharePdfReport(context),
+                  child: Text(l10n.formButtonSend,
+                      style: const TextStyle(color: Colors.black))),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -369,139 +427,171 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
 
     return Form(
       key: _formKey,
+      onChanged: _scheduleAutoSave,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(l10n.generalInformation, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          TextFormField(
-              controller: _assessorNameController,
-              decoration: InputDecoration(labelText: l10n.assessedByName),
-              validator: (value) => value == null || value.isEmpty
-                  ? l10n.formValidationNotEmpty
-                  : null),
-          TextFormField(
-              controller: _operatorNameController,
-              decoration: InputDecoration(labelText: l10n.truckDriverName),
-              validator: (value) => value == null || value.isEmpty
-                  ? l10n.formValidationNotEmpty
-                  : null),
-          TextFormField(
-              controller: _locationController,
-              decoration:
-                  InputDecoration(labelText: l10n.areaForRiskAssessment),
-              validator: (value) => value == null || value.isEmpty
-                  ? l10n.formValidationNotEmpty
-                  : null),
-          const SizedBox(height: 16),
-          Text(l10n.truckInformation, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
-            value: _selectedTruckType,
-            decoration: InputDecoration(labelText: l10n.selectTruckType),
-            isExpanded: true,
-            items: _truckTypes
-                .map((type) => DropdownMenuItem(
-                      value: type,
-                      child: Text(type, overflow: TextOverflow.ellipsis),
-                    ))
-                .toList(),
-            onChanged: (value) => setState(() => _selectedTruckType = value),
-            validator: (value) => value == null ? l10n.pleaseSelectAType : null,
-          ),
-          if (_selectedTruckType == l10n.truckTypeOther)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: TextFormField(
-                  controller: _otherTruckTypeController,
-                  decoration: InputDecoration(labelText: l10n.specifyOtherType),
-                  validator: (value) => value == null || value.isEmpty
-                      ? l10n.formValidationNotEmpty
-                      : null),
+          AppSectionCard(
+            title: l10n.generalInformation,
+            child: Column(
+              children: [
+                TextFormField(
+                    controller: _assessorNameController,
+                    decoration: InputDecoration(labelText: l10n.assessedByName),
+                    validator: (value) => value == null || value.isEmpty
+                        ? l10n.formValidationNotEmpty
+                        : null),
+                const SizedBox(height: 10),
+                TextFormField(
+                    controller: _operatorNameController,
+                    decoration:
+                        InputDecoration(labelText: l10n.truckDriverName),
+                    validator: (value) => value == null || value.isEmpty
+                        ? l10n.formValidationNotEmpty
+                        : null),
+                const SizedBox(height: 10),
+                TextFormField(
+                    controller: _locationController,
+                    decoration:
+                        InputDecoration(labelText: l10n.areaForRiskAssessment),
+                    validator: (value) => value == null || value.isEmpty
+                        ? l10n.formValidationNotEmpty
+                        : null),
+              ],
             ),
-          const SizedBox(height: 16),
-          Text(l10n.powerSource,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
-          Row(
-            children: [
-              Expanded(
-                  child: RadioListTile<String>(
-                      title: Text(l10n.electric),
-                      value: "El",
-                      groupValue: _selectedPowerSource,
-                      onChanged: (val) =>
-                          setState(() => _selectedPowerSource = val))),
-              Expanded(
-                  child: RadioListTile<String>(
-                      title: Text(l10n.diesel),
-                      value: "Diesel",
-                      groupValue: _selectedPowerSource,
-                      onChanged: (val) =>
-                          setState(() => _selectedPowerSource = val))),
-            ],
           ),
-          if (_selectedPowerSource == null)
-            Padding(
-                padding: const EdgeInsets.only(left: 12.0, bottom: 8.0),
-                child: Text(l10n.pleaseSelectPowerSource,
-                    style: TextStyle(
-                        color: theme.colorScheme.error, fontSize: 12))),
-          const SizedBox(height: 16),
-          Text(l10n.riskAssessment, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          ..._areaChecklistItems.map((item) => CheckboxListTile(
-                title: Text(item['label']!),
-                value: _checklist[item['key']] ?? false,
-                onChanged: (bool? value) =>
-                    setState(() => _checklist[item['key']!] = value!),
-                controlAffinity: ListTileControlAffinity.leading,
-              )),
-          const SizedBox(height: 16),
-          Text(l10n.driverAndDocumentation, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          ..._documentationChecklistItems.map((item) => CheckboxListTile(
-                title: Text(item['label']!),
-                value: _checklist[item['key']] ?? false,
-                onChanged: (bool? value) =>
-                    setState(() => _checklist[item['key']!] = value!),
-                controlAffinity: ListTileControlAffinity.leading,
-              )),
-          const SizedBox(height: 16),
-          Text(l10n.actionsAndComments, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          TextFormField(
-              controller: _commentsController,
-              decoration: InputDecoration(
-                  labelText: l10n.describeActionsOrComments,
-                  border: const OutlineInputBorder()),
-              maxLines: 3),
-          const SizedBox(height: 32),
-          Column(
-            children: [
-              Center(
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.primaryColor,
-                          minimumSize: const Size(double.infinity, 50)),
-                      onPressed: _togglePreview,
-                      child: Text(l10n.formButtonPreviewInspection,
-                          style: const TextStyle(color: Colors.white)))),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                      onPressed: _saveFormProgress,
-                      child: Text(l10n.formButtonSaveProgress)),
-                  ElevatedButton(
-                      onPressed: _clearForm,
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent),
-                      child: Text(l10n.formButtonClearForm,
-                          style: const TextStyle(color: Colors.white))),
+          AppSectionCard(
+            title: l10n.truckInformation,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DropdownButtonFormField<String>(
+                  initialValue: _selectedTruckType,
+                  decoration: InputDecoration(labelText: l10n.selectTruckType),
+                  isExpanded: true,
+                  items: _truckTypes
+                      .map((type) => DropdownMenuItem(
+                            value: type,
+                            child: Text(type, overflow: TextOverflow.ellipsis),
+                          ))
+                      .toList(),
+                  onChanged: (value) =>
+                      setState(() => _selectedTruckType = value),
+                  validator: (value) =>
+                      value == null ? l10n.pleaseSelectAType : null,
+                ),
+                if (_selectedTruckType == l10n.truckTypeOther) ...[
+                  const SizedBox(height: 10),
+                  TextFormField(
+                      controller: _otherTruckTypeController,
+                      decoration:
+                          InputDecoration(labelText: l10n.specifyOtherType),
+                      validator: (value) => value == null || value.isEmpty
+                          ? l10n.formValidationNotEmpty
+                          : null),
                 ],
-              ),
-            ],
+                const SizedBox(height: 12),
+                Text(l10n.powerSource,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                SegmentedButton<String>(
+                  segments: [
+                    ButtonSegment<String>(
+                        value: "El", label: Text(l10n.electric)),
+                    ButtonSegment<String>(
+                        value: "Diesel", label: Text(l10n.diesel)),
+                  ],
+                  selected: _selectedPowerSource == null
+                      ? <String>{}
+                      : <String>{_selectedPowerSource!},
+                  onSelectionChanged: (Set<String> vals) {
+                    setState(() {
+                      _selectedPowerSource =
+                          vals.isNotEmpty ? vals.first : null;
+                    });
+                  },
+                ),
+                if (_selectedPowerSource == null)
+                  Padding(
+                      padding: const EdgeInsets.only(left: 12.0, top: 8.0),
+                      child: Text(l10n.pleaseSelectPowerSource,
+                          style: TextStyle(
+                              color: theme.colorScheme.error, fontSize: 12))),
+              ],
+            ),
+          ),
+          AppSectionCard(
+            title: l10n.riskAssessment,
+            child: Column(
+              children: _areaChecklistItems
+                  .map((item) => CheckboxListTile(
+                        title: Text(item['label']!),
+                        value: _checklist[item['key']] ?? false,
+                        onChanged: (bool? value) =>
+                            setState(() => _checklist[item['key']!] = value!),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: EdgeInsets.zero,
+                      ))
+                  .toList(),
+            ),
+          ),
+          AppSectionCard(
+            title: l10n.driverAndDocumentation,
+            child: Column(
+              children: _documentationChecklistItems
+                  .map((item) => CheckboxListTile(
+                        title: Text(item['label']!),
+                        value: _checklist[item['key']] ?? false,
+                        onChanged: (bool? value) =>
+                            setState(() => _checklist[item['key']!] = value!),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: EdgeInsets.zero,
+                      ))
+                  .toList(),
+            ),
+          ),
+          AppSectionCard(
+            title: l10n.actionsAndComments,
+            child: TextFormField(
+                controller: _commentsController,
+                decoration: InputDecoration(
+                    labelText: l10n.describeActionsOrComments,
+                    border: const OutlineInputBorder()),
+                maxLines: 3),
+          ),
+          AppSectionCard(
+            title: '',
+            child: Column(
+              children: [
+                Center(
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.primaryColor,
+                            minimumSize: const Size(double.infinity, 50)),
+                        onPressed: _togglePreview,
+                        child: Text(l10n.formButtonPreviewInspection,
+                            style: const TextStyle(color: Colors.white)))),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          _saveFormProgress();
+                        },
+                        child: Text(l10n.formButtonSaveProgress)),
+                    ElevatedButton(
+                        onPressed: () {
+                          _confirmAndClearForm();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent),
+                        child: Text(l10n.formButtonClearForm,
+                            style: const TextStyle(color: Colors.white))),
+                  ],
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 16),
         ],
@@ -511,7 +601,13 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
 
   Future<Uint8List> _generateAssessmentPdf(
       RiskAssessment assessment, AppLocalizations l10n) async {
-    final pdf = pw.Document();
+    final operatorName = _sanitizeRiskPdfPart(assessment.operatorName);
+    final truckType = _sanitizeRiskPdfPart(assessment.truckType);
+    final dateLabel = DateFormat('yyyyMMdd').format(assessment.date);
+    final pdf = pw.Document(
+      title: 'Risikovurdering_truck_${operatorName}_${truckType}_$dateLabel',
+      subject: l10n.riskAssessmentTruck,
+    );
 
     pw.Widget buildPdfRow(String label, String? value) {
       return pw.Padding(
@@ -604,12 +700,9 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
     final l10n = AppLocalizations.of(context)!;
     final assessmentData = _getAssessmentData();
     final currentDate = DateFormat('yyyy-MM-dd').format(assessmentData.date);
-    String operatorName = assessmentData.operatorName.isNotEmpty
-        ? assessmentData.operatorName
-        : l10n.unknown;
-    final sanitizedOperatorName = operatorName
-        .replaceAll(RegExp(r'\s+'), '_')
-        .replaceAll(RegExp(r'[^\w.-]'), '');
+    final sanitizedOperatorName =
+        _sanitizeRiskPdfPart(assessmentData.operatorName);
+    final sanitizedTruckType = _sanitizeRiskPdfPart(assessmentData.truckType);
     final subject =
         "${l10n.riskAssessmentTruck} - $sanitizedOperatorName - $currentDate";
 
@@ -618,21 +711,22 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
           await _generateAssessmentPdf(assessmentData, l10n);
       final tempDir = await getTemporaryDirectory();
       final fileName =
-          '${l10n.riskAssessment}_${sanitizedOperatorName}_$currentDate.pdf';
+          'risikovurdering_truck_${sanitizedOperatorName}_${sanitizedTruckType}_${DateFormat('yyyyMMdd').format(assessmentData.date)}.pdf';
       final file = File('${tempDir.path}/$fileName');
       await file.writeAsBytes(pdfBytes);
 
       await SharePlus.instance.share(ShareParams(
           files: [XFile(file.path)],
           subject: subject,
-          title: l10n.shareRiskAssessment));
+          title: l10n.shareRiskAssessment,
+          sharePositionOrigin: context.sharePositionOrigin));
 
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(l10n.formSnackbarReportShared)));
       await _clearSavedProgress();
       _clearForm();
     } catch (e) {
-      print('Error sharing PDF report: $e');
+      debugPrint('Error sharing PDF report: $e');
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.formSnackbarEmailFailed(e.toString()))));
     }

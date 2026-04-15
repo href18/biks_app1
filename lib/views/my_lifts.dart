@@ -1,9 +1,11 @@
 import 'package:biks/l10n/app_localizations.dart';
 import 'package:biks/providers/database_provider.dart';
 import 'package:biks/models/equipment_config.dart'; // Assuming EquipmentConfig model path
+import 'package:biks/widgets/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:io'; // Required for File
+import 'dart:io'; // Required for File on mobile/desktop
+import 'package:flutter/foundation.dart';
 import 'dart:developer' as developer; // For logging
 
 class Saver extends ConsumerWidget {
@@ -15,126 +17,96 @@ class Saver extends ConsumerWidget {
     final configs = ref.watch(equipmentConfigFetcherProvider);
 
     return Scaffold(
-        backgroundColor:
-            Colors.grey[200], // Keeping the scaffold background as is
+        backgroundColor: Colors.grey[50],
         appBar: AppBar(
-          // The AppBar will now inherit its style from the global AppBarTheme.
-          // This includes the navyBlue background (0xFF040D3C), white title text, and white icons.
           title: Text(
             AppLocalizations.of(context)!.myLifts,
           ),
         ),
-        body: switch (configs) {
-          AsyncLoading() => const Center(child: CircularProgressIndicator()),
-          AsyncError(:final error, :final stackTrace) => Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  '${l10n.errorFetchingLifts}:\n$error\n\n${l10n.stackTraceLabel}:\n$stackTrace', // You'll need to add 'errorFetchingLifts' and 'stackTraceLabel' to your l10n files
-                  textAlign: TextAlign.center,
-                ),
+        body: Column(
+          children: [
+            if (kIsWeb)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                child: AppInfoBanner(text: l10n.webLiftsWarning),
               ),
-            ),
-          AsyncData(:final value) => value.isEmpty
-              ? Center(
-                  child: Text(
-                    l10n.noLiftsSavedYet, // You'll need to add 'noLiftsSavedYet' to your l10n files
-                    style: Theme.of(context).textTheme.headlineSmall,
-                    textAlign: TextAlign.center,
+            Expanded(
+              child: switch (configs) {
+                AsyncLoading() =>
+                  const Center(child: CircularProgressIndicator()),
+                AsyncError(:final error, :final stackTrace) => _WebAwareError(
+                    error: error,
+                    stackTrace: stackTrace,
+                    l10n: l10n,
                   ),
-                )
-              : ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
-                    final config = value[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      child: ListTile(
-                        leading: SizedBox(
-                          width: 56, // Standard leading width
-                          height: 56, // Standard leading height
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                                8.0), // Optional: for rounded corners
-                            child: (config.userImagePath != null &&
-                                    config.userImagePath!.isNotEmpty)
-                                ? Image.file(
-                                    File(config.userImagePath!),
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      developer.log(
-                                          "Error loading user image in list: ${config.userImagePath}",
-                                          error: error,
-                                          stackTrace: stackTrace,
-                                          name: "MyLifts.ListTileImageError");
-                                      return Image.asset(
-                                        // Fallback to default lift image
-                                        config.lift.image,
-                                        fit: BoxFit.contain,
-                                        errorBuilder: (_, __, ___) =>
-                                            const Icon(Icons.broken_image,
-                                                size: 40),
-                                      );
-                                    },
-                                  )
-                                : Image.asset(
-                                    // Default lift image
-                                    config.lift.image,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (_, __, ___) => const Icon(
-                                        Icons.broken_image,
-                                        size: 40),
-                                  ),
-                          ),
-                        ),
-                        onTap: () {
-                          _showLiftDetailsDialog(context, config, l10n);
-                        },
-                        subtitle: Text(
-                          "${config.datetime.day.toString().padLeft(2, '0')}/${config.datetime.month.toString().padLeft(2, '0')}/${config.datetime.year} ${config.datetime.hour.toString().padLeft(2, '0')}:${config.datetime.minute.toString().padLeft(2, '0')}",
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                        title: RichText(
-                          text: TextSpan(
-                            style: DefaultTextStyle.of(context).style,
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: config.lift.displayName,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
-                              TextSpan(
-                                  text: " ${l10n.withWeight} ",
-                                  style: const TextStyle(color: Colors.black)),
-                              TextSpan(
-                                  text: "${config.weight} ${l10n.ton}",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
-                              TextSpan(
-                                  text: " ${l10n.med} ",
-                                  style: const TextStyle(color: Colors.black)),
-                              TextSpan(
-                                text: config.equipmentType.displayName,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
+                AsyncData(:final value) => value.isEmpty
+                    ? AppEmptyState(
+                        message: l10n.noLiftsSavedYet,
+                        icon: Icons.history_toggle_off,
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        scrollDirection: Axis.vertical,
+                        itemCount: value.length,
+                        itemBuilder: (context, index) {
+                          final config = value[index];
+                          return AppListTileCard(
+                            leading: SizedBox(
+                              width: 56,
+                              height: 56,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: _LiftImageThumb(config: config),
                               ),
-                            ],
-                          ),
-                        ),
-                        trailing: IconButton(
-                            onPressed: () => _showDeleteConfirmationDialog(
-                                context, ref, config, l10n),
-                            icon: const Icon(Icons.delete,
-                                color: Colors.redAccent)),
+                            ),
+                            onTap: () {
+                              _showLiftDetailsDialog(context, config, l10n);
+                            },
+                            subtitle: Text(
+                              "${config.datetime.day.toString().padLeft(2, '0')}/${config.datetime.month.toString().padLeft(2, '0')}/${config.datetime.year} ${config.datetime.hour.toString().padLeft(2, '0')}:${config.datetime.minute.toString().padLeft(2, '0')}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant),
+                            ),
+                            title: RichText(
+                              text: TextSpan(
+                                style: DefaultTextStyle.of(context).style,
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text: config.lift.displayName,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  TextSpan(text: " ${l10n.withWeight} "),
+                                  TextSpan(
+                                      text: "${config.weight} ${l10n.ton}",
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  TextSpan(text: " ${l10n.med} "),
+                                  TextSpan(
+                                    text: config.equipmentType.displayName,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            trailing: IconButton(
+                                onPressed: () => _showDeleteConfirmationDialog(
+                                    context, ref, config, l10n),
+                                icon: const Icon(Icons.delete_outline,
+                                    color: Colors.redAccent)),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-          _ => Center(
-              child: Text(l10n
-                  .unexpectedState)) // You'll need to add 'unexpectedState' to your l10n files
-        });
+                _ => Center(child: Text(l10n.unexpectedState))
+              },
+            ),
+          ],
+        ));
   }
 
   void _showLiftDetailsDialog(
@@ -150,55 +122,21 @@ class Saver extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text(config.lift.displayName ?? '', style: textTheme.titleLarge),
+        title: Text(config.lift.displayName, style: textTheme.titleLarge),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: (config.userImagePath != null &&
-                        config.userImagePath!.isNotEmpty)
-                    ? Image.file(
-                        File(config.userImagePath!),
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          developer.log(
-                              "Error loading user image from path: ${config.userImagePath}",
-                              error: error,
-                              stackTrace: stackTrace,
-                              name: "MyLifts.ImageError");
-                          return Image.asset(
-                            // Fallback to default lift image on error
-                            config.lift.image,
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.contain,
-                            errorBuilder: (_, __, ___) => Icon(
-                                Icons.broken_image,
-                                size: 100,
-                                color: Colors.grey[400]),
-                          );
-                        },
-                      )
-                    : Image.asset(
-                        // Default lift image if no user image path is set
-                        config.lift.image,
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => Icon(Icons.broken_image,
-                            size: 100, color: Colors.grey[400]),
-                      ),
+                child: _LiftImageLarge(config: config),
               ),
               const SizedBox(height: 20),
               Text("${l10n.weightLabel}${config.weight} ${l10n.ton}",
                   style: textTheme.bodyLarge),
               const SizedBox(height: 10),
               Text(
-                  "${l10n.equipmentTypeLabel}${config.equipmentType.displayName ?? ''}",
+                  "${l10n.equipmentTypeLabel}${config.equipmentType.displayName}",
                   style: textTheme.bodyLarge),
               const SizedBox(height: 10),
               Text("${l10n.dateTimeLabel}$formattedDateTime",
@@ -270,8 +208,113 @@ class Saver extends ConsumerWidget {
   }
 }
 
-// Make sure you have a way to import EquipmentConfig. 
+class _LiftImageThumb extends StatelessWidget {
+  const _LiftImageThumb({required this.config});
+  final EquipmentConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!kIsWeb &&
+        config.userImagePath != null &&
+        config.userImagePath!.isNotEmpty) {
+      return Image.file(
+        File(config.userImagePath!),
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          developer.log(
+              "Error loading user image in list: ${config.userImagePath}",
+              error: error,
+              stackTrace: stackTrace,
+              name: "MyLifts.ListTileImageError");
+          return Image.asset(
+            config.lift.image,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) =>
+                const Icon(Icons.broken_image, size: 40),
+          );
+        },
+      );
+    }
+
+    return Image.asset(
+      config.lift.image,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image, size: 40),
+    );
+  }
+}
+
+class _LiftImageLarge extends StatelessWidget {
+  const _LiftImageLarge({required this.config});
+  final EquipmentConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!kIsWeb &&
+        config.userImagePath != null &&
+        config.userImagePath!.isNotEmpty) {
+      return Image.file(
+        File(config.userImagePath!),
+        width: 150,
+        height: 150,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          developer.log(
+              "Error loading user image from path: ${config.userImagePath}",
+              error: error,
+              stackTrace: stackTrace,
+              name: "MyLifts.ImageError");
+          return Image.asset(
+            config.lift.image,
+            width: 120,
+            height: 120,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) =>
+                Icon(Icons.broken_image, size: 100, color: Colors.grey[400]),
+          );
+        },
+      );
+    }
+
+    return Image.asset(
+      config.lift.image,
+      width: 120,
+      height: 120,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) =>
+          Icon(Icons.broken_image, size: 100, color: Colors.grey[400]),
+    );
+  }
+}
+
+class _WebAwareError extends StatelessWidget {
+  const _WebAwareError(
+      {required this.error, required this.stackTrace, required this.l10n});
+  final Object error;
+  final StackTrace stackTrace;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final isMissingPathProvider =
+        error.toString().contains('getApplicationDocumentsDirectory');
+    final message = kIsWeb && isMissingPathProvider
+        ? l10n.webLiftsWarning
+        : '${l10n.errorFetchingLifts}:\n$error';
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(
+          '$message\n\n${l10n.stackTraceLabel}:\n$stackTrace',
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}
+
+// Make sure you have a way to import EquipmentConfig.
 // If it's not in a separate file, you might need to define it or ensure it's accessible.
 // For example, if it's defined in your providers/database_provider.dart or a models directory:
-// import 'package:biks/models/equipment_config.dart'; 
+// import 'package:biks/models/equipment_config.dart';
 // The diff includes a placeholder import for this.

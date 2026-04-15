@@ -1,4 +1,5 @@
 import 'package:biks/l10n/app_localizations.dart';
+import 'package:biks/widgets/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -225,23 +226,18 @@ class _ConverterHomePageState extends State<ConverterHomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // "Convert From" Dropdown
-                Text(l10n.convertFromLabel,
-                    style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 8),
-                _buildFromDropdown(),
-
-                const SizedBox(height: 24),
-
-                // "Convert To" Dropdown
-                Text(l10n.convertToLabel,
-                    style: Theme.of(context).textTheme.titleMedium),
-                const SizedBox(height: 8),
-                _buildToDropdown(l10n),
-
-                const SizedBox(height: 32),
-
-                // Result Display
+                const AppInfoBanner(
+                  text:
+                      'Velg slange- eller rørdimensjon og vis tilsvarende mål i ønsket system.',
+                ),
+                AppSectionCard(
+                  title: l10n.convertFromLabel,
+                  child: _buildFromDropdown(),
+                ),
+                AppSectionCard(
+                  title: l10n.convertToLabel,
+                  child: _buildToDropdown(l10n),
+                ),
                 _buildResultDisplay(l10n),
               ],
             ),
@@ -254,7 +250,7 @@ class _ConverterHomePageState extends State<ConverterHomePage> {
   /// Dropdown to select the initial value to convert from.
   Widget _buildFromDropdown() {
     return DropdownButtonFormField<PipeSize>(
-      value: _fromSize,
+      initialValue: _fromSize,
       decoration: const InputDecoration(
         filled: true,
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -277,7 +273,7 @@ class _ConverterHomePageState extends State<ConverterHomePage> {
   /// Dropdown to select the target measurement system.
   Widget _buildToDropdown(AppLocalizations l10n) {
     return DropdownButtonFormField<MeasurementSystem>(
-      value: _toSystem,
+      initialValue: _toSystem,
       decoration: const InputDecoration(
         filled: true,
         contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -299,56 +295,52 @@ class _ConverterHomePageState extends State<ConverterHomePage> {
 
   /// Displays the conversion result in a styled card.
   Widget _buildResultDisplay(AppLocalizations l10n) {
-    // Get the name of the target system, if one is selected
     final String systemName =
         _toSystem != null ? _getSystemName(_toSystem!, l10n) : '';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l10n.resultLabel, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        SizedBox(
-          width: double.infinity,
-          child: Card(
-            elevation: 0,
+    return AppSectionCard(
+      title: l10n.resultLabel,
+      child: SizedBox(
+        width: double.infinity,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
             color:
-                Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Center(
-                // Use a Column to stack the value and its unit/system name.
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // The main result value
-                    Text(
-                      _result,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
+                Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(
+                      (255 * 0.5).round(),
                     ),
-                    // The unit/system name below it
-                    if (systemName.isNotEmpty) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        systemName,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.7),
-                            ),
-                      ),
-                    ]
-                  ],
-                ),
+            borderRadius: BorderRadius.circular(14),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _result,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  if (systemName.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      systemName,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withAlpha((255 * 0.7).round()),
+                          ),
+                    ),
+                  ]
+                ],
               ),
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

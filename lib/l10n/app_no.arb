@@ -4,15 +4,19 @@
   
 
   "firstMenu": "Løftekalkulator",
-  "secondMenu": "Min Side",
-  "courseMenu": "Kurs",
+  "secondMenu": "Mine sider",
+  "courseMenu": "Våre kurs",
+  "qrDownloadTitle": "Last ned på mobil",
+  "qrDownloadHint": "Skann QR-koden for å åpne BIKS i din app-butikk.",
+  "qrAndroidLabel": "Android (Play Store)",
+  "qrIOSLabel": "iPhone (App Store)",
   "liftingTable": "Løftetabell",
   "threadChart": "Gjengetabell",
   "gTable": "G-Tabell",
-  "myLifts": "Mine Løft",
+  "myLifts": "Mine løft",
   "dailyCheck": "Kontroll før bruk",
   "typeControl": "Typekontroll",
-  "createdBy": "Laget av Entellix.no",
+  "createdBy": "Laget av Håkon Engfeldt i samarbeid med Biks",
   
 
   "howTo": "Hvordan beregne",
@@ -282,6 +286,10 @@
   "snare32": "Snaret (46-60)",
   "withWeight": "med vekt",
   "ton": "tonn",
+  "capacitySymmetricLabel": "Tillatt kapasitet",
+  "capacityUnsymmetricLabel": "Redusert kapasitet (usymmetrisk)",
+  "capacityReductionFactorLabel": "Reduksjonsfaktor",
+  "capacityReferenceLabel": "Referansekapasitet",
   "med": "med",
   "liftNr": "Løft Nr.",
   "deleteLift": "Slette dette løftet?",
@@ -338,12 +346,59 @@
   "checklistItemShowCorrectGoodsHandling": "Vis riktig godshåndtering",
   "checklistItemShowAdditionalEquipment": "Vis tilleggsutstyr",
   "checklistItemShowDocumentationStorage": "Vis dokumentasjonslagring",
+  "typeControlEquipmentCategory": "Utstyr",
+  "typeControlTruckLabel": "Truck",
+  "typeControlMachineLabel": "Maskin",
+  "machineTypeTrainingHeader": "Typeopplæring for maskin",
+  "machineInformation": "Maskininformasjon",
+  "machineTypeLabel": "Maskintype",
+  "machineNumberLabel": "Maskinnummer",
+  "machineTypeExcavator": "Gravemaskin",
+  "machineTypeWheelLoader": "Hjullaster",
+  "machineTypeTelehandler": "Teleskoplaster",
+  "machineTypeDumpTruck": "Dumper/hauler",
+  "machineTypeOther": "Annen maskintype",
+  "machineChecklistItemLicenseAvailable": "Førerkort/arbeidstillatelse tilgjengelig",
+  "machineChecklistItemInstructionManualRead": "Bruksanvisning gjennomgått",
+  "machineChecklistItemExplainMainParts": "Gjennomgang av hoveddeler og funksjoner",
+  "machineChecklistItemExplainControls": "Gjennomgang av betjeningsorganer og sikkerhetsfunksjoner",
+  "machineChecklistItemStartStopProcedures": "Start-/stopp-prosedyrer",
+  "machineChecklistItemSafetySystems": "Sikkerhetssystemer (belte, alarmer)",
+  "machineChecklistItemRops": "Veltebur (ROPS) kontrollert",
+  "machineChecklistItemAttachmentsTools": "Bruk av utstyr/tilkobling og hurtigfeste",
+  "machineChecklistItemWorkAreaRisks": "Fareområder og sikre soner på arbeidsstedet",
+  "machineChecklistItemParkingShutdown": "Parkering/avstenging og sikring av maskinen",
+  "machineChecklistItemDailyChecks": "Daglige kontroller og vedlikeholdspunkter",
+  "typeControlCraneLabel": "Kran",
+  "craneTypeTrainingHeader": "Typeopplæring for kran",
+  "craneInformation": "Kraninformasjon",
+  "craneTypeLabel": "Krantype",
+  "craneNumberLabel": "Krannummer",
+  "craneTypeMobile": "Mobilkran",
+  "craneTypeTower": "Tårnkran",
+  "craneTypeBridgeGantry": "Travers-/portal-/brokran",
+  "craneTypePortal": "Portalkran",
+  "craneTypeOther": "Annen krantype",
+  "craneChecklistLicense": "Førerkort/arbeidstillatelse tilgjengelig",
+  "craneChecklistInstructionManual": "Bruksanvisning gjennomgått",
+  "craneChecklistMainParts": "Gjennomgang av hoveddeler og lastdiagram",
+  "craneChecklistControls": "Gjennomgang av betjeningsorganer og nødstopp",
+  "craneChecklistStartStop": "Start-/stopp-prosedyrer",
+  "craneChecklistSafetyDevices": "Sikkerhetsutstyr (grensebrytere/overlast)",
+  "craneChecklistStabilityOutriggers": "Stabilitet/støttebein og oppstilling",
+  "craneChecklistLiftingGear": "Løfteredskap kontrollert og riktig festet",
+  "craneChecklistSignals": "Signaler/kommunikasjon med anhuker",
+  "craneChecklistWorkArea": "Fareområder og svingradius",
+  "craneChecklistParking": "Parkering/avstenging og sikring av kranen",
   "dailyCheckForkliftInspectionTitle": "Truckinspeksjon",
   "dailyCheckCraneInspectionTitle": "Kraninspeksjon",
   "dailyCheckForkliftLabel": "Truck",
   "dailyCheckCraneLabel": "Kran",
+  "dailyCheckMachineInspectionTitle": "Maskininspeksjon",
+  "dailyCheckMachineLabel": "Maskin",
   "formSectionContactInformation": "1. Kontaktinformasjon",
   "formSectionOperatorInformation": "1. Førerinformasjon",
+  "formSectionMachineInfo": "2. Maskininformasjon",
   "formFieldName": "Navn",
   "formFieldOperatorName": "Førers navn",
   "formFieldRequired": "Obligatorisk",
@@ -351,6 +406,8 @@
   "formFieldPhoneNumber": "Telefonnummer",
   "formFieldBirthdate": "Fødselsdato (DD/MM/ÅÅÅÅ)",
   "formFieldForkliftModel": "Truckmodell",
+  "formFieldMachineModel": "Maskinmodell",
+  "formFieldMachineID": "Maskin ID/Serienr.",
   "formSectionCertification": "2. Sertifisering",
   "formSectionCertificationAndManuals": "3. Sertifisering & Manualer",
   "formQuestionCertificateOfCompetence": "Har du kompetansebevis?",
@@ -496,6 +553,15 @@
       }
     }
   },
+  "emailSubjectMachineInspection": "Rapport: Maskininspeksjon - {date}",
+  "@emailSubjectMachineInspection": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2023-10-27 14:30"
+      }
+    }
+  },
   "emailSubjectCraneInspection": "Rapport: Kraninspeksjon - {date}",
   "@emailSubjectCraneInspection": {
     "placeholders": {
@@ -519,6 +585,16 @@
   "emailFieldDate": "Dato",
   "emailChecklistItemStatusChecked": "Sjekket/OK",
   "emailChecklistItemStatusUnchecked": "Ikke sjekket/Ikke OK",
+  "savingLabel": "Lagrer…",
+  "notSavedLabel": "Ikke lagret ennå",
+  "savedSecondsAgo": "Lagret for {seconds} sek siden",
+  "@savedSecondsAgo": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
   "customImageLabel": "Valgt Bilde:",
   "addImageOptional": "Legg til Valgfritt Bilde",
   "changeImageOptional": "Endre Valgfritt Bilde",
@@ -596,37 +672,44 @@
   "formButtonBackToForm": "Tilbake til skjema",
   "formSendOptionEmail": "Send via app-e-post",
   "formSendOptionNativeMail": "Send via standard e-postapp",
-    "formButtonSend": "Send",
-     "dailyCheckForkliftInspectionTitle": "Daglig Sjekk Truck",
-   "dailyCheckCraneInspectionTitle": "Daglig Sjekk Kran",
-   "dailyCheckForkliftLabel": "Truck",
-   "dailyCheckCraneLabel": "Kran",
+  "formButtonSend": "Send",
 
-   "formSectionOperatorInfo": "Operatørinformasjon",
-   "formFieldName": "Navn",
-   "formFieldOperatorName": "Operatørnavn",
-   "formFieldEmail": "E-post",
-   "formFieldPhoneNumber": "Telefonnummer",
-   "formFieldBirthdate": "Fødselsdato",
+  "dailyCheckForkliftInspectionTitle": "Daglig sjekk - Truck",
+  "dailyCheckCraneInspectionTitle": "Daglig sjekk - Kran",
+  "dailyCheckMachineInspectionTitle": "Daglig sjekk - Maskin",
+  "dailyCheckForkliftLabel": "Truck",
+  "dailyCheckCraneLabel": "Kran",
+  "dailyCheckMachineLabel": "Maskin",
+
+  "formSectionOperatorInfo": "Operatørinformasjon",
+  "formFieldName": "Navn",
+  "formFieldOperatorName": "Operatørnavn",
+  "formFieldEmail": "E-post",
+  "formFieldPhoneNumber": "Telefonnummer",
+  "formFieldBirthdate": "Fødselsdato",
    "formValidationNotEmpty": "Dette feltet kan ikke være tomt",
    "formValidationValidEmail": "Vennligst skriv inn en gyldig e-postadresse",
    "formValidationPleaseSelectOption": "Vennligst velg et alternativ",
 
-   "formSectionForkliftInfo": "Truckinformasjon",
-   "formFieldForkliftModel": "Truckmodell",
+  "formSectionForkliftInfo": "Truckinformasjon",
+  "formFieldForkliftModel": "Truckmodell",
 
-   "formSectionCraneInfo": "Kraninformasjon",
-   "formFieldCraneModel": "Kranmodell",
-   "formFieldCraneID": "Kran ID",
+  "formSectionCraneInfo": "Kraninformasjon",
+  "formFieldCraneModel": "Kranmodell",
+  "formFieldCraneID": "Kran ID",
 
-   "formSectionDocumentation": "Dokumentasjon",
-   "formQuestionHasCertificate": "Har du gyldig sertifikat?",
-   "formQuestionHasManual": "Er utstyrsmanualen tilgjengelig?",
-   "formAnswerYes": "Ja",
-   "formAnswerNo": "Nei",
+  "formSectionMachineInfo": "Maskininformasjon",
 
-   "formSectionInspectionChecklist": "Inspeksjonssjekkliste",
-   "formSectionCraneInspectionChecklist": "Kran Inspeksjonssjekkliste",
+  "formSectionDocumentation": "Dokumentasjon",
+  "formQuestionHasCertificate": "Har du gyldig sertifikat?",
+  "formQuestionHasManual": "Er utstyrsmanualen tilgjengelig?",
+  "formAnswerYes": "Ja",
+  "formAnswerNo": "Nei",
+
+  "formSectionInspectionChecklist": "Inspeksjonssjekkliste",
+  "formSectionCraneInspectionChecklist": "Kran Inspeksjonssjekkliste",
+  "formSectionImprovements": "Forbedringer/Merknader",
+  "webLiftsWarning": "Lagring i nettleser er midlertidig og slettes når du lukker siden.",
 
    "forkliftChecklistItem5": "Sjekk nivå på hydraulikkolje",
    "forkliftChecklistItem6": "Sjekk nivå på motorolje",
@@ -766,7 +849,8 @@
   "pistonRadius": "Stempelradius (m)",
   "rodRadius": "Stangradius (m)",
   "strokeLength": "Slaglengde (m)",
-  "inspectionsAndChecks": "Inspeksjon & Sjekk",
+  "inspectionsAndChecks": "Inspeksjon & sjekk",
+  "hotWork": "Varme Arbeider",
   "pressure": "Bar",
   "oilFlowRate": "Oljestrømningshastighet (m³/s)",
   "boreSideArea": "Sylinderside areal",
@@ -896,10 +980,22 @@
    "craneChecklistItemStructuralComponents": "Visuell sjekk av strukturelle komponenter (bom, jib)",
    "craneChecklistItemFluidLevels": "Sjekk væskenivåer (hydraulikk, olje, kjølevæske)",
    "craneChecklistItemSlewingMechanism": "Verifiser svingkrans/mekanisme",
-   "craneChecklistItemBrakes": "Inspiser bremser (heise, kjøre, sving)",
-   "craneChecklistItemElectricalSystems": "Sjekk elektriske systemer og ledninger",
-   "craneChecklistItemWarningDevices": "Sørg for at varslingsenheter (horn, lys) fungerer",
-   "craneChecklistItemLogsReview": "Gjennomgå vedlikeholds- og inspeksjonslogger",
+  "craneChecklistItemBrakes": "Inspiser bremser (heise, kjøre, sving)",
+  "craneChecklistItemElectricalSystems": "Sjekk elektriske systemer og ledninger",
+  "craneChecklistItemWarningDevices": "Sørg for at varslingsenheter (horn, lys) fungerer",
+  "craneChecklistItemLogsReview": "Gjennomgå vedlikeholds- og inspeksjonslogger",
+  "machineChecklistItemVisualInspection": "Visuell kontroll for lekkasjer/skader",
+  "machineChecklistItemFluidLevels": "Sjekk motor-, hydraulikk- og kjølevæske nivåer",
+  "machineChecklistItemHydraulicHoses": "Kontroller hydraulikkslanger og sylindere",
+  "machineChecklistItemTiresTracks": "Kontroller dekk/belter og understell",
+  "machineChecklistItemBrakesSteering": "Test bremser og styring",
+  "machineChecklistItemControlsEmergency": "Test betjeningsorganer, nødstopp og varselalarm",
+  "machineChecklistItemWarningDevices": "Sjekk lys, horn og varslingsutstyr",
+  "machineChecklistItemAttachmentLock": "Verifiser feste/quick coupler låsing",
+  "machineChecklistItemSafetyEquipment": "Kontroller setebelte, ROPS/FOPS og vern",
+  "machineChecklistItemFireExtinguisher": "Sjekk brannslukker/førstehjelpsutstyr",
+  "machineChecklistItemCleanliness": "Renhold av førerhus og maskin",
+  "machineChecklistItemDocumentationAvailable": "Manual og loggbok tilgjengelig",
 
    "formSectionImprovements": "Forbedringer/Merknader",
    "formSectionImprovementsRemarks": "Forbedringer/Merknader",
@@ -944,21 +1040,41 @@
    "emailChecklistItemStatusChecked": "Sjekket",
    "emailChecklistItemStatusUnchecked": "Ikke Sjekket",
 
-   "emailSubjectForkliftInspection": "Truck Inspeksjonsrapport - {date}",
-   "@emailSubjectForkliftInspection": {
-     "placeholders": {
-       "date": {
-         "type": "String"
-       }
-     }
-   },
-   "emailSubjectCraneInspection": "Kran Inspeksjonsrapport - {date}",
-   "@emailSubjectCraneInspection": {
-     "placeholders": {
-       "date": {
-         "type": "String"
-       }
-     }
-   }
-
+  "emailSubjectForkliftInspection": "Truck Inspeksjonsrapport - {date}",
+  "@emailSubjectForkliftInspection": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "emailSubjectCraneInspection": "Kran Inspeksjonsrapport - {date}",
+  "@emailSubjectCraneInspection": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "emailSubjectMachineInspection": "Rapport: Maskininspeksjon - {date}",
+  "@emailSubjectMachineInspection": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "errorPrefix": "Feil: ",
+  "weightLabel": "Vekt: ",
+  "equipmentTypeLabel": "Utstyrstype: ",
+  "dateTimeLabel": "Dato/Tid: ",
+  "symmetryLabel": "Symmetri: ",
+  "deleteLiftConfirmationContent": "Er du sikker på at du vil slette løftet '{liftName}'?",
+  "@deleteLiftConfirmationContent": {
+    "placeholders": {
+      "liftName": {
+        "example": "Traversløft"
+      }
+    }
+  }
 }

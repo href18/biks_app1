@@ -4,8 +4,12 @@
   
   
   "firstMenu": "Lift Calculator",
-  "secondMenu": "My Page",
-  "courseMenu": "Courses",
+  "secondMenu": "My Pages",
+  "courseMenu": "Our Courses",
+  "qrDownloadTitle": "Open on mobile",
+  "qrDownloadHint": "Scan a QR to open BIKS in your app store.",
+  "qrAndroidLabel": "Android (Play Store)",
+  "qrIOSLabel": "iPhone (App Store)",
   "liftingTable": "Lifting Chart",
   "threadChart": "Thread Chart",
   "gTable": "G-Table",
@@ -13,7 +17,8 @@
   "dailyCheck": "Daily Check",
   "typeControl": "Type Control",
   "inspectionsAndChecks": "Inspections & Checks",
-  "createdBy": "Created by Entellix.no",
+  "hotWork": "Hot Work",
+  "createdBy": "Made by Hakon Engfeldt in collaboration with Biks",
   "howTo": "How to calculate",
   "howToDescription": "The unit is tonnes. Example: 0.2 = 200kg",
   "weightTh": "Weight must be > 0",
@@ -87,6 +92,22 @@
   "errorPrefix": "Error: ",
   "withWeight": "with weight",
   "ton": "ton",
+  "capacitySymmetricLabel": "Allowable capacity",
+  "@capacitySymmetricLabel": {
+    "description": "Label for the standard lifting capacity when the lift is symmetric"
+  },
+  "capacityUnsymmetricLabel": "Reduced capacity (unsymmetric)",
+  "@capacityUnsymmetricLabel": {
+    "description": "Label for the reduced capacity when the lift is unsymmetric"
+  },
+  "capacityReductionFactorLabel": "Reduction factor",
+  "@capacityReductionFactorLabel": {
+    "description": "Label for the factor used to reduce the capacity on an unsymmetric lift"
+  },
+  "capacityReferenceLabel": "Reference capacity",
+  "@capacityReferenceLabel": {
+    "description": "Label for the base capacity used when calculating unsymmetric reductions"
+  },
   "med": "with",
   "deleteLift": "Delete Lift?",
   "yes": "Yes",
@@ -345,12 +366,59 @@
   "checklistItemShowCorrectGoodsHandling": "Show correct goods handling",
   "checklistItemShowAdditionalEquipment": "Show additional equipment",
   "checklistItemShowDocumentationStorage": "Show documentation storage",
+  "typeControlEquipmentCategory": "Equipment",
+  "typeControlTruckLabel": "Truck",
+  "typeControlMachineLabel": "Machine",
+  "machineTypeTrainingHeader": "Machine Type Training",
+  "machineInformation": "Machine Information",
+  "machineTypeLabel": "Machine Type",
+  "machineNumberLabel": "Machine Number",
+  "machineTypeExcavator": "Excavator",
+  "machineTypeWheelLoader": "Wheel loader",
+  "machineTypeTelehandler": "Telehandler",
+  "machineTypeDumpTruck": "Dump truck/hauler",
+  "machineTypeOther": "Other machine type",
+  "machineChecklistItemLicenseAvailable": "License/permit available",
+  "machineChecklistItemInstructionManualRead": "Instruction manual reviewed",
+  "machineChecklistItemExplainMainParts": "Explain main parts and functions",
+  "machineChecklistItemExplainControls": "Explain controls and safety functions",
+  "machineChecklistItemStartStopProcedures": "Start/stop procedures",
+  "machineChecklistItemSafetySystems": "Safety systems (seat belt, alarms)",
+  "machineChecklistItemRops": "Roll-over protection (ROPS) inspected",
+  "machineChecklistItemAttachmentsTools": "Attachments and quick coupler use",
+  "machineChecklistItemWorkAreaRisks": "Work area hazards and safe zones",
+  "machineChecklistItemParkingShutdown": "Parking/shutdown and securing machine",
+  "machineChecklistItemDailyChecks": "Daily checks and maintenance points",
+  "typeControlCraneLabel": "Crane",
+  "craneTypeTrainingHeader": "Crane Type Training",
+  "craneInformation": "Crane Information",
+  "craneTypeLabel": "Crane Type",
+  "craneNumberLabel": "Crane Number",
+  "craneTypeMobile": "Mobile crane",
+  "craneTypeTower": "Tower crane",
+  "craneTypeBridgeGantry": "Bridge/gantry crane",
+  "craneTypePortal": "Portal crane",
+  "craneTypeOther": "Other crane type",
+  "craneChecklistLicense": "License/permit available",
+  "craneChecklistInstructionManual": "Instruction manual reviewed",
+  "craneChecklistMainParts": "Explain main parts and load chart",
+  "craneChecklistControls": "Explain controls and emergency stops",
+  "craneChecklistStartStop": "Start/stop procedures",
+  "craneChecklistSafetyDevices": "Safety devices (limit switches/overload)",
+  "craneChecklistStabilityOutriggers": "Stability/outriggers and setup",
+  "craneChecklistLiftingGear": "Lifting gear inspected and attached correctly",
+  "craneChecklistSignals": "Signals/communication with rigger",
+  "craneChecklistWorkArea": "Work area hazards and swing radius",
+  "craneChecklistParking": "Parking/shutdown and securing crane",
   "dailyCheckForkliftInspectionTitle": "Forklift Inspection",
   "dailyCheckCraneInspectionTitle": "Crane Inspection",
   "dailyCheckForkliftLabel": "Forklift",
   "dailyCheckCraneLabel": "Crane",
+  "dailyCheckMachineInspectionTitle": "Machine Inspection",
+  "dailyCheckMachineLabel": "Machine",
   "formSectionContactInformation": "1. Contact Information",
   "formSectionOperatorInformation": "1. Operator Information",
+  "formSectionMachineInfo": "2. Machine Information",
   "formFieldName": "Name",
   "formFieldOperatorName": "Operator Name",
   "formFieldRequired": "Required",
@@ -358,6 +426,8 @@
   "formFieldPhoneNumber": "Phone Number",
   "formFieldBirthdate": "Birthdate (DD/MM/YYYY)",
   "formFieldForkliftModel": "Forklift Model",
+  "formFieldMachineModel": "Machine Model",
+  "formFieldMachineID": "Machine ID/Serial No.",
   "formSectionCertification": "2. Certification",
   "formSectionCertificationAndManuals": "3. Certification & Manuals",
   "formQuestionCertificateOfCompetence": "Do you have a certificate of competence?",
@@ -412,6 +482,18 @@
   "craneChecklistItemElectricalSystems": "Check Electrical Systems and Wiring",
   "craneChecklistItemWarningDevices": "Ensure Warning Devices (horn, lights) are functional",
   "craneChecklistItemLogsReview": "Review Maintenance and Inspection Logs",
+  "machineChecklistItemVisualInspection": "Visual inspection for leaks/damage",
+  "machineChecklistItemFluidLevels": "Check engine, hydraulic and coolant levels",
+  "machineChecklistItemHydraulicHoses": "Inspect hydraulic hoses and cylinders",
+  "machineChecklistItemTiresTracks": "Inspect tires/tracks and undercarriage",
+  "machineChecklistItemBrakesSteering": "Test brakes and steering",
+  "machineChecklistItemControlsEmergency": "Test controls, safety stops and backup alarm",
+  "machineChecklistItemWarningDevices": "Check lights, horn and warning devices",
+  "machineChecklistItemAttachmentLock": "Verify attachment/quick coupler locking",
+  "machineChecklistItemSafetyEquipment": "Check seat belt, ROPS/FOPS and guards",
+  "machineChecklistItemFireExtinguisher": "Check fire extinguisher/first aid kit",
+  "machineChecklistItemCleanliness": "Cab and machine cleanliness",
+  "machineChecklistItemDocumentationAvailable": "Manual and logbook available",
   "dailyCheckForkliftInspectionTitle": "Forklift Inspection",
   "dailyCheckCraneInspectionTitle": "Crane Inspection",
   "dailyCheckForkliftLabel": "Forklift",
@@ -503,6 +585,15 @@
       }
     }
   },
+  "emailSubjectMachineInspection": "Machine Inspection Report - {date}",
+  "@emailSubjectMachineInspection": {
+    "placeholders": {
+      "date": {
+        "type": "String",
+        "example": "2023-10-27 14:30"
+      }
+    }
+  },
   "emailSubjectCraneInspection": "Crane Inspection Report - {date}",
   "@emailSubjectCraneInspection": {
     "placeholders": {
@@ -526,6 +617,16 @@
   "emailFieldDate": "Date",
   "emailChecklistItemStatusChecked": "Checked/OK",
   "emailChecklistItemStatusUnchecked": "Not Checked/Not OK",
+  "savingLabel": "Saving…",
+  "notSavedLabel": "Not saved yet",
+  "savedSecondsAgo": "Saved {seconds}s ago",
+  "@savedSecondsAgo": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
   "customImageLabel": "Selected Image:",
   "addImageOptional": "Add Optional Image",
   "changeImageOptional": "Change Optional Image",
@@ -586,11 +687,13 @@
   "changeImageOptional": "Change Optional Image",
   "typeWeight": "Enter weight",
   "tons": "tons",
-   "dailyCheckForkliftInspectionTitle": "Daily Check",
-   "dailyCheckCraneInspectionTitle": "Crane Daily Check",
-   "dailyCheckForkliftLabel": "Forklift",
-   "dailyCheckCraneLabel": "Crane",
-   "formulaPrefix": "Formula: ",
+  "dailyCheckForkliftInspectionTitle": "Forklift Daily Check",
+  "dailyCheckCraneInspectionTitle": "Crane Daily Check",
+  "dailyCheckMachineInspectionTitle": "Machine Daily Check",
+  "dailyCheckForkliftLabel": "Forklift",
+  "dailyCheckCraneLabel": "Crane",
+  "dailyCheckMachineLabel": "Machine",
+  "formulaPrefix": "Formula: ",
 
     "hydraulicCalculator": "Hydraulic Calculator",
     "cylinderCalculator": "Cylinder Calculator",
@@ -735,12 +838,17 @@
    "formFieldCraneModel": "Crane Model",
    "formFieldCraneID": "Crane ID",
 
+   "formSectionMachineInfo": "Machine Information",
+
    "formSectionDocumentation": "Documentation",
    "formQuestionHasCertificate": "Do you have a valid certificate?",
    "formQuestionHasManual": "Is the equipment manual available?",
    "formAnswerYes": "Yes",
    "formAnswerNo": "No",
      "formAnswerNotSelected": "Not Selected",
+  "formSectionInspectionChecklist": "Inspection Checklist",
+  "formSectionImprovements": "Improvements / Remarks",
+  "webLiftsWarning": "Storage in the browser is temporary and will be cleared when you leave the page.",
   "formButtonPreviewReport": "Preview Report",
   "emailSubjectTypeControl": "Type Control Report - {date}",
   "formButtonBackToForm": "Back to Form",
@@ -896,11 +1004,11 @@
    "emailChecklistItemStatusChecked": "Checked",
    "emailChecklistItemStatusUnchecked": "Not Checked",
 
-   "emailSubjectForkliftInspection": "Forklift Inspection Report - {date}",
-   "@emailSubjectForkliftInspection": {
-     "placeholders": {
-       "date": {
-         "type": "String"
+  "emailSubjectForkliftInspection": "Forklift Inspection Report - {date}",
+  "@emailSubjectForkliftInspection": {
+    "placeholders": {
+      "date": {
+        "type": "String"
        }
      }
    },
@@ -908,9 +1016,18 @@
    "@emailSubjectCraneInspection": {
      "placeholders": {
        "date": {
-         "type": "String"
-       }
-     }
+    "type": "String"
+    }
+  }
+  ,
+  "emailSubjectMachineInspection": "Machine Inspection Report - {date}",
+  "@emailSubjectMachineInspection": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  }
    }
 
 }

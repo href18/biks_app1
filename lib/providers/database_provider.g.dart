@@ -7,7 +7,7 @@ part of 'database_provider.dart';
 // **************************************************************************
 
 String _$equipmentConfigFetcherHash() =>
-    r'5e0a9cc5cd865cb3e5dc502a2351a423757a395e';
+    r'7492245063724dc1904aa87041921fa1bb334a9e';
 
 /// See also [EquipmentConfigFetcher].
 @ProviderFor(EquipmentConfigFetcher)
@@ -25,4 +25,4 @@ final equipmentConfigFetcherProvider = AutoDisposeAsyncNotifierProvider<
 typedef _$EquipmentConfigFetcher
     = AutoDisposeAsyncNotifier<List<EquipmentConfig>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

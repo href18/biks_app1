@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIKS App - Dokumentasjon</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+    }
+
+    :root {
+      --ink: #1f2937;
+      --muted: #5b6473;
+      --line: #d7dee8;
+      --brand: #040d3c;
+      --brand-2: #0c6f8f;
+      --soft: #f4f7fb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      background: white;
+    }
+
+    .header {
+      padding: 18px 22px;
+      color: white;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      border-radius: 14px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 24pt;
+      line-height: 1.15;
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 11pt;
+      opacity: 0.95;
+    }
+
+    .meta {
+      margin-top: 12px;
+      font-size: 9.5pt;
+      opacity: 0.88;
+    }
+
+    h2 {
+      margin: 18px 0 8px;
+      font-size: 14pt;
+      color: var(--brand);
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 4px;
+    }
+
+    p {
+      margin: 0 0 9px;
+    }
+
+    ul {
+      margin: 6px 0 10px 18px;
+      padding: 0;
+    }
+
+    li {
+      margin: 0 0 5px;
+    }
+
+    .box {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin: 10px 0 14px;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 9.5pt;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0 14px;
+      font-size: 10.5pt;
+    }
+
+    .table th,
+    .table td {
+      border: 1px solid var(--line);
+      padding: 8px 9px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .table th {
+      background: #eef3f9;
+      color: var(--brand);
+      font-weight: 700;
+      width: 23%;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #e8f0fb;
+      color: var(--brand);
+      font-size: 9pt;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>BIKS App</h1>
+    <p class="lead">Dokumentasjon til bruk i spørsmålene 3.6.1 til 3.6.7, med fokus på app-løsningen og dens synlige tekniske avhengigheter.</p>
+    <div class="meta">Dato: 29.03.2026</div>
+  </div>
+
+  <div class="box">
+    <p><strong>Viktig avgrensning:</strong> Dette dokumentet er basert på verifiserbare opplysninger i appens kodebase og tilhørende konfigurasjon. Opplysninger om kontrakter, formelt eierskap, CMS-/portalavtaler og eventuelle historiske sikkerhetshendelser må bekreftes administrativt av BIKS.</p>
+  </div>
+
+  <h2>Oppsummering</h2>
+  <p>BIKS App er en Flutter-basert applikasjon for iOS, Android og web. Løsningen inneholder funksjoner for løfteberegning, løftetabeller, lagring av løft, hydraulikk-kalkulatorer, daglige kontroller, typekontroll og risikovurdering. Appen har også lenker til eksterne BIKS-sider for medlemspålogging og kurs.</p>
+
+  <table class="table">
+    <tr>
+      <th>Appnavn</th>
+      <td>BIKS</td>
+    </tr>
+    <tr>
+      <th>Teknologi</th>
+      <td>Flutter / Dart med distribusjon til Android, iOS og web</td>
+    </tr>
+    <tr>
+      <th>Android app-ID</th>
+      <td><code>com.entellix.Biks</code></td>
+    </tr>
+    <tr>
+      <th>Versjon i repo</th>
+      <td><code>14.15.2+54</code></td>
+    </tr>
+    <tr>
+      <th>Eksterne BIKS-lenker</th>
+      <td><code>https://biks.no/medlem/innlogging/</code> og <code>https://biks.no/kurs/</code></td>
+    </tr>
+    <tr>
+      <th>Publisering</th>
+      <td>Appen peker til Google Play og Apple App Store via QR-lenker i løsningen</td>
+    </tr>
+  </table>
+
+  <h2>3.6.1 Beskrivelse av løsning APP / portal</h2>
+  <p>BIKS App fremstår som en digital fag- og verktøyapplikasjon for medlemmer, kursdeltakere og brukere innen løft, kontroll og hydraulikk. Løsningen er bygget som én felles kodebase for flere plattformer, noe som gir samme funksjonalitet på mobil og web.</p>
+  <p>Følgende hovedfunksjoner er synlige i appen:</p>
+  <ul>
+    <li>Løftekalkulator og løftetabeller</li>
+    <li>Lagring av egne løft og historikk</li>
+    <li>Hydraulikkmodul med kalkulatorer, gjengeoppslag og slangetabeller</li>
+    <li>Daglig kontroll og inspeksjonsskjema</li>
+    <li>Typekontroll og risikovurdering for truck</li>
+    <li>Lenker videre til medlemssider og kurs på <code>biks.no</code></li>
+  </ul>
+  <p>Forslag til tekst: <strong>“BIKS App er en Flutter-basert app- og webløsning som gir brukerne tilgang til faglige oppslagsverk, beregningsverktøy, kontrollskjema og relevante lenker til BIKS sine medlemssider og kursportal.”</strong></p>
+
+  <h2>3.6.2 Domenenavn / web</h2>
+  <p>For app-relatert websynlighet er domenet som kan dokumenteres fra kodebasen <strong>www.biks.no / biks.no</strong>. Appen benytter eksplisitt lenker til medlemspålogging og kurssider under dette domenet.</p>
+  <p>Forslag til tekst: <strong>“Relevant webdomene for løsningen er www.biks.no. BIKS App lenker til medlemspålogging og kurssider publisert under biks.no.”</strong></p>
+
+  <h2>3.6.3 Dokumentasjon / PDF av sider i IM</h2>
+  <p>Denne PDF-en kan brukes som app-vedlegg der eksisterende IM-dokumentasjon mangler omtale av BIKS App. Den beskriver appens funksjon, plattformer, synlige integrasjoner og tekniske komponenter.</p>
+  <p>Forslag til tekst: <strong>“Vedlagt PDF supplerer tidligere innsendt IT-dokumentasjon fra IM og dekker den delen av løsningen som gjelder BIKS App.”</strong></p>
+
+  <h2>3.6.4 Hva eies, og hva leveres av underleverandør</h2>
+  <p>Basert på branding, domene og funksjon er det naturlig å beskrive BIKS som funksjonell eier av app-løsningen. Selve kildekoden og teknisk konfigurasjon viser Android-identifikatoren <code>com.entellix.Biks</code>, som kan indikere at <strong>Entellix</strong> har vært teknisk utviklingspartner eller underleverandør.</p>
+  <p class="small">Dette siste punktet er en teknisk slutning basert på namespace/app-ID og bør bekreftes før innsending.</p>
+  <p>Forslag til tekst: <strong>“BIKS eier app-konseptet, innholdet og den funksjonelle løsningen. Teknisk utvikling og vedlikehold er levert med bistand fra underleverandør. Underleverandørnavn og ansvar må spesifiseres i henhold til gjeldende avtale.”</strong></p>
+
+  <h2>3.6.5 Avtaler med CMS-/portal-leverandør og internett-synlighet</h2>
+  <p>Det er ikke synlig i kodebasen at appen har direkte API-integrasjon mot et CMS eller en portal. Det som er verifiserbart, er at appen sender brukeren videre til eksterne BIKS-sider for medlemspålogging og kurs. Avtaler om CMS, portaldrift, domene, webhosting og appbutikk-kontoer må derfor dokumenteres separat av virksomheten.</p>
+  <p>Forslag til tekst: <strong>“BIKS App har synlighet via appbutikker og henvisninger til biks.no. Eventuelle avtaler for CMS, portal, hosting, domene og digital synlighet håndteres utenfor selve appkoden og må dokumenteres i separate leverandøravtaler.”</strong></p>
+
+  <h2>3.6.6 Programvare og komponenter som benyttes</h2>
+  <p>Følgende programvare og biblioteker er identifisert i appprosjektet:</p>
+  <div>
+    <span class="pill">Flutter</span>
+    <span class="pill">Dart</span>
+    <span class="pill">Android</span>
+    <span class="pill">iOS</span>
+    <span class="pill">Web</span>
+    <span class="pill">SQLite / sqflite</span>
+    <span class="pill">Shared Preferences</span>
+    <span class="pill">PDF / Printing</span>
+    <span class="pill">Image Picker</span>
+    <span class="pill">Email / Mailer</span>
+    <span class="pill">Share Plus</span>
+    <span class="pill">URL Launcher</span>
+    <span class="pill">QR Flutter</span>
+  </div>
+  <p>Forslag til tekst: <strong>“BIKS App er utviklet i Flutter/Dart og distribueres til Android, iOS og web. Løsningen benytter blant annet lokal datalagring, PDF-generering/-visning, e-postdeling, bildeopplasting, eksterne lenker og QR-koder.”</strong></p>
+  <p class="small">Hvis skjemaet også etterspør virksomhetens øvrige systemer, kan dere i tillegg føre opp eksempelvis Microsoft 365, ERP og CMS/portal der dette faktisk brukes i drift.</p>
+
+  <h2>3.6.7 Historikk for angrep / hacking</h2>
+  <p>Det finnes ingen spor i denne kodebasen som dokumenterer tidligere sikkerhetshendelser, kompromittering eller hacking av appen. Kodebasen alene er imidlertid ikke tilstrekkelig som endelig bevis for fravær av hendelser.</p>
+  <p>Forslag til tekst dersom dere ikke kjenner til hendelser: <strong>“N/A. Det er ikke registrert kjente angrep, hacking eller sikkerhetshendelser knyttet til BIKS App per dags dato.”</strong></p>
+
+  <h2>Anbefalt tekst som kan limes inn samlet</h2>
+  <div class="box">
+    <p>BIKS App er en Flutter-basert app- og webløsning som gir brukerne tilgang til faglige oppslagsverk, beregningsverktøy, kontrollskjema og lenker til BIKS sine medlemssider og kurs. Løsningen distribueres til Android, iOS og web, og benytter domenet www.biks.no / biks.no for relevante webhenvisninger. Vedlagt PDF supplerer tidligere IT-dokumentasjon der app-løsningen ikke har vært beskrevet tilstrekkelig.</p>
+    <p>BIKS eier den funksjonelle løsningen og innholdet i appen. Teknisk utvikling og vedlikehold håndteres med bistand fra underleverandør, og dette må spesifiseres i tråd med gjeldende avtaler. Appen har synlighet via appbutikker og henvisninger til biks.no. Eventuelle avtaler for CMS, portal, hosting, domene og digital synlighet dokumenteres separat.</p>
+    <p>BIKS App er utviklet i Flutter/Dart og bruker blant annet lokal datalagring, PDF-funksjonalitet, e-postdeling, bildehåndtering, eksterne lenker og QR-koder. Dersom virksomhetens øvrige programvare også skal oppgis, kan Microsoft 365, ERP og CMS/portal føres opp der dette er relevant. Det er ikke registrert kjente angrep, hacking eller sikkerhetshendelser knyttet til BIKS App per dags dato, dersom dette stemmer med virksomhetens interne oversikt.</p>
+  </div>
+
+  <p class="small">Dokumentet er produsert fra prosjektgrunnlaget for <code>biks_app1</code> og bør leses sammen med virksomhetens administrative leverandør- og sikkerhetsoversikter før ekstern innsending.</p>
+</body>
+</html>

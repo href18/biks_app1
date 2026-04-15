@@ -1,7 +1,6 @@
 import 'package:biks/models/equipment_config.dart';
 import 'package:biks/models/equipment_type.dart';
 import 'package:biks/models/lift.dart';
-import 'package:biks/models/lift_data.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -22,8 +21,13 @@ class Equipment extends _$Equipment {
 
   Future<bool> findBestLiftData() async {
     try {
-      final LiftData bestLiftData = await state.findBestLiftData();
-      state = state.copyWith(bestLiftData: bestLiftData);
+      final result = await state.findBestLiftData();
+      state = state.copyWith(
+        bestLiftData: result.liftData,
+        appliedWeightLimit: result.appliedLimit,
+        symmetricWeightLimit: result.symmetricLimit,
+        unsymmetricReferenceLimit: result.referenceLimit,
+      );
     } on Exception catch (e) {
       debugPrint(e.toString());
       return false;

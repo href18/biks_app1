@@ -1,12 +1,25 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:biks/l10n/app_localizations.dart';
+import 'package:biks/utils/share_origin_extension.dart';
+import 'package:biks/widgets/app_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+
+enum TypeControlCategory { truck, machine, crane }
+
+String _sanitizeTypeControlPdfPart(String? value,
+    {String fallback = 'ukjent'}) {
+  final sanitized = (value ?? '')
+      .trim()
+      .replaceAll(RegExp(r'\s+'), '_')
+      .replaceAll(RegExp(r'[^\w.-]'), '');
+  return sanitized.isEmpty ? fallback : sanitized;
+}
 
 // This screen will be for the Type Control / Forklift Training form.
 class TypeControlScreen extends StatefulWidget {
@@ -21,12 +34,13 @@ class _TypeControlScreenState extends State<TypeControlScreen> {
   final TextEditingController _traineeNameController = TextEditingController();
   final TextEditingController _trainerNameController = TextEditingController();
   final TextEditingController _companyController = TextEditingController();
-  final TextEditingController _truckNumberController = TextEditingController();
+  final TextEditingController _equipmentNumberController =
+      TextEditingController();
   final TextEditingController _notesController = TextEditingController();
 
   DateTime _trainingDate = DateTime.now();
-  String? _selectedTruckType;
-  String? _selectedTruckModel;
+  TypeControlCategory _selectedCategory = TypeControlCategory.truck;
+  String? _selectedType;
   bool _checklistInitialized = false;
   List<ChecklistItem> _checklistItems = [];
 
@@ -44,192 +58,30 @@ class _TypeControlScreenState extends State<TypeControlScreen> {
     'T8.4'
   ];
 
-  final Map<int, String?> _selectedOptions = {};
-  final Map<int, String> _additionalNotes = {};
+  List<String> _machineTypes(AppLocalizations l10n) => [
+        l10n.machineTypeExcavator,
+        l10n.machineTypeWheelLoader,
+        l10n.machineTypeTelehandler,
+        l10n.machineTypeDumpTruck,
+        l10n.machineTypeOther,
+      ];
 
-  bool _showPreview = false;
+  List<String> _craneTypes(AppLocalizations l10n) => [
+        l10n.craneTypeMobile,
+        l10n.craneTypeTower,
+        l10n.craneTypeBridgeGantry,
+        l10n.craneTypePortal,
+        l10n.craneTypeOther,
+      ];
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _trainingDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null && picked != _trainingDate) {
-      setState(() {
-        _trainingDate = picked;
-      });
-    }
-  }
+  List<String> _currentTypeOptions(AppLocalizations l10n) =>
+      _selectedCategory == TypeControlCategory.truck
+          ? _truckTypes
+          : _selectedCategory == TypeControlCategory.machine
+              ? _machineTypes(l10n)
+              : _craneTypes(l10n);
 
-  void _togglePreview() {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _showPreview = !_showPreview;
-      });
-    } else {
-      final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.formSnackbarPleaseCompleteFields)),
-      );
-    }
-  }
-
-  @override
-  void dispose() {
-    _traineeNameController.dispose();
-    _trainerNameController.dispose();
-    _companyController.dispose();
-    _truckNumberController.dispose();
-    _notesController.dispose();
-    super.dispose();
-  }
-
-  void _clearForm() {
-    _formKey.currentState?.reset();
-    _traineeNameController.clear();
-    _trainerNameController.clear();
-    _companyController.clear();
-    _truckNumberController.clear();
-    _notesController.clear();
-    setState(() {
-      _trainingDate = DateTime.now();
-      _selectedTruckType = null;
-      _selectedOptions.clear();
-      _additionalNotes.clear();
-      _showPreview = false; // Go back to form view
-    });
-    final l10n = AppLocalizations.of(context)!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.formSnackbarFormCleared)),
-    );
-  }
-
-  Map<String, dynamic> _getFormData() {
-    final l10n = AppLocalizations.of(context)!;
-    final currentDate = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
-    final trainingDateFormatted =
-        DateFormat('dd/MM/yyyy').format(_trainingDate);
-
-    final checklistData = _checklistItems.asMap().entries.map((entry) {
-      int index = entry.key;
-      ChecklistItem item = entry.value;
-      return {
-        'question': item.question, // Already localized from initialization
-        'selectedOption': _selectedOptions[index],
-        'additionalNote': _additionalNotes[index],
-      };
-    }).toList();
-
-    return {
-      'formTitle': l10n.typeControlTitle,
-      'formSubHeader': l10n.forkliftTypeTrainingHeader,
-      'regulationsSubHeader': l10n.regulationsSubHeader,
-      'traineeName': _traineeNameController.text,
-      'trainerName': _trainerNameController.text,
-      'company': _companyController.text,
-      'truckType': _selectedTruckType,
-      'truckNumber': _truckNumberController.text,
-      'trainingDate': trainingDateFormatted,
-      'checklist': checklistData,
-      'notes': _notesController.text,
-      'dateGenerated': currentDate,
-    };
-  }
-
-  Widget _buildPreviewRow(String label, String? value) {
-    final l10n = AppLocalizations.of(context)!;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text(value ?? l10n.formAnswerNotProvided),
-          const Divider(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPreview() {
-    final l10n = AppLocalizations.of(context)!;
-    final formData = _getFormData();
-    final theme = Theme.of(context);
-
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.all(0),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(l10n.formPreviewTitle,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.primary)),
-            const SizedBox(height: 16),
-            _buildPreviewRow(
-                l10n.dateGeneratedLabel, formData['dateGenerated'] as String?),
-            _buildPreviewRow(
-                l10n.trainingDateLabel, formData['trainingDate'] as String?),
-            _buildPreviewRow(
-                l10n.truckTypeLabel, formData['truckType'] as String?),
-            _buildPreviewRow(
-                l10n.truckNumberLabel, formData['truckNumber'] as String?),
-            _buildPreviewRow(
-                l10n.trainerNameLabel, formData['trainerName'] as String?),
-            _buildPreviewRow(
-                l10n.traineeNameLabel, formData['traineeName'] as String?),
-            _buildPreviewRow(l10n.companyLabel, formData['company'] as String?),
-            const SizedBox(height: 16),
-            Text(l10n.trainingChecklistSection,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            ...(formData['checklist'] as List<dynamic>).map((item) {
-              final question = item['question'] as String;
-              final selectedOption = item['selectedOption'] as String?;
-              final additionalNote = item['additionalNote'] as String?;
-              String displayValue =
-                  selectedOption ?? l10n.formAnswerNotSelected;
-              if (additionalNote != null && additionalNote.isNotEmpty) {
-                displayValue +=
-                    ' (${l10n.commentsReasonLabel}: $additionalNote)';
-              }
-              return _buildPreviewRow(question, displayValue);
-            }),
-            const SizedBox(height: 16),
-            _buildPreviewRow(
-                l10n.additionalNotesSection, formData['notes'] as String?),
-            const SizedBox(height: 32),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              ElevatedButton(
-                  onPressed: _togglePreview,
-                  child: Text(l10n.formButtonBackToForm)),
-              ElevatedButton(
-                  onPressed: _sharePdfReport,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.primary,
-                      foregroundColor: theme.colorScheme.onPrimary),
-                  child: Text(l10n.formButtonSend)),
-            ]),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-
-    if (!_checklistInitialized) {
-      _checklistItems = [
+  List<ChecklistItem> _buildTruckChecklist(AppLocalizations l10n) => [
         ChecklistItem(l10n.checklistItemLicenseAvailable,
             [l10n.optionYes, l10n.optionNo]),
         ChecklistItem(l10n.checklistItemInstructionManualRead,
@@ -264,7 +116,296 @@ class _TypeControlScreenState extends State<TypeControlScreen> {
         ChecklistItem(
             l10n.checklistItemShowDocumentationStorage, [l10n.optionDone]),
       ];
-      _checklistInitialized = true;
+
+  List<ChecklistItem> _buildMachineChecklist(AppLocalizations l10n) => [
+        ChecklistItem(l10n.machineChecklistItemLicenseAvailable,
+            [l10n.optionYes, l10n.optionNo]),
+        ChecklistItem(l10n.machineChecklistItemInstructionManualRead,
+            [l10n.optionYes, l10n.optionNo]),
+        ChecklistItem(
+            l10n.machineChecklistItemExplainMainParts, [l10n.optionDone]),
+        ChecklistItem(
+            l10n.machineChecklistItemExplainControls, [l10n.optionDone]),
+        ChecklistItem(
+            l10n.machineChecklistItemStartStopProcedures, [l10n.optionDone]),
+        ChecklistItem(l10n.machineChecklistItemSafetySystems,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+        ChecklistItem(l10n.machineChecklistItemRops,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+        ChecklistItem(l10n.machineChecklistItemAttachmentsTools,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+        ChecklistItem(
+            l10n.machineChecklistItemWorkAreaRisks, [l10n.optionDone]),
+        ChecklistItem(
+            l10n.machineChecklistItemParkingShutdown, [l10n.optionDone]),
+        ChecklistItem(l10n.machineChecklistItemDailyChecks,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+      ];
+
+  List<ChecklistItem> _buildCraneChecklist(AppLocalizations l10n) => [
+        ChecklistItem(
+            l10n.craneChecklistLicense, [l10n.optionYes, l10n.optionNo]),
+        ChecklistItem(l10n.craneChecklistInstructionManual,
+            [l10n.optionYes, l10n.optionNo]),
+        ChecklistItem(l10n.craneChecklistMainParts, [l10n.optionDone]),
+        ChecklistItem(l10n.craneChecklistControls, [l10n.optionDone]),
+        ChecklistItem(l10n.craneChecklistStartStop, [l10n.optionDone]),
+        ChecklistItem(l10n.craneChecklistSafetyDevices,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+        ChecklistItem(l10n.craneChecklistStabilityOutriggers,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+        ChecklistItem(l10n.craneChecklistLiftingGear,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+        ChecklistItem(l10n.craneChecklistSignals,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+        ChecklistItem(l10n.craneChecklistWorkArea,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+        ChecklistItem(l10n.craneChecklistParking,
+            [l10n.optionDone, l10n.optionNotApplicable]),
+      ];
+
+  final Map<int, String?> _selectedOptions = {};
+  final Map<int, String> _additionalNotes = {};
+
+  bool _showPreview = false;
+
+  void _initializeChecklist(AppLocalizations l10n) {
+    if (_selectedCategory == TypeControlCategory.truck) {
+      _checklistItems = _buildTruckChecklist(l10n);
+    } else if (_selectedCategory == TypeControlCategory.machine) {
+      _checklistItems = _buildMachineChecklist(l10n);
+    } else {
+      _checklistItems = _buildCraneChecklist(l10n);
+    }
+    _checklistInitialized = true;
+  }
+
+  void _onCategoryChanged(TypeControlCategory category, AppLocalizations l10n) {
+    setState(() {
+      _selectedCategory = category;
+      _selectedType = null;
+      _equipmentNumberController.clear();
+      _selectedOptions.clear();
+      _additionalNotes.clear();
+      _checklistInitialized = false;
+      _showPreview = false;
+    });
+    _initializeChecklist(l10n);
+  }
+
+  String _categoryLabel(AppLocalizations l10n) =>
+      _selectedCategory == TypeControlCategory.truck
+          ? l10n.typeControlTruckLabel
+          : _selectedCategory == TypeControlCategory.machine
+              ? l10n.typeControlMachineLabel
+              : l10n.typeControlCraneLabel;
+
+  String _trainingHeader(AppLocalizations l10n) =>
+      _selectedCategory == TypeControlCategory.truck
+          ? l10n.forkliftTypeTrainingHeader
+          : _selectedCategory == TypeControlCategory.machine
+              ? l10n.machineTypeTrainingHeader
+              : l10n.craneTypeTrainingHeader;
+
+  String _informationLabel(AppLocalizations l10n) =>
+      _selectedCategory == TypeControlCategory.truck
+          ? l10n.truckInformation
+          : _selectedCategory == TypeControlCategory.machine
+              ? l10n.machineInformation
+              : l10n.craneInformation;
+
+  String _typeLabel(AppLocalizations l10n) =>
+      _selectedCategory == TypeControlCategory.truck
+          ? l10n.truckTypeLabel
+          : _selectedCategory == TypeControlCategory.machine
+              ? l10n.machineTypeLabel
+              : l10n.craneTypeLabel;
+
+  String _numberLabel(AppLocalizations l10n) =>
+      _selectedCategory == TypeControlCategory.truck
+          ? l10n.truckNumberLabel
+          : _selectedCategory == TypeControlCategory.machine
+              ? l10n.machineNumberLabel
+              : l10n.craneNumberLabel;
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _trainingDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _trainingDate) {
+      setState(() {
+        _trainingDate = picked;
+      });
+    }
+  }
+
+  void _togglePreview() {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _showPreview = !_showPreview;
+      });
+    } else {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.formSnackbarPleaseCompleteFields)),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _traineeNameController.dispose();
+    _trainerNameController.dispose();
+    _companyController.dispose();
+    _equipmentNumberController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  void _clearForm() {
+    final l10n = AppLocalizations.of(context)!;
+    _formKey.currentState?.reset();
+    _traineeNameController.clear();
+    _trainerNameController.clear();
+    _companyController.clear();
+    _equipmentNumberController.clear();
+    _notesController.clear();
+    setState(() {
+      _trainingDate = DateTime.now();
+      _selectedType = null;
+      _selectedOptions.clear();
+      _additionalNotes.clear();
+      _checklistInitialized = false;
+      _showPreview = false; // Go back to form view
+    });
+    _initializeChecklist(l10n);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.formSnackbarFormCleared)),
+    );
+  }
+
+  Map<String, dynamic> _getFormData() {
+    final l10n = AppLocalizations.of(context)!;
+    final currentDate = DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
+    final trainingDateFormatted =
+        DateFormat('dd/MM/yyyy').format(_trainingDate);
+
+    final checklistData = _checklistItems.asMap().entries.map((entry) {
+      int index = entry.key;
+      ChecklistItem item = entry.value;
+      return {
+        'question': item.question, // Already localized from initialization
+        'selectedOption': _selectedOptions[index],
+        'additionalNote': _additionalNotes[index],
+      };
+    }).toList();
+
+    return {
+      'formTitle': l10n.typeControlTitle,
+      'formSubHeader': _trainingHeader(l10n),
+      'category': _categoryLabel(l10n),
+      'informationLabel': _informationLabel(l10n),
+      'typeLabel': _typeLabel(l10n),
+      'numberLabel': _numberLabel(l10n),
+      'regulationsSubHeader': l10n.regulationsSubHeader,
+      'traineeName': _traineeNameController.text,
+      'trainerName': _trainerNameController.text,
+      'company': _companyController.text,
+      'equipmentType': _selectedType,
+      'equipmentNumber': _equipmentNumberController.text,
+      'trainingDate': trainingDateFormatted,
+      'checklist': checklistData,
+      'notes': _notesController.text,
+      'dateGenerated': currentDate,
+    };
+  }
+
+  Widget _buildPreviewRow(String label, String? value) {
+    final l10n = AppLocalizations.of(context)!;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text(value ?? l10n.formAnswerNotProvided),
+          const Divider(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPreview() {
+    final l10n = AppLocalizations.of(context)!;
+    final formData = _getFormData();
+    final typeLabel = formData['typeLabel'] as String? ?? _typeLabel(l10n);
+    final numberLabel =
+        formData['numberLabel'] as String? ?? _numberLabel(l10n);
+
+    return AppSectionCard(
+      title: l10n.formPreviewTitle,
+      margin: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildPreviewRow(
+              l10n.dateGeneratedLabel, formData['dateGenerated'] as String?),
+          _buildPreviewRow(
+              l10n.trainingDateLabel, formData['trainingDate'] as String?),
+          _buildPreviewRow(l10n.typeControlEquipmentCategory,
+              formData['category'] as String?),
+          _buildPreviewRow(typeLabel, formData['equipmentType'] as String?),
+          _buildPreviewRow(numberLabel, formData['equipmentNumber'] as String?),
+          _buildPreviewRow(
+              l10n.trainerNameLabel, formData['trainerName'] as String?),
+          _buildPreviewRow(
+              l10n.traineeNameLabel, formData['traineeName'] as String?),
+          _buildPreviewRow(l10n.companyLabel, formData['company'] as String?),
+          const SizedBox(height: 16),
+          Text(
+            l10n.trainingChecklistSection,
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          ...(formData['checklist'] as List<dynamic>).map((item) {
+            final question = item['question'] as String;
+            final selectedOption = item['selectedOption'] as String?;
+            final additionalNote = item['additionalNote'] as String?;
+            String displayValue = selectedOption ?? l10n.formAnswerNotSelected;
+            if (additionalNote != null && additionalNote.isNotEmpty) {
+              displayValue += ' (${l10n.commentsReasonLabel}: $additionalNote)';
+            }
+            return _buildPreviewRow(question, displayValue);
+          }),
+          const SizedBox(height: 16),
+          _buildPreviewRow(
+              l10n.additionalNotesSection, formData['notes'] as String?),
+          const SizedBox(height: 32),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            ElevatedButton(
+                onPressed: _togglePreview,
+                child: Text(l10n.formButtonBackToForm)),
+            ElevatedButton(
+                onPressed: _sharePdfReport, child: Text(l10n.formButtonSend)),
+          ]),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    if (!_checklistInitialized) {
+      _initializeChecklist(l10n);
     }
 
     if (_showPreview) {
@@ -293,221 +434,207 @@ class _TypeControlScreenState extends State<TypeControlScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Header with regulation reference
-                  Text(
-                    l10n.forkliftTypeTrainingHeader,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    l10n.regulationsSubHeader,
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(fontStyle: FontStyle.italic),
-                  ),
-                  Divider(
-                      height: 30,
-                      color: theme.dividerColor.withAlpha((0.5 * 255).round())),
-
-                  // Training information section
-                  Text(
-                    l10n.trainingInformationSection,
-                    style: theme.textTheme.titleLarge
-                        ?.copyWith(color: theme.colorScheme.primary),
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Truck information
-                  DropdownButtonFormField<String>(
-                    value: _selectedTruckType,
-                    decoration: InputDecoration(
-                      labelText: l10n.truckTypeLabel,
-                      // Uses theme's InputDecorationTheme
+                  AppSectionCard(
+                    title: '',
+                    child: SegmentedButton<TypeControlCategory>(
+                      segments: <ButtonSegment<TypeControlCategory>>[
+                        ButtonSegment<TypeControlCategory>(
+                            value: TypeControlCategory.crane,
+                            label: Text(l10n.typeControlCraneLabel),
+                            icon: const Icon(Icons.construction)),
+                        ButtonSegment<TypeControlCategory>(
+                            value: TypeControlCategory.machine,
+                            label: Text(l10n.typeControlMachineLabel),
+                            icon: const Icon(Icons.precision_manufacturing)),
+                        ButtonSegment<TypeControlCategory>(
+                            value: TypeControlCategory.truck,
+                            label: Text(l10n.typeControlTruckLabel),
+                            icon: const Icon(Icons.forklift)),
+                      ],
+                      selected: {_selectedCategory},
+                      onSelectionChanged: (selection) =>
+                          _onCategoryChanged(selection.first, l10n),
+                      style: SegmentedButton.styleFrom(
+                          selectedForegroundColor: Colors.white,
+                          selectedBackgroundColor: theme.colorScheme.primary),
                     ),
-                    items: _truckTypes.map((type) {
-                      return DropdownMenuItem(
-                        value: type,
-                        child: Text(type),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedTruckType = value;
-                      });
-                    },
-                    validator: (value) =>
-                        value == null ? l10n.requiredFieldValidator : null,
                   ),
-                  const SizedBox(height: 10),
-
-                  TextFormField(
-                    controller: _truckNumberController,
-                    decoration: InputDecoration(
-                      labelText: l10n.truckNumberLabel,
-                    ),
-                    validator: (value) => value?.isEmpty ?? true
-                        ? l10n.requiredFieldValidator
-                        : null,
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Trainer and trainee information
-                  TextFormField(
-                    controller: _trainerNameController,
-                    decoration: InputDecoration(
-                      labelText: l10n.trainerNameLabel,
-                    ),
-                    validator: (value) => value?.isEmpty ?? true
-                        ? l10n.requiredFieldValidator
-                        : null,
-                  ),
-                  const SizedBox(height: 10),
-
-                  TextFormField(
-                    controller: _traineeNameController,
-                    decoration: InputDecoration(
-                      labelText: l10n.traineeNameLabel,
-                    ),
-                    validator: (value) => value?.isEmpty ?? true
-                        ? l10n.requiredFieldValidator
-                        : null,
-                  ),
-                  const SizedBox(height: 10),
-
-                  TextFormField(
-                    controller: _companyController,
-                    decoration: InputDecoration(
-                      labelText: l10n.companyLabel,
-                    ),
-                    validator: (value) => value?.isEmpty ?? true
-                        ? l10n.requiredFieldValidator
-                        : null,
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Date selection
-                  Row(
-                    children: [
-                      Text(l10n.trainingDateLabel,
-                          style: theme.textTheme.titleMedium),
-                      TextButton(
-                        onPressed: () => _selectDate(context),
-                        child: Text(
-                          DateFormat('dd/MM/yyyy').format(_trainingDate),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                      height: 30,
-                      color: theme.dividerColor.withAlpha((0.5 * 255).round())),
-
-                  // Checklist section
-                  Text(
-                    l10n.trainingChecklistSection,
-                    style: theme.textTheme.titleLarge
-                        ?.copyWith(color: theme.colorScheme.primary),
-                  ),
-                  const SizedBox(height: 10),
-                  ..._checklistItems.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    ChecklistItem item = entry.value;
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  AppSectionCard(
+                    title: _trainingHeader(l10n),
+                    subtitle: l10n.regulationsSubHeader,
+                    child: Column(
                       children: [
-                        Text(
-                          item.question,
-                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        DropdownButtonFormField<String>(
+                          initialValue: _selectedType,
+                          decoration:
+                              InputDecoration(labelText: _typeLabel(l10n)),
+                          items: _currentTypeOptions(l10n).map((type) {
+                            return DropdownMenuItem(
+                              value: type,
+                              child: Text(type),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedType = value;
+                            });
+                          },
+                          validator: (value) => value == null
+                              ? l10n.requiredFieldValidator
+                              : null,
                         ),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _equipmentNumberController,
+                          decoration:
+                              InputDecoration(labelText: _numberLabel(l10n)),
+                          validator: (value) => value?.isEmpty ?? true
+                              ? l10n.requiredFieldValidator
+                              : null,
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _trainerNameController,
+                          decoration:
+                              InputDecoration(labelText: l10n.trainerNameLabel),
+                          validator: (value) => value?.isEmpty ?? true
+                              ? l10n.requiredFieldValidator
+                              : null,
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _traineeNameController,
+                          decoration:
+                              InputDecoration(labelText: l10n.traineeNameLabel),
+                          validator: (value) => value?.isEmpty ?? true
+                              ? l10n.requiredFieldValidator
+                              : null,
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _companyController,
+                          decoration:
+                              InputDecoration(labelText: l10n.companyLabel),
+                          validator: (value) => value?.isEmpty ?? true
+                              ? l10n.requiredFieldValidator
+                              : null,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text(l10n.trainingDateLabel,
+                                style: theme.textTheme.titleMedium),
+                            TextButton(
+                              onPressed: () => _selectDate(context),
+                              child: Text(
+                                DateFormat('dd/MM/yyyy').format(_trainingDate),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  AppSectionCard(
+                    title: l10n.trainingChecklistSection,
+                    child: Column(
+                      children: _checklistItems.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        ChecklistItem item = entry.value;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.question,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 5),
 
-                        // Render different input types based on options
-                        if (item.options.length == 1)
-                          CheckboxListTile(
-                            title: Text(item.options[0]),
-                            value: _selectedOptions[index] == item.options[0],
-                            onChanged: (bool? value) {
-                              FocusScope.of(context)
-                                  .unfocus(); // Dismiss keyboard
-                              setState(() {
-                                _selectedOptions[index] =
-                                    value == true ? item.options[0] : null;
-                              });
-                            },
-                            controlAffinity: ListTileControlAffinity.leading,
-                            contentPadding: EdgeInsets.zero,
-                            dense: true,
-                          )
-                        else
-                          Wrap(
-                            spacing: 8.0,
-                            children: item.options.map((option) {
-                              return FilterChip(
-                                label: Text(option),
-                                selected: _selectedOptions[index] == option,
-                                onSelected: (bool selected) {
+                            // Render different input types based on options
+                            if (item.options.length == 1)
+                              CheckboxListTile(
+                                title: Text(item.options[0]),
+                                value:
+                                    _selectedOptions[index] == item.options[0],
+                                onChanged: (bool? value) {
                                   FocusScope.of(context)
                                       .unfocus(); // Dismiss keyboard
                                   setState(() {
                                     _selectedOptions[index] =
-                                        selected ? option : null;
+                                        value == true ? item.options[0] : null;
                                   });
                                 },
-                              );
-                            }).toList(),
-                          ),
-
-                        // Additional notes field for each item
-                        if (_selectedOptions[index] == "No" ||
-                            _selectedOptions[index] == "Not applicable")
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: TextFormField(
-                              onChanged: (value) =>
-                                  _additionalNotes[index] = value,
-                              decoration: InputDecoration(
-                                labelText: l10n.commentsReasonLabel,
-                                isDense: true,
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                contentPadding: EdgeInsets.zero,
+                                dense: true,
+                              )
+                            else
+                              Wrap(
+                                spacing: 8.0,
+                                children: item.options.map((option) {
+                                  return FilterChip(
+                                    label: Text(option),
+                                    selected: _selectedOptions[index] == option,
+                                    onSelected: (bool selected) {
+                                      FocusScope.of(context)
+                                          .unfocus(); // Dismiss keyboard
+                                      setState(() {
+                                        _selectedOptions[index] =
+                                            selected ? option : null;
+                                      });
+                                    },
+                                  );
+                                }).toList(),
                               ),
-                              maxLines: 2,
-                            ),
-                          ),
 
-                        const SizedBox(height: 15),
-                      ],
-                    );
-                  }),
+                            // Additional notes field for each item
+                            if (_selectedOptions[index] == "No" ||
+                                _selectedOptions[index] == "Not applicable")
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: TextFormField(
+                                  onChanged: (value) =>
+                                      _additionalNotes[index] = value,
+                                  decoration: InputDecoration(
+                                    labelText: l10n.commentsReasonLabel,
+                                    isDense: true,
+                                  ),
+                                  maxLines: 2,
+                                ),
+                              ),
 
-                  // General notes
-                  const SizedBox(height: 20),
-                  Text(
-                    l10n.additionalNotesSection,
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  TextFormField(
-                    controller: _notesController,
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: l10n.additionalNotesHint,
+                            const SizedBox(height: 15),
+                          ],
+                        );
+                      }).toList(),
                     ),
                   ),
-
-                  // Submit button
-                  const SizedBox(height: 30),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: _togglePreview, // Changed from _submitForm
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: theme.colorScheme.onPrimary,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 15),
-                        minimumSize: const Size(double.infinity, 50),
+                  AppSectionCard(
+                    title: l10n.additionalNotesSection,
+                    child: TextFormField(
+                      controller: _notesController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        hintText: l10n.additionalNotesHint,
                       ),
-                      child: Text(l10n
-                          .formButtonPreviewReport), // Ensure this l10n key exists
+                    ),
+                  ),
+                  AppSectionCard(
+                    title: '',
+                    child: Center(
+                      child: ElevatedButton(
+                        onPressed: _togglePreview,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: theme.colorScheme.onPrimary,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 15),
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                        child: Text(l10n.formButtonPreviewReport),
+                      ),
                     ),
                   ),
                 ],
@@ -520,7 +647,18 @@ class _TypeControlScreenState extends State<TypeControlScreen> {
 
 Future<Uint8List> _generateTrainingPdfDocument(
     Map<String, dynamic> formData, AppLocalizations l10n) async {
-  final pdf = pw.Document();
+  final equipmentType =
+      _sanitizeTypeControlPdfPart(formData['equipmentType'] as String?);
+  final equipmentNumber =
+      _sanitizeTypeControlPdfPart(formData['equipmentNumber'] as String?);
+  final trainee =
+      _sanitizeTypeControlPdfPart(formData['traineeName'] as String?);
+  final dateLabel = DateFormat('yyyyMMdd').format(DateTime.now());
+  final pdf = pw.Document(
+    title:
+        'Typekontroll_${equipmentType}_${equipmentNumber}_${trainee}_$dateLabel',
+    subject: l10n.typeControl,
+  );
 
   pw.Widget buildPdfRow(String label, String? value,
       {bool isChecklistItem = false}) {
@@ -556,6 +694,12 @@ Future<Uint8List> _generateTrainingPdfDocument(
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(32),
       build: (pw.Context context) {
+        final typeLabel =
+            formData['typeLabel'] as String? ?? l10n.truckTypeLabel;
+        final numberLabel =
+            formData['numberLabel'] as String? ?? l10n.truckNumberLabel;
+        final infoHeader = formData['informationLabel'] as String? ??
+            l10n.trainingInformationSection;
         List<pw.Widget> content = [
           pw.Header(
             level: 0,
@@ -577,9 +721,11 @@ Future<Uint8List> _generateTrainingPdfDocument(
           buildSectionHeader(l10n.trainingInformationSection),
           buildPdfRow(
               l10n.trainingDateLabel, formData['trainingDate'] as String?),
-          buildPdfRow(l10n.truckTypeLabel, formData['truckType'] as String?),
-          buildPdfRow(
-              l10n.truckNumberLabel, formData['truckNumber'] as String?),
+          buildPdfRow(l10n.typeControlEquipmentCategory,
+              formData['category'] as String?),
+          buildSectionHeader(infoHeader),
+          buildPdfRow(typeLabel, formData['equipmentType'] as String?),
+          buildPdfRow(numberLabel, formData['equipmentNumber'] as String?),
           buildPdfRow(
               l10n.trainerNameLabel, formData['trainerName'] as String?),
           buildPdfRow(
@@ -632,20 +778,27 @@ extension on _TypeControlScreenState {
       final Uint8List pdfBytes =
           await _generateTrainingPdfDocument(formData, l10n);
       final tempDir = await getTemporaryDirectory();
+      final sanitizedType =
+          _sanitizeTypeControlPdfPart(formData['equipmentType'] as String?);
+      final equipmentNumber =
+          _sanitizeTypeControlPdfPart(formData['equipmentNumber'] as String?);
+      final trainee =
+          _sanitizeTypeControlPdfPart(formData['traineeName'] as String?);
       final fileName =
-          'Typekontroll_${formData['truckType']?.replaceAll('.', '') ?? "rapport"}_${formData['traineeName']?.replaceAll(" ", "_") ?? "kursdeltaker"}_${DateFormat('yyyyMMdd').format(trainingDate)}.pdf';
+          'typekontroll_${sanitizedType}_${equipmentNumber}_${trainee}_${DateFormat('yyyyMMdd').format(trainingDate)}.pdf';
       final file = File('${tempDir.path}/$fileName');
       await file.writeAsBytes(pdfBytes);
 
       await SharePlus.instance.share(ShareParams(
           files: [XFile(file.path)],
           subject: subject,
-          title: l10n.emailBodyPreamble));
+          title: l10n.emailBodyPreamble,
+          sharePositionOrigin: context.sharePositionOrigin));
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(l10n.formSnackbarReportShared)));
       _clearForm();
     } catch (e) {
-      print('Error sharing PDF report for Type Control: $e');
+      debugPrint('Error sharing PDF report for Type Control: $e');
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.formSnackbarEmailFailed(e.toString()))));
     }

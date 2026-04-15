@@ -15,10 +15,22 @@ class AppLocalizationsNo extends AppLocalizations {
   String get firstMenu => 'Løftekalkulator';
 
   @override
-  String get secondMenu => 'Min Side';
+  String get secondMenu => 'Mine sider';
 
   @override
-  String get courseMenu => 'Kurs';
+  String get courseMenu => 'Våre kurs';
+
+  @override
+  String get qrDownloadTitle => 'Last ned på mobil';
+
+  @override
+  String get qrDownloadHint => 'Skann QR-koden for å åpne BIKS i din app-butikk.';
+
+  @override
+  String get qrAndroidLabel => 'Android (Play Store)';
+
+  @override
+  String get qrIOSLabel => 'iPhone (App Store)';
 
   @override
   String get liftingTable => 'Løftetabell';
@@ -39,10 +51,13 @@ class AppLocalizationsNo extends AppLocalizations {
   String get typeControl => 'Typekontroll';
 
   @override
-  String get inspectionsAndChecks => 'Inspeksjon & Sjekk';
+  String get inspectionsAndChecks => 'Inspeksjon & sjekk';
 
   @override
-  String get createdBy => 'Laget av Entellix.no';
+  String get hotWork => 'Varme Arbeider';
+
+  @override
+  String get createdBy => 'Laget av Håkon Engfeldt i samarbeid med Biks';
 
   @override
   String get howTo => 'Hvordan beregne';
@@ -239,13 +254,25 @@ class AppLocalizationsNo extends AppLocalizations {
   String get dailyChecksTaskCheckTruckCleanliness => 'Sjekk renhold';
 
   @override
-  String get errorPrefix => 'Error: ';
+  String get errorPrefix => 'Feil: ';
 
   @override
   String get withWeight => 'med vekt';
 
   @override
   String get ton => 'tonn';
+
+  @override
+  String get capacitySymmetricLabel => 'Tillatt kapasitet';
+
+  @override
+  String get capacityUnsymmetricLabel => 'Redusert kapasitet (usymmetrisk)';
+
+  @override
+  String get capacityReductionFactorLabel => 'Reduksjonsfaktor';
+
+  @override
+  String get capacityReferenceLabel => 'Referansekapasitet';
 
   @override
   String get med => 'med';
@@ -260,16 +287,16 @@ class AppLocalizationsNo extends AppLocalizations {
   String get no => 'Nei';
 
   @override
-  String get weightLabel => 'Weight: ';
+  String get weightLabel => 'Vekt: ';
 
   @override
-  String get equipmentTypeLabel => 'Equipment Type: ';
+  String get equipmentTypeLabel => 'Utstyrstype: ';
 
   @override
-  String get dateTimeLabel => 'Date/Time: ';
+  String get dateTimeLabel => 'Dato/Tid: ';
 
   @override
-  String get symmetryLabel => 'Symmetry: ';
+  String get symmetryLabel => 'Symmetri: ';
 
   @override
   String get unsymmetricStatus => 'Usymmetrisk';
@@ -297,7 +324,7 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String deleteLiftConfirmationContent(Object liftName) {
-    return 'Are you sure you want to delete the lift \'$liftName\'?';
+    return 'Er du sikker på at du vil slette løftet \'$liftName\'?';
   }
 
   @override
@@ -846,10 +873,142 @@ class AppLocalizationsNo extends AppLocalizations {
   String get checklistItemShowDocumentationStorage => 'Vis dokumentasjonslagring';
 
   @override
-  String get dailyCheckForkliftInspectionTitle => 'Daglig Sjekk Truck';
+  String get typeControlEquipmentCategory => 'Utstyr';
 
   @override
-  String get dailyCheckCraneInspectionTitle => 'Daglig Sjekk Kran';
+  String get typeControlTruckLabel => 'Truck';
+
+  @override
+  String get typeControlMachineLabel => 'Maskin';
+
+  @override
+  String get machineTypeTrainingHeader => 'Typeopplæring for maskin';
+
+  @override
+  String get machineInformation => 'Maskininformasjon';
+
+  @override
+  String get machineTypeLabel => 'Maskintype';
+
+  @override
+  String get machineNumberLabel => 'Maskinnummer';
+
+  @override
+  String get machineTypeExcavator => 'Gravemaskin';
+
+  @override
+  String get machineTypeWheelLoader => 'Hjullaster';
+
+  @override
+  String get machineTypeTelehandler => 'Teleskoplaster';
+
+  @override
+  String get machineTypeDumpTruck => 'Dumper/hauler';
+
+  @override
+  String get machineTypeOther => 'Annen maskintype';
+
+  @override
+  String get machineChecklistItemLicenseAvailable => 'Førerkort/arbeidstillatelse tilgjengelig';
+
+  @override
+  String get machineChecklistItemInstructionManualRead => 'Bruksanvisning gjennomgått';
+
+  @override
+  String get machineChecklistItemExplainMainParts => 'Gjennomgang av hoveddeler og funksjoner';
+
+  @override
+  String get machineChecklistItemExplainControls => 'Gjennomgang av betjeningsorganer og sikkerhetsfunksjoner';
+
+  @override
+  String get machineChecklistItemStartStopProcedures => 'Start-/stopp-prosedyrer';
+
+  @override
+  String get machineChecklistItemSafetySystems => 'Sikkerhetssystemer (belte, alarmer)';
+
+  @override
+  String get machineChecklistItemRops => 'Veltebur (ROPS) kontrollert';
+
+  @override
+  String get machineChecklistItemAttachmentsTools => 'Bruk av utstyr/tilkobling og hurtigfeste';
+
+  @override
+  String get machineChecklistItemWorkAreaRisks => 'Fareområder og sikre soner på arbeidsstedet';
+
+  @override
+  String get machineChecklistItemParkingShutdown => 'Parkering/avstenging og sikring av maskinen';
+
+  @override
+  String get machineChecklistItemDailyChecks => 'Daglige kontroller og vedlikeholdspunkter';
+
+  @override
+  String get typeControlCraneLabel => 'Kran';
+
+  @override
+  String get craneTypeTrainingHeader => 'Typeopplæring for kran';
+
+  @override
+  String get craneInformation => 'Kraninformasjon';
+
+  @override
+  String get craneTypeLabel => 'Krantype';
+
+  @override
+  String get craneNumberLabel => 'Krannummer';
+
+  @override
+  String get craneTypeMobile => 'Mobilkran';
+
+  @override
+  String get craneTypeTower => 'Tårnkran';
+
+  @override
+  String get craneTypeBridgeGantry => 'Travers-/portal-/brokran';
+
+  @override
+  String get craneTypePortal => 'Portalkran';
+
+  @override
+  String get craneTypeOther => 'Annen krantype';
+
+  @override
+  String get craneChecklistLicense => 'Førerkort/arbeidstillatelse tilgjengelig';
+
+  @override
+  String get craneChecklistInstructionManual => 'Bruksanvisning gjennomgått';
+
+  @override
+  String get craneChecklistMainParts => 'Gjennomgang av hoveddeler og lastdiagram';
+
+  @override
+  String get craneChecklistControls => 'Gjennomgang av betjeningsorganer og nødstopp';
+
+  @override
+  String get craneChecklistStartStop => 'Start-/stopp-prosedyrer';
+
+  @override
+  String get craneChecklistSafetyDevices => 'Sikkerhetsutstyr (grensebrytere/overlast)';
+
+  @override
+  String get craneChecklistStabilityOutriggers => 'Stabilitet/støttebein og oppstilling';
+
+  @override
+  String get craneChecklistLiftingGear => 'Løfteredskap kontrollert og riktig festet';
+
+  @override
+  String get craneChecklistSignals => 'Signaler/kommunikasjon med anhuker';
+
+  @override
+  String get craneChecklistWorkArea => 'Fareområder og svingradius';
+
+  @override
+  String get craneChecklistParking => 'Parkering/avstenging og sikring av kranen';
+
+  @override
+  String get dailyCheckForkliftInspectionTitle => 'Daglig sjekk - Truck';
+
+  @override
+  String get dailyCheckCraneInspectionTitle => 'Daglig sjekk - Kran';
 
   @override
   String get dailyCheckForkliftLabel => 'Truck';
@@ -858,10 +1017,19 @@ class AppLocalizationsNo extends AppLocalizations {
   String get dailyCheckCraneLabel => 'Kran';
 
   @override
+  String get dailyCheckMachineInspectionTitle => 'Daglig sjekk - Maskin';
+
+  @override
+  String get dailyCheckMachineLabel => 'Maskin';
+
+  @override
   String get formSectionContactInformation => '1. Kontaktinformasjon';
 
   @override
   String get formSectionOperatorInformation => '1. Førerinformasjon';
+
+  @override
+  String get formSectionMachineInfo => 'Maskininformasjon';
 
   @override
   String get formFieldName => 'Navn';
@@ -883,6 +1051,12 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get formFieldForkliftModel => 'Truckmodell';
+
+  @override
+  String get formFieldMachineModel => 'Maskinmodell';
+
+  @override
+  String get formFieldMachineID => 'Maskin ID/Serienr.';
 
   @override
   String get formSectionCertification => '2. Sertifisering';
@@ -1044,6 +1218,42 @@ class AppLocalizationsNo extends AppLocalizations {
   String get craneChecklistItemLogsReview => 'Gjennomgå vedlikeholds- og inspeksjonslogger';
 
   @override
+  String get machineChecklistItemVisualInspection => 'Visuell kontroll for lekkasjer/skader';
+
+  @override
+  String get machineChecklistItemFluidLevels => 'Sjekk motor-, hydraulikk- og kjølevæske nivåer';
+
+  @override
+  String get machineChecklistItemHydraulicHoses => 'Kontroller hydraulikkslanger og sylindere';
+
+  @override
+  String get machineChecklistItemTiresTracks => 'Kontroller dekk/belter og understell';
+
+  @override
+  String get machineChecklistItemBrakesSteering => 'Test bremser og styring';
+
+  @override
+  String get machineChecklistItemControlsEmergency => 'Test betjeningsorganer, nødstopp og varselalarm';
+
+  @override
+  String get machineChecklistItemWarningDevices => 'Sjekk lys, horn og varslingsutstyr';
+
+  @override
+  String get machineChecklistItemAttachmentLock => 'Verifiser feste/quick coupler låsing';
+
+  @override
+  String get machineChecklistItemSafetyEquipment => 'Kontroller setebelte, ROPS/FOPS og vern';
+
+  @override
+  String get machineChecklistItemFireExtinguisher => 'Sjekk brannslukker/førstehjelpsutstyr';
+
+  @override
+  String get machineChecklistItemCleanliness => 'Renhold av førerhus og maskin';
+
+  @override
+  String get machineChecklistItemDocumentationAvailable => 'Manual og loggbok tilgjengelig';
+
+  @override
   String get formFieldRequiredValidator => 'Dette feltet er påkrevd';
 
   @override
@@ -1052,6 +1262,11 @@ class AppLocalizationsNo extends AppLocalizations {
   @override
   String emailSubjectForkliftInspection(String date) {
     return 'Truck Inspeksjonsrapport - $date';
+  }
+
+  @override
+  String emailSubjectMachineInspection(String date) {
+    return 'Rapport: Maskininspeksjon - $date';
   }
 
   @override
@@ -1100,6 +1315,17 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get emailChecklistItemStatusUnchecked => 'Ikke Sjekket';
+
+  @override
+  String get savingLabel => 'Lagrer…';
+
+  @override
+  String get notSavedLabel => 'Ikke lagret ennå';
+
+  @override
+  String savedSecondsAgo(String seconds) {
+    return 'Lagret for $seconds sek siden';
+  }
 
   @override
   String get customImageLabel => 'Valgt bilde';
@@ -1484,6 +1710,9 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String get formAnswerNotSelected => 'Ikke valgt';
+
+  @override
+  String get webLiftsWarning => 'Lagring i nettleser er midlertidig og slettes når du lukker siden.';
 
   @override
   String get formButtonPreviewReport => 'Forhåndsvis rapport';

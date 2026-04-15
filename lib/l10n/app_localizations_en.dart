@@ -15,10 +15,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firstMenu => 'Lift Calculator';
 
   @override
-  String get secondMenu => 'My Page';
+  String get secondMenu => 'My Pages';
 
   @override
-  String get courseMenu => 'Courses';
+  String get courseMenu => 'Our Courses';
+
+  @override
+  String get qrDownloadTitle => 'Open on mobile';
+
+  @override
+  String get qrDownloadHint => 'Scan a QR to open BIKS in your app store.';
+
+  @override
+  String get qrAndroidLabel => 'Android (Play Store)';
+
+  @override
+  String get qrIOSLabel => 'iPhone (App Store)';
 
   @override
   String get liftingTable => 'Lifting Chart';
@@ -42,7 +54,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get inspectionsAndChecks => 'Inspections & Checks';
 
   @override
-  String get createdBy => 'Created by Entellix.no';
+  String get hotWork => 'Hot Work';
+
+  @override
+  String get createdBy => 'Made by Hakon Engfeldt in collaboration with Biks';
 
   @override
   String get howTo => 'How to calculate';
@@ -246,6 +261,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ton => 'tons';
+
+  @override
+  String get capacitySymmetricLabel => 'Allowable capacity';
+
+  @override
+  String get capacityUnsymmetricLabel => 'Reduced capacity (unsymmetric)';
+
+  @override
+  String get capacityReductionFactorLabel => 'Reduction factor';
+
+  @override
+  String get capacityReferenceLabel => 'Reference capacity';
 
   @override
   String get med => 'with';
@@ -846,7 +873,139 @@ class AppLocalizationsEn extends AppLocalizations {
   String get checklistItemShowDocumentationStorage => 'Show documentation storage';
 
   @override
-  String get dailyCheckForkliftInspectionTitle => 'Daily Check';
+  String get typeControlEquipmentCategory => 'Equipment';
+
+  @override
+  String get typeControlTruckLabel => 'Truck';
+
+  @override
+  String get typeControlMachineLabel => 'Machine';
+
+  @override
+  String get machineTypeTrainingHeader => 'Machine Type Training';
+
+  @override
+  String get machineInformation => 'Machine Information';
+
+  @override
+  String get machineTypeLabel => 'Machine Type';
+
+  @override
+  String get machineNumberLabel => 'Machine Number';
+
+  @override
+  String get machineTypeExcavator => 'Excavator';
+
+  @override
+  String get machineTypeWheelLoader => 'Wheel loader';
+
+  @override
+  String get machineTypeTelehandler => 'Telehandler';
+
+  @override
+  String get machineTypeDumpTruck => 'Dump truck/hauler';
+
+  @override
+  String get machineTypeOther => 'Other machine type';
+
+  @override
+  String get machineChecklistItemLicenseAvailable => 'License/permit available';
+
+  @override
+  String get machineChecklistItemInstructionManualRead => 'Instruction manual reviewed';
+
+  @override
+  String get machineChecklistItemExplainMainParts => 'Explain main parts and functions';
+
+  @override
+  String get machineChecklistItemExplainControls => 'Explain controls and safety functions';
+
+  @override
+  String get machineChecklistItemStartStopProcedures => 'Start/stop procedures';
+
+  @override
+  String get machineChecklistItemSafetySystems => 'Safety systems (seat belt, alarms)';
+
+  @override
+  String get machineChecklistItemRops => 'Roll-over protection (ROPS) inspected';
+
+  @override
+  String get machineChecklistItemAttachmentsTools => 'Attachments and quick coupler use';
+
+  @override
+  String get machineChecklistItemWorkAreaRisks => 'Work area hazards and safe zones';
+
+  @override
+  String get machineChecklistItemParkingShutdown => 'Parking/shutdown and securing machine';
+
+  @override
+  String get machineChecklistItemDailyChecks => 'Daily checks and maintenance points';
+
+  @override
+  String get typeControlCraneLabel => 'Crane';
+
+  @override
+  String get craneTypeTrainingHeader => 'Crane Type Training';
+
+  @override
+  String get craneInformation => 'Crane Information';
+
+  @override
+  String get craneTypeLabel => 'Crane Type';
+
+  @override
+  String get craneNumberLabel => 'Crane Number';
+
+  @override
+  String get craneTypeMobile => 'Mobile crane';
+
+  @override
+  String get craneTypeTower => 'Tower crane';
+
+  @override
+  String get craneTypeBridgeGantry => 'Bridge/gantry crane';
+
+  @override
+  String get craneTypePortal => 'Portal crane';
+
+  @override
+  String get craneTypeOther => 'Other crane type';
+
+  @override
+  String get craneChecklistLicense => 'License/permit available';
+
+  @override
+  String get craneChecklistInstructionManual => 'Instruction manual reviewed';
+
+  @override
+  String get craneChecklistMainParts => 'Explain main parts and load chart';
+
+  @override
+  String get craneChecklistControls => 'Explain controls and emergency stops';
+
+  @override
+  String get craneChecklistStartStop => 'Start/stop procedures';
+
+  @override
+  String get craneChecklistSafetyDevices => 'Safety devices (limit switches/overload)';
+
+  @override
+  String get craneChecklistStabilityOutriggers => 'Stability/outriggers and setup';
+
+  @override
+  String get craneChecklistLiftingGear => 'Lifting gear inspected and attached correctly';
+
+  @override
+  String get craneChecklistSignals => 'Signals/communication with rigger';
+
+  @override
+  String get craneChecklistWorkArea => 'Work area hazards and swing radius';
+
+  @override
+  String get craneChecklistParking => 'Parking/shutdown and securing crane';
+
+  @override
+  String get dailyCheckForkliftInspectionTitle => 'Forklift Daily Check';
 
   @override
   String get dailyCheckCraneInspectionTitle => 'Crane Daily Check';
@@ -858,10 +1017,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyCheckCraneLabel => 'Crane';
 
   @override
+  String get dailyCheckMachineInspectionTitle => 'Machine Daily Check';
+
+  @override
+  String get dailyCheckMachineLabel => 'Machine';
+
+  @override
   String get formSectionContactInformation => '1. Contact Information';
 
   @override
   String get formSectionOperatorInformation => '1. Operator Information';
+
+  @override
+  String get formSectionMachineInfo => 'Machine Information';
 
   @override
   String get formFieldName => 'Name';
@@ -883,6 +1051,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get formFieldForkliftModel => 'Forklift Model';
+
+  @override
+  String get formFieldMachineModel => 'Machine Model';
+
+  @override
+  String get formFieldMachineID => 'Machine ID/Serial No.';
 
   @override
   String get formSectionCertification => '2. Certification';
@@ -1044,6 +1218,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get craneChecklistItemLogsReview => 'Review Maintenance and Inspection Logs';
 
   @override
+  String get machineChecklistItemVisualInspection => 'Visual inspection for leaks/damage';
+
+  @override
+  String get machineChecklistItemFluidLevels => 'Check engine, hydraulic and coolant levels';
+
+  @override
+  String get machineChecklistItemHydraulicHoses => 'Inspect hydraulic hoses and cylinders';
+
+  @override
+  String get machineChecklistItemTiresTracks => 'Inspect tires/tracks and undercarriage';
+
+  @override
+  String get machineChecklistItemBrakesSteering => 'Test brakes and steering';
+
+  @override
+  String get machineChecklistItemControlsEmergency => 'Test controls, safety stops and backup alarm';
+
+  @override
+  String get machineChecklistItemWarningDevices => 'Check lights, horn and warning devices';
+
+  @override
+  String get machineChecklistItemAttachmentLock => 'Verify attachment/quick coupler locking';
+
+  @override
+  String get machineChecklistItemSafetyEquipment => 'Check seat belt, ROPS/FOPS and guards';
+
+  @override
+  String get machineChecklistItemFireExtinguisher => 'Check fire extinguisher/first aid kit';
+
+  @override
+  String get machineChecklistItemCleanliness => 'Cab and machine cleanliness';
+
+  @override
+  String get machineChecklistItemDocumentationAvailable => 'Manual and logbook available';
+
+  @override
   String get formFieldRequiredValidator => 'This field is required';
 
   @override
@@ -1052,6 +1262,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String emailSubjectForkliftInspection(String date) {
     return 'Forklift Inspection Report - $date';
+  }
+
+  @override
+  String emailSubjectMachineInspection(String date) {
+    return 'Machine Inspection Report - $date';
   }
 
   @override
@@ -1100,6 +1315,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get emailChecklistItemStatusUnchecked => 'Not Checked';
+
+  @override
+  String get savingLabel => 'Saving…';
+
+  @override
+  String get notSavedLabel => 'Not saved yet';
+
+  @override
+  String savedSecondsAgo(String seconds) {
+    return 'Saved ${seconds}s ago';
+  }
 
   @override
   String get customImageLabel => 'Selected Image';
@@ -1484,6 +1710,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get formAnswerNotSelected => 'Not Selected';
+
+  @override
+  String get webLiftsWarning => 'Storage in the browser is temporary and will be cleared when you leave the page.';
 
   @override
   String get formButtonPreviewReport => 'Preview Report';

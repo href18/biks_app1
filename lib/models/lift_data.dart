@@ -33,8 +33,10 @@ class ChainLiftData extends LiftData {
       required super.diameter,
       required super.weightLimit,
       required super.lift,
-      required this.recomendedDiameter});
+      required this.recomendedDiameter,
+      required this.unsymetricWeightLimit});
   final double recomendedDiameter;
+  final double unsymetricWeightLimit;
 }
 
 int partsFromIndex(int index) {
@@ -89,7 +91,8 @@ Future<List<LiftData>> readLiftDataFromCSV(String csvPath, bool isChain) async {
                 diameter: double.parse(row[0]),
                 weightLimit: double.parse(row[j]),
                 lift: Lift.fromCSV(headers[j], partsFromIndex(j)),
-                recomendedDiameter: double.parse(row[1]))
+                recomendedDiameter: double.parse(row[1]),
+                unsymetricWeightLimit: double.parse(row[toUnsymetricIndex(j)]))
             : StrapLiftData(
                 wll: double.parse(row[2]),
                 diameter: double.parse(row[1]),

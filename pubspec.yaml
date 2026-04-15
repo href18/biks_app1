@@ -16,7 +16,9 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 13.0.0+1
+version: 14.15.2+54
+#Remember change to ios!
+#14.15.2+54 android / ios
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -32,9 +34,9 @@ dependencies:
     sdk: flutter
   url_launcher:
   provider:
-  flutter_riverpod:
-  riverpod_annotation:
-  riverpod:
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+  riverpod: ^2.5.1
   sqflite:
   pdfx:
   flutter_launcher_icons:
@@ -49,18 +51,18 @@ dependencies:
   flutter_email_sender:
   printing:
   open_file:
-  pdfrx:
   image_picker: ^1.1.2
   share_plus: ^11.0.0
   pdf: ^3.11.3
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner:
   flutter_lints:
-  riverpod_generator:
-  riverpod_lint:
+  riverpod_generator: ^2.3.5
+  riverpod_lint: ^2.3.5
 
 flutter:
   generate: true
@@ -92,6 +94,8 @@ flutter:
     - lib/assets/images/biks_logo.png
     - lib/assets/icons/
     - lib/assets/loftetabell_merged.pdf
+    - lib/assets/hydraulikk/gjenger/
+    - lib/assets/hydraulikk/hydraulikkslanger/
 
   uses-material-design: true
   # The "flutter_lints" package below contains a set of recommended lints to

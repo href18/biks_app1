@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:biks/providers/equipment_provider.dart';
 import 'package:path_provider/path_provider.dart';
@@ -52,6 +53,8 @@ const List<String> columns = [
 class EquipmentConfigFetcher extends _$EquipmentConfigFetcher {
   static Database? _database;
   final String filename = 'liftDataHistory2';
+  static final List<EquipmentConfig> _memoryConfigs = [];
+  static int _memoryId = 0;
 
   Future<Database> get database async {
     developer.log(
@@ -169,6 +172,9 @@ CREATE TABLE $tableName (
   }
 
   Future<List<EquipmentConfig>> queryConfigs() async {
+    if (kIsWeb) {
+      return List.unmodifiable(_memoryConfigs);
+    }
     final db = await database;
     final List<Map> maps = await db.query(tableName, columns: columns);
     // Log the raw data fetched from the database
@@ -183,6 +189,21 @@ CREATE TABLE $tableName (
     // Changed signature: removed WidgetRef, returns Future<void>
     developer.log('EquipmentConfigFetcher.insert() method started.',
         name: 'EquipmentConfigFetcher.insert.Entry');
+    if (kIsWeb) {
+      EquipmentConfig equipmentState;
+      try {
+        equipmentState = ref.read(equipmentProvider);
+      } catch (e, s) {
+        state = AsyncError(e, s);
+        return;
+      }
+      final configWithId =
+          equipmentState.copyWith(id: ++_memoryId, datetime: DateTime.now());
+      _memoryConfigs.insert(0, configWithId);
+      state = AsyncData(List.unmodifiable(_memoryConfigs));
+      return;
+    }
+
     final db = await database;
     developer.log('Database instance obtained in insert().',
         name: 'EquipmentConfigFetcher.insert');
@@ -243,6 +264,12 @@ CREATE TABLE $tableName (
   }
 
   Future delete(EquipmentConfig config) async {
+    if (kIsWeb) {
+      _memoryConfigs.removeWhere(
+          (c) => (c.id != null && c.id == config.id) || identical(c, config));
+      state = AsyncData(List.unmodifiable(_memoryConfigs));
+      return;
+    }
     final db = await database;
     await db
         .delete(tableName, where: '$colTableId = ?', whereArgs: [config.id]);

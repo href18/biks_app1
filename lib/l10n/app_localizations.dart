@@ -110,14 +110,38 @@ abstract class AppLocalizations {
   /// No description provided for @secondMenu.
   ///
   /// In en, this message translates to:
-  /// **'My Page'**
+  /// **'My Pages'**
   String get secondMenu;
 
   /// No description provided for @courseMenu.
   ///
   /// In en, this message translates to:
-  /// **'Courses'**
+  /// **'Our Courses'**
   String get courseMenu;
+
+  /// No description provided for @qrDownloadTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open on mobile'**
+  String get qrDownloadTitle;
+
+  /// No description provided for @qrDownloadHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a QR to open BIKS in your app store.'**
+  String get qrDownloadHint;
+
+  /// No description provided for @qrAndroidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Android (Play Store)'**
+  String get qrAndroidLabel;
+
+  /// No description provided for @qrIOSLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'iPhone (App Store)'**
+  String get qrIOSLabel;
 
   /// No description provided for @liftingTable.
   ///
@@ -161,10 +185,16 @@ abstract class AppLocalizations {
   /// **'Inspections & Checks'**
   String get inspectionsAndChecks;
 
+  /// No description provided for @hotWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Hot Work'**
+  String get hotWork;
+
   /// No description provided for @createdBy.
   ///
   /// In en, this message translates to:
-  /// **'Created by Entellix.no'**
+  /// **'Made by Hakon Engfeldt in collaboration with Biks'**
   String get createdBy;
 
   /// No description provided for @howTo.
@@ -568,6 +598,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'tons'**
   String get ton;
+
+  /// Label for the standard lifting capacity when the lift is symmetric
+  ///
+  /// In en, this message translates to:
+  /// **'Allowable capacity'**
+  String get capacitySymmetricLabel;
+
+  /// Label for the reduced capacity when the lift is unsymmetric
+  ///
+  /// In en, this message translates to:
+  /// **'Reduced capacity (unsymmetric)'**
+  String get capacityUnsymmetricLabel;
+
+  /// Label for the factor used to reduce the capacity on an unsymmetric lift
+  ///
+  /// In en, this message translates to:
+  /// **'Reduction factor'**
+  String get capacityReductionFactorLabel;
+
+  /// Label for the base capacity used when calculating unsymmetric reductions
+  ///
+  /// In en, this message translates to:
+  /// **'Reference capacity'**
+  String get capacityReferenceLabel;
 
   /// No description provided for @med.
   ///
@@ -1757,10 +1811,274 @@ abstract class AppLocalizations {
   /// **'Show documentation storage'**
   String get checklistItemShowDocumentationStorage;
 
+  /// No description provided for @typeControlEquipmentCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipment'**
+  String get typeControlEquipmentCategory;
+
+  /// No description provided for @typeControlTruckLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Truck'**
+  String get typeControlTruckLabel;
+
+  /// No description provided for @typeControlMachineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine'**
+  String get typeControlMachineLabel;
+
+  /// No description provided for @machineTypeTrainingHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine Type Training'**
+  String get machineTypeTrainingHeader;
+
+  /// No description provided for @machineInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine Information'**
+  String get machineInformation;
+
+  /// No description provided for @machineTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine Type'**
+  String get machineTypeLabel;
+
+  /// No description provided for @machineNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine Number'**
+  String get machineNumberLabel;
+
+  /// No description provided for @machineTypeExcavator.
+  ///
+  /// In en, this message translates to:
+  /// **'Excavator'**
+  String get machineTypeExcavator;
+
+  /// No description provided for @machineTypeWheelLoader.
+  ///
+  /// In en, this message translates to:
+  /// **'Wheel loader'**
+  String get machineTypeWheelLoader;
+
+  /// No description provided for @machineTypeTelehandler.
+  ///
+  /// In en, this message translates to:
+  /// **'Telehandler'**
+  String get machineTypeTelehandler;
+
+  /// No description provided for @machineTypeDumpTruck.
+  ///
+  /// In en, this message translates to:
+  /// **'Dump truck/hauler'**
+  String get machineTypeDumpTruck;
+
+  /// No description provided for @machineTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other machine type'**
+  String get machineTypeOther;
+
+  /// No description provided for @machineChecklistItemLicenseAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'License/permit available'**
+  String get machineChecklistItemLicenseAvailable;
+
+  /// No description provided for @machineChecklistItemInstructionManualRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Instruction manual reviewed'**
+  String get machineChecklistItemInstructionManualRead;
+
+  /// No description provided for @machineChecklistItemExplainMainParts.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain main parts and functions'**
+  String get machineChecklistItemExplainMainParts;
+
+  /// No description provided for @machineChecklistItemExplainControls.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain controls and safety functions'**
+  String get machineChecklistItemExplainControls;
+
+  /// No description provided for @machineChecklistItemStartStopProcedures.
+  ///
+  /// In en, this message translates to:
+  /// **'Start/stop procedures'**
+  String get machineChecklistItemStartStopProcedures;
+
+  /// No description provided for @machineChecklistItemSafetySystems.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety systems (seat belt, alarms)'**
+  String get machineChecklistItemSafetySystems;
+
+  /// No description provided for @machineChecklistItemRops.
+  ///
+  /// In en, this message translates to:
+  /// **'Roll-over protection (ROPS) inspected'**
+  String get machineChecklistItemRops;
+
+  /// No description provided for @machineChecklistItemAttachmentsTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments and quick coupler use'**
+  String get machineChecklistItemAttachmentsTools;
+
+  /// No description provided for @machineChecklistItemWorkAreaRisks.
+  ///
+  /// In en, this message translates to:
+  /// **'Work area hazards and safe zones'**
+  String get machineChecklistItemWorkAreaRisks;
+
+  /// No description provided for @machineChecklistItemParkingShutdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Parking/shutdown and securing machine'**
+  String get machineChecklistItemParkingShutdown;
+
+  /// No description provided for @machineChecklistItemDailyChecks.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily checks and maintenance points'**
+  String get machineChecklistItemDailyChecks;
+
+  /// No description provided for @typeControlCraneLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crane'**
+  String get typeControlCraneLabel;
+
+  /// No description provided for @craneTypeTrainingHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Crane Type Training'**
+  String get craneTypeTrainingHeader;
+
+  /// No description provided for @craneInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Crane Information'**
+  String get craneInformation;
+
+  /// No description provided for @craneTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crane Type'**
+  String get craneTypeLabel;
+
+  /// No description provided for @craneNumberLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Crane Number'**
+  String get craneNumberLabel;
+
+  /// No description provided for @craneTypeMobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile crane'**
+  String get craneTypeMobile;
+
+  /// No description provided for @craneTypeTower.
+  ///
+  /// In en, this message translates to:
+  /// **'Tower crane'**
+  String get craneTypeTower;
+
+  /// No description provided for @craneTypeBridgeGantry.
+  ///
+  /// In en, this message translates to:
+  /// **'Bridge/gantry crane'**
+  String get craneTypeBridgeGantry;
+
+  /// No description provided for @craneTypePortal.
+  ///
+  /// In en, this message translates to:
+  /// **'Portal crane'**
+  String get craneTypePortal;
+
+  /// No description provided for @craneTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other crane type'**
+  String get craneTypeOther;
+
+  /// No description provided for @craneChecklistLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'License/permit available'**
+  String get craneChecklistLicense;
+
+  /// No description provided for @craneChecklistInstructionManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Instruction manual reviewed'**
+  String get craneChecklistInstructionManual;
+
+  /// No description provided for @craneChecklistMainParts.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain main parts and load chart'**
+  String get craneChecklistMainParts;
+
+  /// No description provided for @craneChecklistControls.
+  ///
+  /// In en, this message translates to:
+  /// **'Explain controls and emergency stops'**
+  String get craneChecklistControls;
+
+  /// No description provided for @craneChecklistStartStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Start/stop procedures'**
+  String get craneChecklistStartStop;
+
+  /// No description provided for @craneChecklistSafetyDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Safety devices (limit switches/overload)'**
+  String get craneChecklistSafetyDevices;
+
+  /// No description provided for @craneChecklistStabilityOutriggers.
+  ///
+  /// In en, this message translates to:
+  /// **'Stability/outriggers and setup'**
+  String get craneChecklistStabilityOutriggers;
+
+  /// No description provided for @craneChecklistLiftingGear.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifting gear inspected and attached correctly'**
+  String get craneChecklistLiftingGear;
+
+  /// No description provided for @craneChecklistSignals.
+  ///
+  /// In en, this message translates to:
+  /// **'Signals/communication with rigger'**
+  String get craneChecklistSignals;
+
+  /// No description provided for @craneChecklistWorkArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Work area hazards and swing radius'**
+  String get craneChecklistWorkArea;
+
+  /// No description provided for @craneChecklistParking.
+  ///
+  /// In en, this message translates to:
+  /// **'Parking/shutdown and securing crane'**
+  String get craneChecklistParking;
+
   /// No description provided for @dailyCheckForkliftInspectionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Daily Check'**
+  /// **'Forklift Daily Check'**
   String get dailyCheckForkliftInspectionTitle;
 
   /// No description provided for @dailyCheckCraneInspectionTitle.
@@ -1781,6 +2099,18 @@ abstract class AppLocalizations {
   /// **'Crane'**
   String get dailyCheckCraneLabel;
 
+  /// No description provided for @dailyCheckMachineInspectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine Daily Check'**
+  String get dailyCheckMachineInspectionTitle;
+
+  /// No description provided for @dailyCheckMachineLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine'**
+  String get dailyCheckMachineLabel;
+
   /// No description provided for @formSectionContactInformation.
   ///
   /// In en, this message translates to:
@@ -1792,6 +2122,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'1. Operator Information'**
   String get formSectionOperatorInformation;
+
+  /// No description provided for @formSectionMachineInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine Information'**
+  String get formSectionMachineInfo;
 
   /// No description provided for @formFieldName.
   ///
@@ -1834,6 +2170,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Forklift Model'**
   String get formFieldForkliftModel;
+
+  /// No description provided for @formFieldMachineModel.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine Model'**
+  String get formFieldMachineModel;
+
+  /// No description provided for @formFieldMachineID.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine ID/Serial No.'**
+  String get formFieldMachineID;
 
   /// No description provided for @formSectionCertification.
   ///
@@ -2153,6 +2501,78 @@ abstract class AppLocalizations {
   /// **'Review Maintenance and Inspection Logs'**
   String get craneChecklistItemLogsReview;
 
+  /// No description provided for @machineChecklistItemVisualInspection.
+  ///
+  /// In en, this message translates to:
+  /// **'Visual inspection for leaks/damage'**
+  String get machineChecklistItemVisualInspection;
+
+  /// No description provided for @machineChecklistItemFluidLevels.
+  ///
+  /// In en, this message translates to:
+  /// **'Check engine, hydraulic and coolant levels'**
+  String get machineChecklistItemFluidLevels;
+
+  /// No description provided for @machineChecklistItemHydraulicHoses.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspect hydraulic hoses and cylinders'**
+  String get machineChecklistItemHydraulicHoses;
+
+  /// No description provided for @machineChecklistItemTiresTracks.
+  ///
+  /// In en, this message translates to:
+  /// **'Inspect tires/tracks and undercarriage'**
+  String get machineChecklistItemTiresTracks;
+
+  /// No description provided for @machineChecklistItemBrakesSteering.
+  ///
+  /// In en, this message translates to:
+  /// **'Test brakes and steering'**
+  String get machineChecklistItemBrakesSteering;
+
+  /// No description provided for @machineChecklistItemControlsEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Test controls, safety stops and backup alarm'**
+  String get machineChecklistItemControlsEmergency;
+
+  /// No description provided for @machineChecklistItemWarningDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Check lights, horn and warning devices'**
+  String get machineChecklistItemWarningDevices;
+
+  /// No description provided for @machineChecklistItemAttachmentLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify attachment/quick coupler locking'**
+  String get machineChecklistItemAttachmentLock;
+
+  /// No description provided for @machineChecklistItemSafetyEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Check seat belt, ROPS/FOPS and guards'**
+  String get machineChecklistItemSafetyEquipment;
+
+  /// No description provided for @machineChecklistItemFireExtinguisher.
+  ///
+  /// In en, this message translates to:
+  /// **'Check fire extinguisher/first aid kit'**
+  String get machineChecklistItemFireExtinguisher;
+
+  /// No description provided for @machineChecklistItemCleanliness.
+  ///
+  /// In en, this message translates to:
+  /// **'Cab and machine cleanliness'**
+  String get machineChecklistItemCleanliness;
+
+  /// No description provided for @machineChecklistItemDocumentationAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual and logbook available'**
+  String get machineChecklistItemDocumentationAvailable;
+
   /// No description provided for @formFieldRequiredValidator.
   ///
   /// In en, this message translates to:
@@ -2170,6 +2590,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Forklift Inspection Report - {date}'**
   String emailSubjectForkliftInspection(String date);
+
+  /// No description provided for @emailSubjectMachineInspection.
+  ///
+  /// In en, this message translates to:
+  /// **'Machine Inspection Report - {date}'**
+  String emailSubjectMachineInspection(String date);
 
   /// No description provided for @emailSubjectCraneInspection.
   ///
@@ -2260,6 +2686,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not Checked'**
   String get emailChecklistItemStatusUnchecked;
+
+  /// No description provided for @savingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get savingLabel;
+
+  /// No description provided for @notSavedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Not saved yet'**
+  String get notSavedLabel;
+
+  /// No description provided for @savedSecondsAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {seconds}s ago'**
+  String savedSecondsAgo(String seconds);
 
   /// No description provided for @customImageLabel.
   ///
@@ -3028,6 +3472,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not Selected'**
   String get formAnswerNotSelected;
+
+  /// No description provided for @webLiftsWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage in the browser is temporary and will be cleared when you leave the page.'**
+  String get webLiftsWarning;
 
   /// No description provided for @formButtonPreviewReport.
   ///

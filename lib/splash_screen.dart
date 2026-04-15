@@ -46,16 +46,6 @@ class _SplashScreenState extends State<SplashScreen>
                 image: AssetImage('lib/assets/images/biks_logo.png'),
                 width: 150,
                 height: 150),
-            Padding(
-              padding: const EdgeInsets.only(top: 150),
-              child: Image(
-                image: AssetImage(
-                  "lib/assets/Entellix_transparent-.png",
-                ),
-                width: 120,
-                height: 120,
-              ),
-            ),
           ],
         ),
       ),
