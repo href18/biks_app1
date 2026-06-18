@@ -26,7 +26,7 @@ class TypeControlScreen extends StatefulWidget {
   const TypeControlScreen({super.key});
 
   @override
-  _TypeControlScreenState createState() => _TypeControlScreenState();
+  State<TypeControlScreen> createState() => _TypeControlScreenState();
 }
 
 class _TypeControlScreenState extends State<TypeControlScreen> {
@@ -789,16 +789,19 @@ extension on _TypeControlScreenState {
       final file = File('${tempDir.path}/$fileName');
       await file.writeAsBytes(pdfBytes);
 
+      if (!mounted) return;
       await SharePlus.instance.share(ShareParams(
           files: [XFile(file.path)],
           subject: subject,
           title: l10n.emailBodyPreamble,
           sharePositionOrigin: context.sharePositionOrigin));
+      if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(l10n.formSnackbarReportShared)));
       _clearForm();
     } catch (e) {
       debugPrint('Error sharing PDF report for Type Control: $e');
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.formSnackbarEmailFailed(e.toString()))));
     }

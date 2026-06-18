@@ -15,10 +15,18 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    Future.delayed(Duration(milliseconds: 1350), () {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Color(0xFF040D3C),
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+    );
+    Future.delayed(const Duration(milliseconds: 850), () {
       if (!mounted) return;
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (_) => SecondScreen()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const SecondScreen()));
     });
   }
 
@@ -32,21 +40,16 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF040D3C),
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Color(0xFF040D3C), Colors.black],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(
-                image: AssetImage('lib/assets/images/biks_logo.png'),
-                width: 150,
-                height: 150),
-          ],
+        color: const Color(0xFF040D3C),
+        child: Center(
+          child: Image.asset(
+            'lib/assets/images/biks_logo.png',
+            width: 168,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );

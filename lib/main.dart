@@ -3,17 +3,17 @@ import 'package:biks/l10n/app_localizations.dart';
 import 'package:biks/models/equipment_type.dart';
 import 'package:biks/models/lift.dart';
 import 'package:biks/splash_screen.dart';
+import 'package:biks/utils/external_link_launcher.dart';
 import 'package:biks/views/daily_check.dart';
+import 'package:biks/views/crane_plan_examples.dart';
 import 'package:biks/views/lift_data_view.dart';
 import 'package:biks/views/my_lifts.dart';
 import 'package:biks/views/risk_assesment.dart';
-import 'package:biks/views/typeControlTruck.dart';
+import 'package:biks/views/type_control_truck.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:pdfx/pdfx.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -241,7 +241,8 @@ class SecondScreen extends ConsumerStatefulWidget {
 class _SecondScreenState extends ConsumerState<SecondScreen> {
   Future<void> _launchUrl(Uri url) async {
     try {
-      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      final launched = await openExternalLink(url);
+      if (!launched) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -312,6 +313,16 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
         action: () => _navigateWithAnimation(const LiftingW()),
       ),
       _MenuItem(
+        title: 'Kranplan',
+        subtitle: 'Interaktiv plan for radius, bom og hinder',
+        leadingWidget: Icon(
+          Icons.precision_manufacturing_outlined,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
+        ),
+        action: () => _navigateWithAnimation(const CranePlanExamplesPage()),
+      ),
+      _MenuItem(
         title: l10n?.liftingTable ?? 'Lifting chart',
         subtitle: 'Oppslag for tabeller og last',
         leadingWidget: Image.asset(
@@ -341,6 +352,17 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
           size: 24,
         ),
         action: () => _navigateWithAnimation(const HydraulicHomeScreen()),
+      ),
+      _MenuItem(
+        title: 'Strekkbelastning pr. stropp',
+        subtitle: 'Oppslag for vinkel og stroppbelastning',
+        leadingWidget: Icon(
+          Icons.architecture_outlined,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
+        ),
+        action: () =>
+            _navigateWithAnimation(const SlingTensionCalculatorPage()),
       ),
       _MenuItem(
         title: l10n?.inspectionsAndChecks ?? "Inspections & Checks",
@@ -659,9 +681,64 @@ class LifttabellFinal extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n?.liftingTable ?? 'Lifting chart'),
       ),
-      body: PdfViewPinch(
-        controller: PdfControllerPinch(
-          document: PdfDocument.openAsset("lib/assets/loftetabell_merged.pdf"),
+      body: const _PdfUnavailableView(
+        title: 'Løftetabell',
+        assetPath: 'lib/assets/loftetabell_merged.pdf',
+      ),
+    );
+  }
+}
+
+class _PdfUnavailableView extends StatelessWidget {
+  const _PdfUnavailableView({
+    required this.title,
+    required this.assetPath,
+  });
+
+  final String title;
+  final String assetPath;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.picture_as_pdf_outlined,
+                  size: 48,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'PDF-visning er midlertidig avkoblet på iOS-testbuilden.',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  assetPath,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

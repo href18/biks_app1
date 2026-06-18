@@ -134,7 +134,7 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
         await ref.read(equipmentProvider.notifier).findBestLiftData();
 
     if (!success) {
-      if (!mounted) return;
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.weightTh)),
       );
@@ -196,7 +196,7 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
         ? '${bestLiftData.lift.parts}x ${equipmentConfig.equipmentType.displayName} ${l10n.medWLL} ${numberFormat.format(bestLiftData.wll)} ${l10n.ton}'
         : null;
 
-    if (!mounted) return;
+    if (!context.mounted) return;
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -331,14 +331,14 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                 }
                 ref.read(equipmentProvider.notifier).weight = 0;
                 ref.read(equipmentProvider.notifier).userImagePath = null;
-                if (mounted) Navigator.pop(context);
+                if (context.mounted) Navigator.pop(context);
               } catch (e, s) {
                 developer.log(
                     'Error calling or awaiting insert() from LiftDataView',
                     error: e,
                     stackTrace: s,
                     name: 'LiftDataView.showLiftDataDialog.Error');
-                if (mounted) {
+                if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Error saving lift: $e')),
                   );
@@ -836,7 +836,7 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                   ),
                   Switch(
                     value: equipmentConfig.isUnsymetric,
-                    activeColor: theme.colorScheme.primary,
+                    activeThumbColor: theme.colorScheme.primary,
                     onChanged: (value) {
                       ref.read(equipmentProvider.notifier).isUnsymetric = value;
                     },

@@ -7,7 +7,8 @@ import UIKit
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GeneratedPluginRegistrant.register(with: self)
+    // Temporarily disabled for iOS 26 device testing: several native plugins
+    // crash during registration before Flutter renders the first screen.
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

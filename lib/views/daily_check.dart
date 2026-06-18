@@ -192,6 +192,7 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
   Future<void> _loadFormProgress() async {
     final l10n = AppLocalizations.of(context)!;
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     final String? savedDataJson = prefs.getString(_formProgressKey);
 
     if (savedDataJson != null) {
@@ -318,6 +319,7 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
       'improvements': _improvementsController.text,
     };
     await prefs.setString(_formProgressKey, jsonEncode(dataToSave));
+    if (!mounted) return;
     if (showMessage) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.formSnackbarProgressSaved)),
@@ -726,6 +728,7 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
         await pdf_download.downloadPdf(pdfBytes, fileName);
       } else {
         final file = await io_utils.writeTempFile(pdfBytes, fileName);
+        if (!context.mounted) return;
         await SharePlus.instance.share(ShareParams(
             files: [XFile(file.path)],
             subject: subject,
@@ -733,6 +736,7 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
             sharePositionOrigin: context.sharePositionOrigin));
       }
 
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.formSnackbarReportShared)),
       );
@@ -740,6 +744,7 @@ class _ForkliftFormWidgetState extends State<_ForkliftFormWidget> {
       _clearForm();
     } catch (e) {
       debugPrint('Error sharing PDF report: $e');
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(l10n.formSnackbarEmailFailed(
@@ -825,6 +830,7 @@ class _MachineFormWidgetState extends State<_MachineFormWidget> {
   Future<void> _loadFormProgress() async {
     final l10n = AppLocalizations.of(context)!;
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     final String? savedDataJson = prefs.getString(_formProgressKey);
 
     if (savedDataJson != null) {
@@ -946,6 +952,7 @@ class _MachineFormWidgetState extends State<_MachineFormWidget> {
     final prefs = await SharedPreferences.getInstance();
     final inspectionData = _getInspectionData();
     await prefs.setString(_formProgressKey, jsonEncode(inspectionData));
+    if (!mounted) return;
     if (showMessage) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.formSnackbarProgressSaved)),
@@ -1340,6 +1347,7 @@ class _MachineFormWidgetState extends State<_MachineFormWidget> {
         await pdf_download.downloadPdf(pdfBytes, fileName);
       } else {
         final file = await io_utils.writeTempFile(pdfBytes, fileName);
+        if (!context.mounted) return;
         await SharePlus.instance.share(ShareParams(
             files: [XFile(file.path)],
             subject: subject,
@@ -1347,13 +1355,15 @@ class _MachineFormWidgetState extends State<_MachineFormWidget> {
             sharePositionOrigin: context.sharePositionOrigin));
       }
 
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.formSnackbarReportShared)),
       );
       await _clearSavedProgress();
       _clearForm();
     } catch (e) {
-      print('Error sharing PDF report: $e');
+      debugPrint('Error sharing PDF report: $e');
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(l10n.formSnackbarEmailFailed(
@@ -1485,6 +1495,7 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
   Future<void> _loadFormProgress() async {
     final l10n = AppLocalizations.of(context)!;
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     final String? savedDataJson = prefs.getString(_formProgressKey);
 
     if (savedDataJson != null) {
@@ -1616,6 +1627,7 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
       'improvements': _improvementsController.text,
     };
     await prefs.setString(_formProgressKey, jsonEncode(dataToSave));
+    if (!mounted) return;
     if (showMessage) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.formSnackbarProgressSaved)),
@@ -2038,6 +2050,7 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
         await pdf_download.downloadPdf(pdfBytes, fileName);
       } else {
         final file = await io_utils.writeTempFile(pdfBytes, fileName);
+        if (!context.mounted) return;
         await SharePlus.instance.share(ShareParams(
             files: [XFile(file.path)],
             subject: subject,
@@ -2045,6 +2058,7 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
             sharePositionOrigin: context.sharePositionOrigin));
       }
 
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(l10n
@@ -2054,6 +2068,7 @@ class _CraneFormWidgetState extends State<_CraneFormWidget> {
       _clearForm();
     } catch (e) {
       debugPrint('Error sharing PDF report: $e');
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(l10n.formSnackbarEmailFailed(

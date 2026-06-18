@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 
-// For a real PDF viewer, you'll need to add a package to your pubspec.yaml,
-// such as 'flutter_pdfview', 'syncfusion_flutter_pdfviewer', or 'pdfx' (which you have).
-// Then import it, for example:
-import 'package:pdfx/pdfx.dart'; // Example import for pdfx
-
 // Enum to represent the different menu items for better type safety and readability
 enum MyMenuItems {
   viewDocumentAlpha,
@@ -40,41 +35,20 @@ class PdfMenuWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 const Divider(),
-                // --- PDF Viewer Integration ---
-                // Replace the Icon below with your chosen PDF viewer.
-                // Example using 'pdfx' package for PDFs loaded from assets:
                 Expanded(
-                  child: PdfView(
-                    controller: PdfController(
-                      document: PdfDocument.openAsset(pdfPath),
-                    ),
-                    // You can customize other PdfView parameters here:
-                    // onPageChanged: (page) {},
-                    // onDocumentLoaded: (document) {},
-                    // onDocumentError: (error) {},
-                    // scrollDirection: Axis.vertical,
-                    // pageSnapping: true,
-                    // backgroundDecoration: BoxDecoration(color: Colors.grey[200]),
-                  ),
-                ),
-                // --- End PDF Viewer Integration ---
-                // Original placeholder (remove if using a real viewer above):
-                /*
-                const Expanded(
                   child: Center(
-                    child: Icon(Icons.picture_as_pdf,
-                        size: 100, color: Colors.grey),
+                    child: Icon(
+                      Icons.picture_as_pdf_outlined,
+                      size: 96,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 ),
-                const Divider(),
-                const SizedBox(height: 8),*/
-                // Keep this note if you want to remind yourself or others about viewer integration
                 const Text(
-                  "Ensure the PDF viewer above is correctly configured.",
+                  "PDF-visning er midlertidig avkoblet på iOS-testbuilden.",
                   style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
                   textAlign: TextAlign.center,
                 ),
-                // ---
               ],
             ),
           ),

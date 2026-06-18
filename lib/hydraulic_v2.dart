@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 
 import 'package:biks/views/hydraulic_conversion.dart';
-import 'package:pdfx/pdfx.dart';
 
 // --- Home Screen for the Hydraulic Calculator Feature ---
 class HydraulicHomeScreen extends StatelessWidget {
@@ -209,6 +208,193 @@ class _HydraulicMenuTile extends StatelessWidget {
   }
 }
 
+class SlingTensionCalculatorPage extends StatelessWidget {
+  const SlingTensionCalculatorPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(title: const Text('Strekkbelastning pr. stropp')),
+      backgroundColor: theme.colorScheme.surfaceContainerLow,
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
+        children: const [
+          _SlingDiagramCard(),
+          SizedBox(height: 12),
+          _SlingReferenceTable(),
+        ],
+      ),
+    );
+  }
+}
+
+class _SlingDiagramCard extends StatelessWidget {
+  const _SlingDiagramCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      elevation: 0,
+      color: theme.colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: InteractiveViewer(
+            minScale: 1,
+            maxScale: 4,
+            child: Image.asset(
+              'lib/assets/images/reference/sling_tension_diagram.png',
+              fit: BoxFit.fitWidth,
+              width: double.infinity,
+              semanticLabel: 'Tegning av strekkbelastning ved to-parts løft',
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SlingReferenceTable extends StatelessWidget {
+  const _SlingReferenceTable();
+
+  static const rows = [
+    _SlingReferenceRow(angle: '15°', load: '5.18 t', isWarning: false),
+    _SlingReferenceRow(angle: '30°', load: '5.77 t', isWarning: false),
+    _SlingReferenceRow(angle: '45°', load: '7.07 t', isWarning: false),
+    _SlingReferenceRow(angle: '60°', load: '10.00 t', isWarning: false),
+    _SlingReferenceRow(angle: '70°', load: '14.62 t', isWarning: true),
+    _SlingReferenceRow(angle: '80°', load: '28.79 t', isWarning: true),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      elevation: 0,
+      color: theme.colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Strekkbelastning pr. stropp',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Rett løft, 10 tonn last, 2 stropper',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Vinkel',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Pr. stropp',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            for (final row in rows) _SlingReferenceTile(row: row),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SlingReferenceRow {
+  const _SlingReferenceRow({
+    required this.angle,
+    required this.load,
+    required this.isWarning,
+  });
+
+  final String angle;
+  final String load;
+  final bool isWarning;
+}
+
+class _SlingReferenceTile extends StatelessWidget {
+  const _SlingReferenceTile({required this.row});
+
+  final _SlingReferenceRow row;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final foreground =
+        row.isWarning ? theme.colorScheme.error : theme.colorScheme.onSurface;
+    final background = row.isWarning
+        ? theme.colorScheme.errorContainer.withAlpha(80)
+        : theme.colorScheme.surface;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: row.isWarning
+              ? theme.colorScheme.error
+              : theme.colorScheme.outlineVariant,
+          width: row.isWarning ? 1.4 : 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              row.angle,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: foreground,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          Text(
+            row.load,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // --- PDF Viewer Pages (G-Table & Thread Chart) ---
 class GTablePage extends StatelessWidget {
   const GTablePage({super.key});
@@ -220,10 +406,9 @@ class GTablePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n?.gTable ?? 'G-Table'),
       ),
-      body: PdfViewPinch(
-        controller: PdfControllerPinch(
-          document: PdfDocument.openAsset("lib/assets/gjengetabell.pdf"),
-        ),
+      body: const _HydraulicPdfUnavailableView(
+        title: 'Gjengetabell',
+        assetPath: 'lib/assets/gjengetabell.pdf',
       ),
     );
   }
@@ -315,7 +500,7 @@ class ThreadChartPage extends StatelessWidget {
   }
 }
 
-class HydraulicPdfPage extends StatefulWidget {
+class HydraulicPdfPage extends StatelessWidget {
   const HydraulicPdfPage({
     super.key,
     required this.title,
@@ -326,59 +511,67 @@ class HydraulicPdfPage extends StatefulWidget {
   final String assetPath;
 
   @override
-  State<HydraulicPdfPage> createState() => _HydraulicPdfPageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: _HydraulicPdfUnavailableView(
+        title: title,
+        assetPath: assetPath,
+      ),
+    );
+  }
 }
 
-class _HydraulicPdfPageState extends State<HydraulicPdfPage> {
-  late final Future<PdfDocument> _documentFuture;
-  late final PdfController _controller;
+class _HydraulicPdfUnavailableView extends StatelessWidget {
+  const _HydraulicPdfUnavailableView({
+    required this.title,
+    required this.assetPath,
+  });
 
-  @override
-  void initState() {
-    super.initState();
-    _documentFuture = PdfDocument.openAsset(widget.assetPath);
-    _controller = PdfController(document: _documentFuture);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  final String title;
+  final String assetPath;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: ColoredBox(
-        color: Theme.of(context).colorScheme.surfaceContainerLow,
-        child: PdfView(
-          controller: _controller,
-          backgroundDecoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-          ),
-          scrollDirection: Axis.horizontal,
-          pageSnapping: true,
-          builders: PdfViewBuilders<DefaultBuilderOptions>(
-            options: const DefaultBuilderOptions(),
-            documentLoaderBuilder: (_) =>
-                const Center(child: CircularProgressIndicator()),
-            pageLoaderBuilder: (_) =>
-                const Center(child: CircularProgressIndicator()),
-            errorBuilder: (_, error) => Center(child: Text(error.toString())),
-            pageBuilder: (context, pageImage, index, document) =>
-                PhotoViewGalleryPageOptions(
-                  imageProvider: PdfPageImageProvider(
-                    pageImage,
-                    index,
-                    document.id,
-                  ),
-                  minScale: PhotoViewComputedScale.contained,
-                  maxScale: PhotoViewComputedScale.contained * 4,
-                  initialScale: PhotoViewComputedScale.contained,
-                  heroAttributes:
-                      PhotoViewHeroAttributes(tag: '${document.id}-$index'),
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.picture_as_pdf_outlined,
+                  size: 48,
+                  color: theme.colorScheme.primary,
                 ),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'PDF-visning er midlertidig avkoblet på iOS-testbuilden.',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  assetPath,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -16,9 +16,9 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 14.15.2+54
+version: 14.15.3+55
 #Remember change to ios!
-#14.15.2+54 android / ios
+#14.15.3+55 android / ios
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -38,23 +38,19 @@ dependencies:
   riverpod_annotation: ^2.3.5
   riverpod: ^2.5.1
   sqflite:
-  pdfx:
   flutter_launcher_icons:
   path_provider:
   shared_preferences:
   google_fonts:
   mailer:
-  flutter_localization:
   intl: any
   flutter_localizations:
     sdk: flutter
-  flutter_email_sender:
-  printing:
-  open_file:
   image_picker: ^1.1.2
   share_plus: ^11.0.0
   pdf: ^3.11.3
   qr_flutter: ^4.1.0
+  web:
 
 dev_dependencies:
   flutter_test:
@@ -92,6 +88,8 @@ flutter:
     - lib/assets/images/ENGf.png
     - lib/assets/images/HydraS.png
     - lib/assets/images/biks_logo.png
+    - lib/assets/images/reference/sling_tension_reference.png
+    - lib/assets/images/reference/sling_tension_diagram.png
     - lib/assets/icons/
     - lib/assets/loftetabell_merged.pdf
     - lib/assets/hydraulikk/gjenger/

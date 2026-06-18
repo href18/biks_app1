@@ -86,7 +86,6 @@ class RiskAssessmentScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        
         title: Text(l10n.riskAssessmentTruck),
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -202,6 +201,7 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
   Future<void> _loadFormProgress() async {
     final l10n = AppLocalizations.of(context)!;
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     final String? savedDataJson = prefs.getString(_formProgressKey);
 
     if (savedDataJson != null) {
@@ -242,6 +242,7 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
     final prefs = await SharedPreferences.getInstance();
     final assessment = _getAssessmentData();
     await prefs.setString(_formProgressKey, jsonEncode(assessment.toJson()));
+    if (!mounted) return;
     if (showMessage) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.formSnackbarProgressSaved)),
@@ -715,18 +716,21 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
       final file = File('${tempDir.path}/$fileName');
       await file.writeAsBytes(pdfBytes);
 
+      if (!context.mounted) return;
       await SharePlus.instance.share(ShareParams(
           files: [XFile(file.path)],
           subject: subject,
           title: l10n.shareRiskAssessment,
           sharePositionOrigin: context.sharePositionOrigin));
 
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(l10n.formSnackbarReportShared)));
       await _clearSavedProgress();
       _clearForm();
     } catch (e) {
       debugPrint('Error sharing PDF report: $e');
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.formSnackbarEmailFailed(e.toString()))));
     }
