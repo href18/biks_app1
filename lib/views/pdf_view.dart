@@ -1,67 +1,32 @@
+import 'package:biks/widgets/asset_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 
-// Enum to represent the different menu items for better type safety and readability
 enum MyMenuItems {
-  viewDocumentAlpha,
-  viewDocumentBeta,
-  optionOne,
-  optionTwo,
+  viewColorTable,
+  viewLiftingTable,
   viewGjengeTabell,
-  viewMergedDocument,
 }
 
 class PdfMenuWidget extends StatelessWidget {
   const PdfMenuWidget({super.key});
 
-  // Function to show the dialog
-  void _showPdfDialog(
-      BuildContext context, String pdfPath, String documentTitle) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(documentTitle),
-          content: SizedBox(
-            // Adjust width and height as per your needs
-            width: double.maxFinite,
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  'The PDF viewer for "$pdfPath" would be displayed below.\n'
-                  'You need to integrate a PDF viewing package.',
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                const Divider(),
-                Expanded(
-                  child: Center(
-                    child: Icon(
-                      Icons.picture_as_pdf_outlined,
-                      size: 96,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
-                const Text(
-                  "PDF-visning er midlertidig avkoblet på iOS-testbuilden.",
-                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+  void _openPdf(
+    BuildContext context,
+    String assetPath,
+    String title, {
+    AssetPdfFitPolicy fitPolicy = AssetPdfFitPolicy.width,
+  }) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          appBar: AppBar(title: Text(title)),
+          body: AssetPdfViewer(
+            title: title,
+            assetPath: assetPath,
+            fitPolicy: fitPolicy,
           ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -70,74 +35,34 @@ class PdfMenuWidget extends StatelessWidget {
     return PopupMenuButton<MyMenuItems>(
       icon: const Icon(Icons.menu), // You can customize the icon
       onSelected: (MyMenuItems selectedItem) {
-        // --- IMPORTANT ---
-        // Replace these with your actual PDF paths
-        // Using asset paths as an example, based on your pubspec.yaml
-        const String pathForDocAlpha =
-            "lib/assets/ilovepdf_merged.pdf"; // Example
-        const String pathForDocBeta =
-            "lib/assets/loftetabell_merged.pdf"; // Example
+        const String pathForColorTable = "lib/assets/ilovepdf_merged.pdf";
+        const String pathForLiftingTable = "lib/assets/loftetabell_merged.pdf";
         const String pathForGjengeTabell = "lib/assets/gjengetabell.pdf";
-        const String pathForAnotherDoc =
-            "lib/assets/loftetabell_merged.pdf"; // Add your 4th PDF path
-
-        // --- ----------- ---
 
         switch (selectedItem) {
-          case MyMenuItems.viewDocumentAlpha:
-            _showPdfDialog(context, pathForDocAlpha, "Document Alpha");
+          case MyMenuItems.viewColorTable:
+            _openPdf(context, pathForColorTable, "Fargetabell");
             break;
-          case MyMenuItems.viewDocumentBeta:
-            _showPdfDialog(context, pathForDocBeta, "Document Beta");
+          case MyMenuItems.viewLiftingTable:
+            _openPdf(context, pathForLiftingTable, "Løftetabell");
             break;
           case MyMenuItems.viewGjengeTabell:
-            _showPdfDialog(context, pathForGjengeTabell, "Gjengetabell");
-            break;
-          case MyMenuItems
-                .viewMergedDocument: // Renamed from viewDocumentGamma for clarity
-            _showPdfDialog(
-                context, pathForAnotherDoc, "Another Document"); // Update title
-            break;
-          case MyMenuItems.optionOne:
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Option One selected')),
-            );
-            // Implement action for Option One
-            break;
-          case MyMenuItems.optionTwo:
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Option Two selected')),
-            );
-            // Implement action for Option Two
+            _openPdf(context, pathForGjengeTabell, "Gjengetabell");
             break;
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<MyMenuItems>>[
         const PopupMenuItem<MyMenuItems>(
-          value: MyMenuItems.viewDocumentAlpha,
-          child: Text('View Document Alpha (PDF)'),
+          value: MyMenuItems.viewColorTable,
+          child: Text('Fargetabell'),
         ),
         const PopupMenuItem<MyMenuItems>(
-          value: MyMenuItems.viewDocumentBeta,
-          child: Text('View Document Beta (PDF)'),
+          value: MyMenuItems.viewLiftingTable,
+          child: Text('Løftetabell'),
         ),
         const PopupMenuItem<MyMenuItems>(
           value: MyMenuItems.viewGjengeTabell,
-          child: Text('View Gjengetabell (PDF)'),
-        ),
-        const PopupMenuItem<MyMenuItems>(
-          value:
-              MyMenuItems.viewMergedDocument, // Renamed from viewDocumentGamma
-          child: Text('View Another Document (PDF)'), // Update text
-        ),
-        const PopupMenuDivider(),
-        const PopupMenuItem<MyMenuItems>(
-          value: MyMenuItems.optionOne,
-          child: Text('Option One'),
-        ),
-        const PopupMenuItem<MyMenuItems>(
-          value: MyMenuItems.optionTwo,
-          child: Text('Option Two'),
+          child: Text('Gjengetabell'),
         ),
       ],
     );

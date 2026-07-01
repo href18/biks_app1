@@ -1,0 +1,48 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Flutter: Run (interactive device)",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "run"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Flutter: Run (release)",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "run",
+                "--release"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+        ,
+        {
+            "label": "Flutter: Start Emulator + Run",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-lc",
+                "em=$(flutter emulators --machine | python -c \"import sys,json;d=json.load(sys.stdin);print(d[0]['id'] if d else '')\"); if [ -n \"$em\" ]; then flutter emulators --launch \"$em\"; fi; flutter run"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
+

@@ -60,7 +60,7 @@ final List<PipeSize> pipeSizesData = [
       mm: 9.53,
       dashSize: 6),
   const PipeSize(
-      dn: "DN 12",
+      dn: "DN 13",
       inchesFraction: "1/2\"",
       inchesDecimal: 0.5,
       mm: 12.7,
@@ -72,7 +72,7 @@ final List<PipeSize> pipeSizesData = [
       mm: 15.88,
       dashSize: 10),
   const PipeSize(
-      dn: "DN 20",
+      dn: "DN 19",
       inchesFraction: "3/4\"",
       inchesDecimal: 0.75,
       mm: 19.05,
@@ -96,7 +96,7 @@ final List<PipeSize> pipeSizesData = [
       mm: 38.1,
       dashSize: 24),
   const PipeSize(
-      dn: "DN 50",
+      dn: "DN 51",
       inchesFraction: "2\"",
       inchesDecimal: 2.0,
       mm: 50.8,
@@ -211,6 +211,7 @@ class _ConverterHomePageState extends State<ConverterHomePage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
+    final isNo = l10n.localeName.startsWith('no');
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.convertionTool),
@@ -226,9 +227,10 @@ class _ConverterHomePageState extends State<ConverterHomePage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const AppInfoBanner(
-                  text:
-                      'Velg slange- eller rørdimensjon og vis tilsvarende mål i ønsket system.',
+                AppInfoBanner(
+                  text: isNo
+                      ? 'Velg slange- eller rørdimensjon og vis tilsvarende mål i ønsket system.'
+                      : 'Select a hose or pipe size and show the equivalent measurement in the desired system.',
                 ),
                 AppSectionCard(
                   title: l10n.convertFromLabel,

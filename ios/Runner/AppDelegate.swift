@@ -1,14 +1,24 @@
 import Flutter
 import UIKit
 
+enum OrientationLock {
+  static var supportedOrientations: UIInterfaceOrientationMask = .portrait
+}
+
 @main
 @objc class AppDelegate: FlutterAppDelegate {
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    // Temporarily disabled for iOS 26 device testing: several native plugins
-    // crash during registration before Flutter renders the first screen.
+    GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  override func application(
+    _ application: UIApplication,
+    supportedInterfaceOrientationsFor window: UIWindow?
+  ) -> UIInterfaceOrientationMask {
+    return OrientationLock.supportedOrientations
   }
 }

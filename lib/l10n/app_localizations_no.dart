@@ -104,7 +104,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get performedBy => 'Utføres før oppstart';
 
   @override
-  String get truckType => 'Truck Type';
+  String get truckType => 'Trucktype';
 
   @override
   String get truckNumber => 'Trucknummer';
@@ -568,7 +568,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get liftNr => 'Løft Nr.';
 
   @override
-  String get riskAssessmentTruck => 'Risikovurdering Truck';
+  String get riskAssessmentTruck => 'Risikovurdering truck';
 
   @override
   String get formSnackbarProgressLoaded => 'Skjema-fremdrift lastet.';
@@ -621,10 +621,10 @@ class AppLocalizationsNo extends AppLocalizations {
   String get previewRiskAssessment => 'Forhåndsvisning: Risikovurdering';
 
   @override
-  String get generalInformation => 'Generell Informasjon';
+  String get generalInformation => 'Generell informasjon';
 
   @override
-  String get assessedByName => 'Vurdert av (Navn)';
+  String get assessedByName => 'Vurdert av (navn)';
 
   @override
   String get formValidationNotEmpty => 'Dette feltet kan ikke være tomt';
@@ -633,13 +633,13 @@ class AppLocalizationsNo extends AppLocalizations {
   String get areaForRiskAssessment => 'Område for risikovurdering';
 
   @override
-  String get truckInformation => 'Truck Informasjon';
+  String get truckInformation => 'Truckinformasjon';
 
   @override
-  String get selectTruckType => 'Velg truck type';
+  String get selectTruckType => 'Velg trucktype';
 
   @override
-  String get pleaseSelectAType => 'Vennligst velg en type';
+  String get pleaseSelectAType => 'Velg en type';
 
   @override
   String get specifyOtherType => 'Spesifiser annen type/utstyr';
@@ -666,13 +666,13 @@ class AppLocalizationsNo extends AppLocalizations {
   String get describeActionsOrComments => 'Beskriv nødvendige tiltak eller andre kommentarer';
 
   @override
-  String get formButtonSaveProgress => 'Lagre Fremdrift';
+  String get formButtonSaveProgress => 'Lagre fremdrift';
 
   @override
-  String get formButtonClearForm => 'Tøm Skjema';
+  String get formButtonClearForm => 'Tøm skjema';
 
   @override
-  String get shareRiskAssessment => 'Del Risikovurdering';
+  String get shareRiskAssessment => 'Del risikovurdering';
 
   @override
   String get unknown => 'Ukjent';

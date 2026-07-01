@@ -2,8 +2,8 @@ import 'package:biks/hydraulic_v2.dart';
 import 'package:biks/l10n/app_localizations.dart';
 import 'package:biks/models/equipment_type.dart';
 import 'package:biks/models/lift.dart';
-import 'package:biks/splash_screen.dart';
 import 'package:biks/utils/external_link_launcher.dart';
+import 'package:biks/widgets/asset_pdf_viewer.dart';
 import 'package:biks/views/daily_check.dart';
 import 'package:biks/views/crane_plan_examples.dart';
 import 'package:biks/views/lift_data_view.dart';
@@ -12,16 +12,18 @@ import 'package:biks/views/risk_assesment.dart';
 import 'package:biks/views/type_control_truck.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-// --- Constants ---
-final Uri _urlMS = Uri.parse('https://biks.no/medlem/innlogging/');
-final Uri _course = Uri.parse('https://biks.no/kurs/');
-final Uri _fireSafetyChecklist = Uri.parse(
+final Uri _coursesUrl = Uri.parse('https://biks.no/kurs/');
+final Uri _myPagesUrl = Uri.parse('https://biks.no/medlem/innlogging/');
+final Uri _fireSafetyChecklistUrl = Uri.parse(
     'https://brannvernforeningen.no/sertifisering/varme-arbeider/om-sertifiseringsordningen-og-varme-arbeider/sikkerhetsforskrift-og-sjekkliste-gjeldende-fra-1.1.2024');
+
 final Color navyBlue = Color(0xFF040D3C); // Updated to new color
 final Color accentColor = Color(0xFF00B4D8);
 
@@ -35,6 +37,10 @@ final sharedPreferencesProvider =
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(const [
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -61,7 +67,7 @@ class MyApp extends ConsumerWidget {
         }
         return child ?? const SizedBox.shrink();
       },
-      home: const SplashScreen(),
+      home: const SecondScreen(),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
@@ -239,35 +245,32 @@ class SecondScreen extends ConsumerStatefulWidget {
 }
 
 class _SecondScreenState extends ConsumerState<SecondScreen> {
-  Future<void> _launchUrl(Uri url) async {
+  Future<void> _openExternalUrl(Uri url) async {
     try {
-      final launched = await openExternalLink(url);
-      if (!launched) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Could not launch URL'),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          );
-        }
+      final opened = await openExternalLink(url);
+
+      if (opened) {
+        return;
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error launching URL'),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        );
+      if (kDebugMode) {
+        debugPrint('Error launching URL "$url": $e');
       }
     }
+
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Kunne ikke åpne lenken.'),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
   }
 
   void _navigateWithAnimation(Widget page) {
@@ -289,7 +292,7 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
           color: theme.colorScheme.onPrimaryContainer,
           size: 24,
         ),
-        action: () => _launchUrl(_course),
+        action: () => _openExternalUrl(_coursesUrl),
       ),
       _MenuItem(
         title: l10n?.secondMenu ?? 'My pages',
@@ -299,7 +302,7 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
           color: theme.colorScheme.onPrimaryContainer,
           size: 24,
         ),
-        action: () => _launchUrl(_urlMS),
+        action: () => _openExternalUrl(_myPagesUrl),
       ),
       _MenuItem(
         title: l10n?.firstMenu ?? 'Lift calculator',
@@ -382,7 +385,7 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
           color: theme.colorScheme.onPrimaryContainer,
           size: 24,
         ),
-        action: () => _launchUrl(_fireSafetyChecklist),
+        action: () => _openExternalUrl(_fireSafetyChecklistUrl),
       ),
     ];
 
@@ -681,65 +684,9 @@ class LifttabellFinal extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n?.liftingTable ?? 'Lifting chart'),
       ),
-      body: const _PdfUnavailableView(
+      body: const AssetPdfViewer(
         title: 'Løftetabell',
         assetPath: 'lib/assets/loftetabell_merged.pdf',
-      ),
-    );
-  }
-}
-
-class _PdfUnavailableView extends StatelessWidget {
-  const _PdfUnavailableView({
-    required this.title,
-    required this.assetPath,
-  });
-
-  final String title;
-  final String assetPath;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.picture_as_pdf_outlined,
-                  size: 48,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  title,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'PDF-visning er midlertidig avkoblet på iOS-testbuilden.',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  assetPath,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

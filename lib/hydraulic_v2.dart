@@ -1,4 +1,5 @@
 import 'package:biks/l10n/app_localizations.dart';
+import 'package:biks/widgets/asset_pdf_viewer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -12,35 +13,43 @@ class HydraulicHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final isNo = l10n?.localeName.startsWith('no') == true;
     final theme = Theme.of(context);
     final calculatorTools = <_HydraulicMenuItem>[
       _HydraulicMenuItem(
         title: l10n?.cylinderCalculator ?? 'Cylinder Calculator',
-        subtitle: 'Areal, kraft og hastighet',
+        subtitle: isNo ? 'Areal, kraft og hastighet' : 'Area, force, and speed',
         icon: Icons.settings_applications_outlined,
         page: const CylinderCalculatorPage(),
       ),
       _HydraulicMenuItem(
         title: l10n?.motorCalculator ?? 'Motor Calculator',
-        subtitle: 'Dreiemoment, effekt og turtall',
+        subtitle: isNo
+            ? 'Dreiemoment, effekt og turtall'
+            : 'Torque, power, and speed',
         icon: Icons.sync_alt,
         page: const MotorPumpCalculatorPage(),
       ),
       _HydraulicMenuItem(
         title: l10n?.pumpCalculator ?? 'Pump Calculator',
-        subtitle: 'Volum, flow og driftspunkt',
+        subtitle:
+            isNo ? 'Volumstrøm og driftspunkt' : 'Flow and operating point',
         icon: Icons.water_damage_outlined,
         page: const MotorPumpCalculatorPage(isPumpMode: true),
       ),
       _HydraulicMenuItem(
         title: l10n?.pressureDropCalculator ?? 'Pressure Drop & Power',
-        subtitle: 'Trykkfall, effekttap og virkningsgrad',
+        subtitle: isNo
+            ? 'Trykkfall, effekttap og virkningsgrad'
+            : 'Pressure drop, power loss, and efficiency',
         icon: Icons.arrow_downward_outlined,
         page: const PowerAndEfficiencyCalculatorPage(),
       ),
       _HydraulicMenuItem(
         title: l10n?.convertionTool ?? 'Hose & Pipe Conversion',
-        subtitle: 'DN, dash, tommer og millimeter',
+        subtitle: isNo
+            ? 'DN, dash, tommer og millimeter'
+            : 'DN, dash, inches, and millimeters',
         icon: Icons.swap_horiz,
         page: const ConverterHomePage(),
       ),
@@ -48,13 +57,15 @@ class HydraulicHomeScreen extends StatelessWidget {
     final referenceTools = <_HydraulicMenuItem>[
       _HydraulicMenuItem(
         title: l10n?.threadChart ?? 'Thread Chart',
-        subtitle: 'Gjenger, forkortelser og måleguider',
+        subtitle: isNo
+            ? 'Gjenger, forkortelser og måleguider'
+            : 'Threads, abbreviations, and measuring guides',
         icon: Icons.settings_input_component_outlined,
         page: const ThreadChartPage(),
       ),
       _HydraulicMenuItem(
-        title: 'Hydraulikkslanger',
-        subtitle: 'Dimensjoner og oppslag',
+        title: isNo ? 'Hydraulikkslanger' : 'Hydraulic hoses',
+        subtitle: isNo ? 'Dimensjoner og oppslag' : 'Dimensions and references',
         icon: Icons.hvac_outlined,
         page: const HydraulicHosesPage(),
       ),
@@ -69,14 +80,14 @@ class HydraulicHomeScreen extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 24),
         children: [
           _HydraulicMenuSection(
-            title: 'Kalkulatorer',
+            title: isNo ? 'Kalkulatorer' : 'Calculators',
             children: calculatorTools
                 .map((item) => _HydraulicMenuTile(item: item))
                 .toList(),
           ),
           const SizedBox(height: 12),
           _HydraulicMenuSection(
-            title: 'Oppslagsverk',
+            title: isNo ? 'Oppslagsverk' : 'References',
             children: referenceTools
                 .map((item) => _HydraulicMenuTile(item: item))
                 .toList(),
@@ -406,7 +417,7 @@ class GTablePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n?.gTable ?? 'G-Table'),
       ),
-      body: const _HydraulicPdfUnavailableView(
+      body: const AssetPdfViewer(
         title: 'Gjengetabell',
         assetPath: 'lib/assets/gjengetabell.pdf',
       ),
@@ -514,66 +525,9 @@ class HydraulicPdfPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: _HydraulicPdfUnavailableView(
+      body: AssetPdfViewer(
         title: title,
         assetPath: assetPath,
-      ),
-    );
-  }
-}
-
-class _HydraulicPdfUnavailableView extends StatelessWidget {
-  const _HydraulicPdfUnavailableView({
-    required this.title,
-    required this.assetPath,
-  });
-
-  final String title;
-  final String assetPath;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.picture_as_pdf_outlined,
-                  size: 48,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  title,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'PDF-visning er midlertidig avkoblet på iOS-testbuilden.',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  assetPath,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -583,17 +537,17 @@ class HydraulicHosesPage extends StatelessWidget {
   const HydraulicHosesPage({super.key});
 
   static const List<_HoseDimensionRow> _hoseDimensions = [
-    _HoseDimensionRow(mm: '4,8', dn: 'DN 5', inches: '3/16', dash: '-03'),
-    _HoseDimensionRow(mm: '6,3', dn: 'DN 6', inches: '1/4', dash: '-04'),
-    _HoseDimensionRow(mm: '7,9', dn: 'DN 8', inches: '5/16', dash: '-05'),
-    _HoseDimensionRow(mm: '9,5', dn: 'DN 10', inches: '3/8', dash: '-06'),
-    _HoseDimensionRow(mm: '12,7', dn: 'DN 13', inches: '1/2', dash: '-08'),
-    _HoseDimensionRow(mm: '15,9', dn: 'DN 16', inches: '5/8', dash: '-10'),
-    _HoseDimensionRow(mm: '19,0', dn: 'DN 19', inches: '3/4', dash: '-12'),
-    _HoseDimensionRow(mm: '25,4', dn: 'DN 25', inches: '1', dash: '-16'),
-    _HoseDimensionRow(mm: '31,8', dn: 'DN 32', inches: '11/4', dash: '-20'),
-    _HoseDimensionRow(mm: '38,1', dn: 'DN 38', inches: '11/2', dash: '-24'),
-    _HoseDimensionRow(mm: '50,8', dn: 'DN 51', inches: '2', dash: '-32'),
+    _HoseDimensionRow(mm: '4,8', dn: 'DN 5', inches: '3/16"', dash: '-03'),
+    _HoseDimensionRow(mm: '6,3', dn: 'DN 6', inches: '1/4"', dash: '-04'),
+    _HoseDimensionRow(mm: '7,9', dn: 'DN 8', inches: '5/16"', dash: '-05'),
+    _HoseDimensionRow(mm: '9,5', dn: 'DN 10', inches: '3/8"', dash: '-06'),
+    _HoseDimensionRow(mm: '12,7', dn: 'DN 13', inches: '1/2"', dash: '-08'),
+    _HoseDimensionRow(mm: '15,9', dn: 'DN 16', inches: '5/8"', dash: '-10'),
+    _HoseDimensionRow(mm: '19,0', dn: 'DN 19', inches: '3/4"', dash: '-12'),
+    _HoseDimensionRow(mm: '25,4', dn: 'DN 25', inches: '1"', dash: '-16'),
+    _HoseDimensionRow(mm: '31,8', dn: 'DN 32', inches: '1 1/4"', dash: '-20'),
+    _HoseDimensionRow(mm: '38,1', dn: 'DN 38', inches: '1 1/2"', dash: '-24'),
+    _HoseDimensionRow(mm: '50,8', dn: 'DN 51', inches: '2"', dash: '-32'),
   ];
 
   @override
@@ -737,9 +691,9 @@ class _HydraulicHoseDimensionTable extends StatelessWidget {
               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
               children: [
                 buildRow(
-                  mm: 'MM.',
-                  dn: 'Din-mål',
-                  inches: 'tommer',
+                  mm: 'mm',
+                  dn: 'DN (metrisk)',
+                  inches: 'Tommer',
                   dash: 'Dash',
                   isHeader: true,
                 ),
@@ -871,7 +825,14 @@ class _InputCard extends StatelessWidget {
                   Icon(titleIcon, color: theme.colorScheme.primary),
                   const SizedBox(width: 8),
                 ],
-                Text(title, style: theme.textTheme.titleLarge),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: theme.textTheme.titleLarge,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
               ],
             ),
             const Divider(height: 24),
@@ -926,8 +887,16 @@ class _InputRow extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           SizedBox(
-              width: 60,
-              child: Text(unit, style: Theme.of(context).textTheme.bodyMedium)),
+            width: 72,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                unit,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -1005,7 +974,14 @@ class _ResultCard extends StatelessWidget {
               children: [
                 Icon(titleIcon, color: theme.colorScheme.primary),
                 const SizedBox(width: 8),
-                Text(title, style: theme.textTheme.titleLarge),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: theme.textTheme.titleLarge,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
               ],
             ),
             const Divider(height: 24),
@@ -1030,13 +1006,22 @@ class _ResultRow extends StatelessWidget {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
+        runSpacing: 4,
         children: [
-          Expanded(child: Text(label, style: theme.textTheme.bodyLarge)),
-          Text("$value $unit",
-              style: theme.textTheme.headlineSmall
-                  ?.copyWith(color: theme.colorScheme.primary)),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 160, maxWidth: 280),
+            child: Text(label, style: theme.textTheme.bodyLarge),
+          ),
+          Text(
+            "$value $unit",
+            textAlign: TextAlign.right,
+            style: theme.textTheme.headlineSmall
+                ?.copyWith(color: theme.colorScheme.primary),
+          ),
         ],
       ),
     );
@@ -1112,8 +1097,8 @@ class CylinderCalculatorPageState extends State<CylinderCalculatorPage> {
       results = {
         'boreArea': boreArea,
         'rodArea': validRodArea,
-        'boreForce': pressure * boreArea,
-        'rodForce': pressure * validRodArea,
+        'boreForce': pressure * boreArea * 1.019716,
+        'rodForce': pressure * validRodArea * 1.019716,
         'boreSpeed': boreArea > 0 ? flow / (6 * boreArea) : 0,
         'rodSpeed': validRodArea > 0 ? flow / (6 * validRodArea) : 0,
       };
@@ -1134,8 +1119,9 @@ class CylinderCalculatorPageState extends State<CylinderCalculatorPage> {
           child: Column(
             children: [
               _InputCard(
-                // FIX: Replaced l10n?.inputs which doesn't exist
-                title: 'Inputs',
+                title: l10n?.localeName.startsWith('no') == true
+                    ? 'Inndata'
+                    : 'Inputs',
                 titleIcon: Icons.edit_note,
                 children: [
                   _FormulaHint(
@@ -1144,8 +1130,8 @@ class CylinderCalculatorPageState extends State<CylinderCalculatorPage> {
                   ),
                   _InfoNote(
                     text: l10n?.localeName.startsWith('no') == true
-                        ? 'Enheter: diameter i mm, trykk i bar og volumstrøm i dm³/min. Areal vises i cm², kraft i kilo og hastighet i m/s.'
-                        : 'Units: diameter in mm, pressure in bar, and flow in dm³/min. Area is shown in cm², force in kilo, and speed in m/s.',
+                        ? 'Enheter: diameter i mm, trykk i bar og volumstrøm i dm³/min. Areal vises i cm², kraft i kgf og hastighet i m/s.'
+                        : 'Units: diameter in mm, pressure in bar, and flow in dm³/min. Area is shown in cm², force in kgf, and speed in m/s.',
                   ),
                   _InputRow(
                       controller: _boreDiaCtrl,
@@ -1192,7 +1178,7 @@ class CylinderCalculatorPageState extends State<CylinderCalculatorPage> {
                   _ResultRow(
                       label: l10n?.boreSideForce ?? 'Bore Side Force',
                       value: (results['boreForce'] ?? 0).toStringAsFixed(2),
-                      unit: "kilo"),
+                      unit: "kgf"),
                   _ResultRow(
                       label: l10n?.rodSideArea ?? 'Rod Side Area',
                       value: (results['rodArea'] ?? 0).toStringAsFixed(2),
@@ -1200,7 +1186,7 @@ class CylinderCalculatorPageState extends State<CylinderCalculatorPage> {
                   _ResultRow(
                       label: l10n?.rodSideForce ?? 'Rod Side Force',
                       value: (results['rodForce'] ?? 0).toStringAsFixed(2),
-                      unit: "kilo"),
+                      unit: "kgf"),
                   _ResultRow(
                       label: l10n?.boreSideVelocity ?? 'Bore Side Velocity',
                       value: (results['boreSpeed'] ?? 0).toStringAsFixed(2),
@@ -1338,14 +1324,15 @@ class MotorPumpCalculatorPageState extends State<MotorPumpCalculatorPage> {
               _buildModeSelector(l10n),
               const SizedBox(height: 24),
               _InputCard(
-                // FIX: Replaced l10n?.inputs which doesn't exist
-                title: 'Inputs',
+                title: l10n?.localeName.startsWith('no') == true
+                    ? 'Inndata'
+                    : 'Inputs',
                 titleIcon: Icons.edit_note,
                 children: [
                   _FormulaHint(text: _formulaForMode(l10n)),
                   _InfoNote(
                     text: l10n?.localeName.startsWith('no') == true
-                        ? 'Enheter: fortregningsvolum i cm³/r, trykk i bar, volumstrøm i dm³/min og turtall i r/min.'
+                        ? 'Enheter: fortrengningsvolum i cm³/r, trykk i bar, volumstrøm i dm³/min og turtall i r/min.'
                         : 'Units: displacement in cm³/r, pressure in bar, flow in dm³/min, and rotational speed in r/min.',
                   ),
                   _buildInputs(l10n),

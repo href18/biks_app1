@@ -312,9 +312,3 @@ class _WebAwareError extends StatelessWidget {
     );
   }
 }
-
-// Make sure you have a way to import EquipmentConfig.
-// If it's not in a separate file, you might need to define it or ensure it's accessible.
-// For example, if it's defined in your providers/database_provider.dart or a models directory:
-// import 'package:biks/models/equipment_config.dart';
-// The diff includes a placeholder import for this.

@@ -110,6 +110,15 @@ class _RiskAssessmentFormWidget extends StatefulWidget {
 }
 
 class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
+  static const String _truckTypeT1 = 't1';
+  static const String _truckTypeT2 = 't2';
+  static const String _truckTypeT3 = 't3';
+  static const String _truckTypeT4 = 't4';
+  static const String _truckTypeT5 = 't5';
+  static const String _truckTypeOther = 'other';
+  static const String _powerSourceElectric = 'electric';
+  static const String _powerSourceDiesel = 'diesel';
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _assessorNameController = TextEditingController();
   final TextEditingController _operatorNameController = TextEditingController();
@@ -157,12 +166,12 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
   void _initializeLists() {
     final l10n = AppLocalizations.of(context)!;
     _truckTypes = [
-      l10n.truckTypeT1,
-      l10n.truckTypeT2,
-      l10n.truckTypeT3,
-      l10n.truckTypeT4,
-      l10n.truckTypeT5,
-      l10n.truckTypeOther,
+      _truckTypeT1,
+      _truckTypeT2,
+      _truckTypeT3,
+      _truckTypeT4,
+      _truckTypeT5,
+      _truckTypeOther,
     ];
 
     _areaChecklistItems = [
@@ -198,6 +207,69 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
     }
   }
 
+  String? _normalizeTruckType(String? value) {
+    if (value == null || value.isEmpty) return null;
+    if (_truckTypes.contains(value)) return value;
+
+    const legacyValues = {
+      'T1 Lede-palletruck': _truckTypeT1,
+      'T1 Pedestrian-operated pallet truck': _truckTypeT1,
+      'T2 Skyvemast eller støttebenstruck': _truckTypeT2,
+      'T2 Reach truck or stacker truck': _truckTypeT2,
+      'T3 Høytløftende plukk eller svinggaffeltruck': _truckTypeT3,
+      'T3 High-level order picker or turret truck': _truckTypeT3,
+      'T4 Motvekt-truck': _truckTypeT4,
+      'T4 Counterbalance truck': _truckTypeT4,
+      'T5 Sidelaster': _truckTypeT5,
+      'T5 Sideloaders': _truckTypeT5,
+      'Andre typer / tilleggsutstyr': _truckTypeOther,
+      'Other types / additional equipment': _truckTypeOther,
+    };
+    return legacyValues[value];
+  }
+
+  String? _normalizePowerSource(String? value) {
+    if (value == null || value.isEmpty) return null;
+    const legacyValues = {
+      _powerSourceElectric: _powerSourceElectric,
+      _powerSourceDiesel: _powerSourceDiesel,
+      'El': _powerSourceElectric,
+      'Electric': _powerSourceElectric,
+      'Diesel': _powerSourceDiesel,
+    };
+    return legacyValues[value];
+  }
+
+  String _truckTypeLabel(String? truckType, AppLocalizations l10n) {
+    switch (_normalizeTruckType(truckType)) {
+      case _truckTypeT1:
+        return l10n.truckTypeT1;
+      case _truckTypeT2:
+        return l10n.truckTypeT2;
+      case _truckTypeT3:
+        return l10n.truckTypeT3;
+      case _truckTypeT4:
+        return l10n.truckTypeT4;
+      case _truckTypeT5:
+        return l10n.truckTypeT5;
+      case _truckTypeOther:
+        return l10n.truckTypeOther;
+      default:
+        return l10n.notSelected;
+    }
+  }
+
+  String _powerSourceLabel(String? powerSource, AppLocalizations l10n) {
+    switch (_normalizePowerSource(powerSource)) {
+      case _powerSourceElectric:
+        return l10n.electric;
+      case _powerSourceDiesel:
+        return l10n.diesel;
+      default:
+        return l10n.notSelected;
+    }
+  }
+
   Future<void> _loadFormProgress() async {
     final l10n = AppLocalizations.of(context)!;
     final prefs = await SharedPreferences.getInstance();
@@ -211,9 +283,9 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
           _assessorNameController.text = assessment.assessorName;
           _operatorNameController.text = assessment.operatorName;
           _locationController.text = assessment.location;
-          _selectedTruckType = assessment.truckType;
+          _selectedTruckType = _normalizeTruckType(assessment.truckType);
           _otherTruckTypeController.text = assessment.otherTruckType ?? '';
-          _selectedPowerSource = assessment.powerSource;
+          _selectedPowerSource = _normalizePowerSource(assessment.powerSource);
           _commentsController.text = assessment.comments ?? '';
           _checklist.clear();
           for (var item in [
@@ -299,7 +371,9 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(l10n.formButtonClearForm),
-        content: const Text('Er du sikker på at du vil tømme skjemaet?'),
+        content: Text(l10n.localeName.startsWith('no')
+            ? 'Er du sikker på at du vil tømme skjemaet?'
+            : 'Are you sure you want to clear the form?'),
         actions: [
           TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
@@ -316,12 +390,12 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
   }
 
   void _togglePreview() {
-    if (_formKey.currentState!.validate()) {
+    final l10n = AppLocalizations.of(context)!;
+    if (_formKey.currentState!.validate() && _selectedPowerSource != null) {
       setState(() {
         _showPreview = !_showPreview;
       });
     } else {
-      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.formSnackbarPleaseCompleteFields)),
       );
@@ -353,13 +427,13 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
     formattedData[l10n.area] =
         data.location.isNotEmpty ? data.location : l10n.notProvided;
 
-    String truckTypeDisplay = data.truckType ?? l10n.notSelected;
-    if (truckTypeDisplay == l10n.truckTypeOther &&
+    String truckTypeDisplay = _truckTypeLabel(data.truckType, l10n);
+    if (_normalizeTruckType(data.truckType) == _truckTypeOther &&
         data.otherTruckType?.isNotEmpty == true) {
       truckTypeDisplay += ': ${data.otherTruckType}';
     }
     formattedData[l10n.truckType] = truckTypeDisplay;
-    formattedData[l10n.powerSource] = data.powerSource ?? l10n.notSelected;
+    formattedData[l10n.powerSource] = _powerSourceLabel(data.powerSource, l10n);
 
     final allChecklistItems = [
       ..._areaChecklistItems,
@@ -473,7 +547,8 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
                   items: _truckTypes
                       .map((type) => DropdownMenuItem(
                             value: type,
-                            child: Text(type, overflow: TextOverflow.ellipsis),
+                            child: Text(_truckTypeLabel(type, l10n),
+                                overflow: TextOverflow.ellipsis),
                           ))
                       .toList(),
                   onChanged: (value) =>
@@ -481,7 +556,7 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
                   validator: (value) =>
                       value == null ? l10n.pleaseSelectAType : null,
                 ),
-                if (_selectedTruckType == l10n.truckTypeOther) ...[
+                if (_selectedTruckType == _truckTypeOther) ...[
                   const SizedBox(height: 10),
                   TextFormField(
                       controller: _otherTruckTypeController,
@@ -498,10 +573,12 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
                 SegmentedButton<String>(
                   segments: [
                     ButtonSegment<String>(
-                        value: "El", label: Text(l10n.electric)),
+                        value: _powerSourceElectric,
+                        label: Text(l10n.electric)),
                     ButtonSegment<String>(
-                        value: "Diesel", label: Text(l10n.diesel)),
+                        value: _powerSourceDiesel, label: Text(l10n.diesel)),
                   ],
+                  emptySelectionAllowed: true,
                   selected: _selectedPowerSource == null
                       ? <String>{}
                       : <String>{_selectedPowerSource!},
@@ -605,8 +682,11 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
     final operatorName = _sanitizeRiskPdfPart(assessment.operatorName);
     final truckType = _sanitizeRiskPdfPart(assessment.truckType);
     final dateLabel = DateFormat('yyyyMMdd').format(assessment.date);
+    final pdfTitlePrefix = l10n.localeName.startsWith('no')
+        ? 'Risikovurdering_truck'
+        : 'truck_risk_assessment';
     final pdf = pw.Document(
-      title: 'Risikovurdering_truck_${operatorName}_${truckType}_$dateLabel',
+      title: '${pdfTitlePrefix}_${operatorName}_${truckType}_$dateLabel',
       subject: l10n.riskAssessmentTruck,
     );
 
@@ -631,8 +711,8 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(32),
         build: (pw.Context context) {
-          String truckTypeDisplay = assessment.truckType ?? l10n.notSelected;
-          if (truckTypeDisplay == l10n.truckTypeOther &&
+          String truckTypeDisplay = _truckTypeLabel(assessment.truckType, l10n);
+          if (_normalizeTruckType(assessment.truckType) == _truckTypeOther &&
               assessment.otherTruckType?.isNotEmpty == true) {
             truckTypeDisplay += ': ${assessment.otherTruckType}';
           }
@@ -655,7 +735,8 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
             pw.SizedBox(height: 10),
             pw.Header(level: 1, text: l10n.truckInformation),
             buildPdfRow(l10n.truckType, truckTypeDisplay),
-            buildPdfRow(l10n.powerSource, assessment.powerSource),
+            buildPdfRow(l10n.powerSource,
+                _powerSourceLabel(assessment.powerSource, l10n)),
             pw.SizedBox(height: 10),
             pw.Header(level: 1, text: l10n.riskAssessment),
           ];
@@ -711,8 +792,11 @@ class _RiskAssessmentFormWidgetState extends State<_RiskAssessmentFormWidget> {
       final Uint8List pdfBytes =
           await _generateAssessmentPdf(assessmentData, l10n);
       final tempDir = await getTemporaryDirectory();
+      final filePrefix = l10n.localeName.startsWith('no')
+          ? 'risikovurdering_truck'
+          : 'truck_risk_assessment';
       final fileName =
-          'risikovurdering_truck_${sanitizedOperatorName}_${sanitizedTruckType}_${DateFormat('yyyyMMdd').format(assessmentData.date)}.pdf';
+          '${filePrefix}_${sanitizedOperatorName}_${sanitizedTruckType}_${DateFormat('yyyyMMdd').format(assessmentData.date)}.pdf';
       final file = File('${tempDir.path}/$fileName');
       await file.writeAsBytes(pdfBytes);
 
