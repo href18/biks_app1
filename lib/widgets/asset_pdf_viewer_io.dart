@@ -13,11 +13,13 @@ class AssetPdfViewer extends StatefulWidget {
     required this.title,
     required this.assetPath,
     this.fitPolicy = AssetPdfFitPolicy.width,
+    this.startInLandscape = false,
   });
 
   final String title;
   final String assetPath;
   final AssetPdfFitPolicy fitPolicy;
+  final bool startInLandscape;
 
   @override
   State<AssetPdfViewer> createState() => _AssetPdfViewerState();
@@ -29,11 +31,12 @@ class _AssetPdfViewerState extends State<AssetPdfViewer> {
 
   late Future<String> _localPdfPath;
   String? _viewerError;
+  int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _allowTableRotation();
+    _configureTableOrientation();
     _localPdfPath = _copyAssetPdfToTempFile(widget.assetPath);
   }
 
@@ -48,6 +51,7 @@ class _AssetPdfViewerState extends State<AssetPdfViewer> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.assetPath != widget.assetPath) {
       _viewerError = null;
+      _currentPage = 0;
       _localPdfPath = _copyAssetPdfToTempFile(widget.assetPath);
     }
   }
@@ -82,15 +86,22 @@ class _AssetPdfViewerState extends State<AssetPdfViewer> {
     };
   }
 
-  Future<void> _allowTableRotation() async {
-    await SystemChrome.setPreferredOrientations(const [
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+  Future<void> _configureTableOrientation() async {
+    await SystemChrome.setPreferredOrientations(widget.startInLandscape
+        ? const [
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+          ]
+        : const [
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+          ]);
     try {
-      await _orientationChannel.invokeMethod<void>('allowTableRotation');
+      await _orientationChannel.invokeMethod<void>(widget.startInLandscape
+          ? 'forceTableLandscape'
+          : 'allowTableRotation');
     } on MissingPluginException {
       // iOS and other platforms rely on SystemChrome and Info.plist.
     }
@@ -141,13 +152,25 @@ class _AssetPdfViewerState extends State<AssetPdfViewer> {
           );
         }
 
+        final orientation = MediaQuery.orientationOf(context);
+
         return PDFView(
+          // flutter_pdfview keeps its native zoom level when the viewport
+          // rotates. Recreate it for the new orientation so fitPolicy is
+          // applied to the new dimensions instead of leaving the PDF zoomed.
+          key: ValueKey('${snapshot.data}-$orientation'),
           filePath: snapshot.data!,
+          defaultPage: _currentPage,
           enableSwipe: true,
           swipeHorizontal: false,
           autoSpacing: true,
           pageFling: true,
           fitPolicy: _nativeFitPolicy(),
+          onPageChanged: (page, total) {
+            if (page != null) {
+              _currentPage = page;
+            }
+          },
           onError: (error) {
             if (!mounted) return;
             setState(() {

@@ -18,6 +18,10 @@ class MainActivity: FlutterActivity() {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                     result.success(null)
                 }
+                "forceTableLandscape" -> {
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    result.success(null)
+                }
                 "restorePortrait" -> {
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                     result.success(null)

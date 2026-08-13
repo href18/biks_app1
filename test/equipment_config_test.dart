@@ -193,5 +193,71 @@ void main() {
       expect(chainResult.liftData.diameter, 20);
       expect(chainResult.symmetricLimit, 19.2);
     });
+
+    test('reports the WLL markings used by the answer key', () async {
+      final cases = <({
+        EquipmentType equipmentType,
+        Lift lift,
+        double weight,
+        bool isUnsymmetric,
+        double expectedWll,
+      })>[
+        (
+          equipmentType: EquipmentType(name: 'Ståltau (fc)'),
+          lift: Lifts.snare,
+          weight: 3.5,
+          isUnsymmetric: false,
+          expectedWll: 3.4,
+        ),
+        (
+          equipmentType: EquipmentType(name: 'Ståltau (iwrc)'),
+          lift: Lifts.snare451_60,
+          weight: 5.2,
+          isUnsymmetric: false,
+          expectedWll: 4.6,
+        ),
+        (
+          equipmentType: EquipmentType(name: 'Ståltau (fc)'),
+          lift: Lifts.snare0_45,
+          weight: 2.6,
+          isUnsymmetric: true,
+          expectedWll: 2.7,
+        ),
+        (
+          equipmentType: EquipmentType(name: 'Kjetting (80)'),
+          lift: Lifts.snare,
+          weight: 3.5,
+          isUnsymmetric: false,
+          expectedWll: 7.5,
+        ),
+        (
+          equipmentType: EquipmentType(name: 'Kjetting (100)'),
+          lift: Lifts.snare451_60,
+          weight: 5.2,
+          isUnsymmetric: false,
+          expectedWll: 14.0,
+        ),
+        (
+          equipmentType: EquipmentType(name: 'Kjetting (100)'),
+          lift: Lifts.snare0_45,
+          weight: 2.6,
+          isUnsymmetric: true,
+          expectedWll: 5.3,
+        ),
+      ];
+
+      for (final testCase in cases) {
+        final result = await EquipmentConfig(
+          equipmentType: testCase.equipmentType,
+          lift: testCase.lift,
+          weight: testCase.weight,
+          isUnsymetric: testCase.isUnsymmetric,
+          bestLiftData: null,
+          datetime: DateTime(2026, 8, 5),
+        ).findBestLiftData();
+
+        expect(result.liftData.wll, testCase.expectedWll);
+      }
+    });
   });
 }

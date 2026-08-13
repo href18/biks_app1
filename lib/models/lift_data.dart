@@ -76,7 +76,11 @@ int toUnsymetricIndex(int symetricIndex) {
   }
 }
 
-Future<List<LiftData>> readLiftDataFromCSV(String csvPath, bool isChain) async {
+Future<List<LiftData>> readLiftDataFromCSV(
+  String csvPath,
+  bool usesRecommendedDiameterTable, {
+  bool useSingleLegWll = false,
+}) async {
   final List<LiftData> liftDatas = [];
   final String csvString = await rootBundle.loadString(csvPath);
   final List<String> csvStringList = csvString.split('\n');
@@ -85,9 +89,12 @@ Future<List<LiftData>> readLiftDataFromCSV(String csvPath, bool isChain) async {
     final List<String> row = csvStringList[i].split(";");
     if (row.length >= 13) {
       for (int j = 2; j < row.length; j++) {
-        final LiftData liftData = isChain
+        final LiftData liftData = usesRecommendedDiameterTable
             ? ChainLiftData(
-                wll: double.parse(row[indexFromIndex(j)]),
+                // Chain tags state the WLL for the leg group. Steel-rope
+                // slings are marked with the single-leg WLL in the answer
+                // key, regardless of the selected multi-leg configuration.
+                wll: double.parse(row[useSingleLegWll ? 2 : indexFromIndex(j)]),
                 diameter: double.parse(row[0]),
                 weightLimit: double.parse(row[j]),
                 lift: Lift.fromCSV(headers[j], partsFromIndex(j)),

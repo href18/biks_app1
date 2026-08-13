@@ -26,6 +26,9 @@ class SceneDelegate: FlutterSceneDelegate {
       case "allowTableRotation":
         self?.setSupportedOrientations(.allButUpsideDown)
         result(nil)
+      case "forceTableLandscape":
+        self?.setSupportedOrientations(.landscape)
+        result(nil)
       case "restorePortrait":
         self?.setSupportedOrientations(.portrait)
         result(nil)

@@ -16,9 +16,9 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 14.15.5+58
+version: 14.15.6+59
 #Remember change to ios!
-#14.15.5+58 android / ios
+#14.15.6+59 android / ios
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -95,6 +95,7 @@ flutter:
     - lib/assets/loftetabell_merged.pdf
     - lib/assets/hydraulikk/gjenger/
     - lib/assets/hydraulikk/hydraulikkslanger/
+    - lib/assets/rigging/
 
   uses-material-design: true
   # The "flutter_lints" package below contains a set of recommended lints to

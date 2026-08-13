@@ -9,7 +9,7 @@ class AppLocalizationsNo extends AppLocalizations {
   AppLocalizationsNo([String locale = 'no']) : super(locale);
 
   @override
-  String get appTitle => 'Hydraulisk Kalkulator';
+  String get appTitle => 'Hydraulisk kalkulator';
 
   @override
   String get firstMenu => 'Løftekalkulator';
@@ -24,7 +24,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get qrDownloadTitle => 'Last ned på mobil';
 
   @override
-  String get qrDownloadHint => 'Skann QR-koden for å åpne BIKS i din app-butikk.';
+  String get qrDownloadHint => 'Skann QR-koden for å åpne BIKS i appbutikken.';
 
   @override
   String get qrAndroidLabel => 'Android (Play Store)';
@@ -51,19 +51,19 @@ class AppLocalizationsNo extends AppLocalizations {
   String get typeControl => 'Typekontroll';
 
   @override
-  String get inspectionsAndChecks => 'Inspeksjon & sjekk';
+  String get inspectionsAndChecks => 'Inspeksjon og kontroll';
 
   @override
-  String get hotWork => 'Varme Arbeider';
+  String get hotWork => 'Varme arbeider';
 
   @override
-  String get createdBy => 'Laget av Håkon Engfeldt i samarbeid med Biks';
+  String get createdBy => 'Laget av Håkon Engfeldt i samarbeid med BIKS';
 
   @override
   String get howTo => 'Hvordan beregne';
 
   @override
-  String get howToDescription => 'Enheten er tonn. Eksempel: 0.2 = 200kg';
+  String get howToDescription => 'Enheten er tonn. Eksempel: 0,2 = 200 kg';
 
   @override
   String get weightTh => 'Vennligst skriv inn en gyldig vekt';
@@ -98,7 +98,7 @@ class AppLocalizationsNo extends AppLocalizations {
   }
 
   @override
-  String get dailyInspection => 'Daglig Inspeksjon';
+  String get dailyInspection => 'Daglig inspeksjon';
 
   @override
   String get performedBy => 'Utføres før oppstart';
@@ -110,7 +110,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get truckNumber => 'Trucknummer';
 
   @override
-  String get weekNumber => 'Uke Nr.';
+  String get weekNumber => 'Ukenummer';
 
   @override
   String get date => 'Dato';
@@ -182,7 +182,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get dailyChecksCatMotorChassis => 'Motor/Chassis';
 
   @override
-  String get dailyChecksCatElectricTruck => 'Elektrisk Truck';
+  String get dailyChecksCatElectricTruck => 'Elektrisk truck';
 
   @override
   String get dailyChecksCatWheels => 'Hjul';
@@ -278,7 +278,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get med => 'med';
 
   @override
-  String get deleteLift => 'Slette dette løftet?';
+  String get deleteLift => 'Slett dette løftet?';
 
   @override
   String get yes => 'Ja';
@@ -305,7 +305,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get symmetricStatus => 'symmetrisk';
 
   @override
-  String get calculatedDetailsTitle => 'Kalkulerte Detaljer:';
+  String get calculatedDetailsTitle => 'Beregnede detaljer:';
 
   @override
   String get errorFetchingLifts => 'Feil ved henting av løft';
@@ -314,13 +314,13 @@ class AppLocalizationsNo extends AppLocalizations {
   String get stackTraceLabel => 'Stack trace';
 
   @override
-  String get noLiftsSavedYet => 'Ingen løft lagret enda. Legg til ditt første!';
+  String get noLiftsSavedYet => 'Ingen løft lagret ennå. Legg til ditt første!';
 
   @override
   String get unexpectedState => 'En uventet tilstand oppstod.';
 
   @override
-  String get deleteLiftConfirmationTitle => 'Slett Løft';
+  String get deleteLiftConfirmationTitle => 'Slett løft';
 
   @override
   String deleteLiftConfirmationContent(Object liftName) {
@@ -331,16 +331,16 @@ class AppLocalizationsNo extends AppLocalizations {
   String get formPreviewTitle => 'Inspeksjonsforhåndsvisning';
 
   @override
-  String get formButtonPreviewInspection => 'Forhåndsvis Inspeksjon';
+  String get formButtonPreviewInspection => 'Forhåndsvis inspeksjon';
 
   @override
-  String get formButtonBackToForm => 'Tilbake til Skjema';
+  String get formButtonBackToForm => 'Tilbake til skjema';
 
   @override
-  String get formSendOptionEmail => 'Send via E-post App';
+  String get formSendOptionEmail => 'Send via e-postapp';
 
   @override
-  String get formSendOptionNativeMail => 'Send via Standard E-postklient';
+  String get formSendOptionNativeMail => 'Send via standard e-postklient';
 
   @override
   String get formButtonSend => 'Send';
@@ -379,7 +379,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get uLift => 'U-løft';
 
   @override
-  String get ulv => 'U-løft vinkel';
+  String get ulv => 'U-løft med vinkel';
 
   @override
   String get straight => 'Direkte (15-45)';
@@ -406,10 +406,10 @@ class AppLocalizationsNo extends AppLocalizations {
   String get snare32 => 'Snaret (46-60)';
 
   @override
-  String get truckInspectionForm => 'Truck Inspeksjonsskjema';
+  String get truckInspectionForm => 'Inspeksjonsskjema for truck';
 
   @override
-  String get dailyTruckInspection => 'DAGLIG TRUCK INSPEKSJON';
+  String get dailyTruckInspection => 'DAGLIG TRUCKINSPEKSJON';
 
   @override
   String get driverName => 'Sjåførnavn';
@@ -418,7 +418,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get odometerReading => 'Kilometerstand';
 
   @override
-  String get inspectionItems => 'Inspeksjonspunkter (Kryss av hvis OK)';
+  String get inspectionItems => 'Inspeksjonspunkter (kryss av hvis OK)';
 
   @override
   String get notes => 'Notater';
@@ -508,25 +508,25 @@ class AppLocalizationsNo extends AppLocalizations {
   String get thankYou => 'Takk for at du fullførte inspeksjonen.';
 
   @override
-  String get convertFromLabel => 'Konverter Fra';
+  String get convertFromLabel => 'Konverter fra';
 
   @override
-  String get convertToLabel => 'Konverter Til';
+  String get convertToLabel => 'Konverter til';
 
   @override
   String get resultLabel => 'Resultat';
 
   @override
-  String get dnSystem => 'DN (Metrisk)';
+  String get dnSystem => 'DN (metrisk)';
 
   @override
   String get dashSystem => 'Dash (16-deler)';
 
   @override
-  String get inchesFractionSystem => 'Tommer (Brøk)';
+  String get inchesFractionSystem => 'Tommer (brøk)';
 
   @override
-  String get inchesDecimalSystem => 'Tommer (Desimal)';
+  String get inchesDecimalSystem => 'Tommer (desimal)';
 
   @override
   String get mmSystem => 'Millimeter (mm)';
@@ -535,7 +535,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get ok => 'OK';
 
   @override
-  String get notesHint => 'Skriv inn eventuelle tilleggsnotater eller feil som er funnet...';
+  String get notesHint => 'Skriv inn eventuelle tilleggsnotater eller feil som er funnet …';
 
   @override
   String get convertionTool => 'Konverteringsverktøy';
@@ -550,31 +550,31 @@ class AppLocalizationsNo extends AppLocalizations {
   String get resultsTitle => 'Konverteringsresultater';
 
   @override
-  String get dnLabel => 'DN (Metrisk):';
+  String get dnLabel => 'DN (metrisk):';
 
   @override
   String get dashLabel => 'Dash (16-deler):';
 
   @override
-  String get inchesFractionLabel => 'Tommer (Brøk):';
+  String get inchesFractionLabel => 'Tommer (brøk):';
 
   @override
-  String get inchesDecimalLabel => 'Tommer (Desimal):';
+  String get inchesDecimalLabel => 'Tommer (desimal):';
 
   @override
   String get mmLabel => 'Millimeter (mm):';
 
   @override
-  String get liftNr => 'Løft Nr.';
+  String get liftNr => 'Løft nr.';
 
   @override
   String get riskAssessmentTruck => 'Risikovurdering truck';
 
   @override
-  String get formSnackbarProgressLoaded => 'Skjema-fremdrift lastet.';
+  String get formSnackbarProgressLoaded => 'Skjemafremdrift lastet.';
 
   @override
-  String get formSnackbarProgressSaved => 'Skjema-fremdrift lagret.';
+  String get formSnackbarProgressSaved => 'Skjemafremdrift lagret.';
 
   @override
   String get formSnackbarFormCleared => 'Skjema tømt.';
@@ -660,7 +660,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get riskAssessment => 'Risikovurdering';
 
   @override
-  String get driverAndDocumentation => 'Fører og Dokumentasjon';
+  String get driverAndDocumentation => 'Fører og dokumentasjon';
 
   @override
   String get describeActionsOrComments => 'Beskriv nødvendige tiltak eller andre kommentarer';
@@ -858,7 +858,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get checklistItemShowTruckCharging => 'Vis lading av truck';
 
   @override
-  String get checklistItemShowBatteryMaintenance => 'Vis batteri vedlikehold';
+  String get checklistItemShowBatteryMaintenance => 'Vis batterivedlikehold';
 
   @override
   String get checklistItemShowProperParking => 'Vis riktig parkering';
@@ -1056,13 +1056,13 @@ class AppLocalizationsNo extends AppLocalizations {
   String get formFieldMachineModel => 'Maskinmodell';
 
   @override
-  String get formFieldMachineID => 'Maskin ID/Serienr.';
+  String get formFieldMachineID => 'Maskin-ID/serienr.';
 
   @override
   String get formSectionCertification => '2. Sertifisering';
 
   @override
-  String get formSectionCertificationAndManuals => '3. Sertifisering & Manualer';
+  String get formSectionCertificationAndManuals => '3. Sertifisering og manualer';
 
   @override
   String get formQuestionCertificateOfCompetence => 'Har du kompetansebevis?';
@@ -1083,7 +1083,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get formSectionInspectionChecklist => 'Inspeksjonssjekkliste';
 
   @override
-  String get formSectionCraneInspectionChecklist => 'Kran Inspeksjonssjekkliste';
+  String get formSectionCraneInspectionChecklist => 'Sjekkliste for kraninspeksjon';
 
   @override
   String get forkliftChecklistItemMainParts => 'Sjekk truckens hoveddeler';
@@ -1170,7 +1170,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get formFieldCraneModel => 'Kranmodell';
 
   @override
-  String get formFieldCraneID => 'Kran ID';
+  String get formFieldCraneID => 'Kran-ID';
 
   @override
   String get craneChecklistItemHoistTrolley => 'Inspiser heise-/vognmekanismer';
@@ -1221,7 +1221,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get machineChecklistItemVisualInspection => 'Visuell kontroll for lekkasjer/skader';
 
   @override
-  String get machineChecklistItemFluidLevels => 'Sjekk motor-, hydraulikk- og kjølevæske nivåer';
+  String get machineChecklistItemFluidLevels => 'Sjekk nivåene for motorolje, hydraulikkolje og kjølevæske';
 
   @override
   String get machineChecklistItemHydraulicHoses => 'Kontroller hydraulikkslanger og sylindere';
@@ -1239,7 +1239,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get machineChecklistItemWarningDevices => 'Sjekk lys, horn og varslingsutstyr';
 
   @override
-  String get machineChecklistItemAttachmentLock => 'Verifiser feste/quick coupler låsing';
+  String get machineChecklistItemAttachmentLock => 'Kontroller låsing av feste/hurtigfeste';
 
   @override
   String get machineChecklistItemSafetyEquipment => 'Kontroller setebelte, ROPS/FOPS og vern';
@@ -1261,21 +1261,21 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String emailSubjectForkliftInspection(String date) {
-    return 'Truck Inspeksjonsrapport - $date';
+    return 'Inspeksjonsrapport for truck – $date';
   }
 
   @override
   String emailSubjectMachineInspection(String date) {
-    return 'Rapport: Maskininspeksjon - $date';
+    return 'Inspeksjonsrapport for maskin – $date';
   }
 
   @override
   String emailSubjectCraneInspection(String date) {
-    return 'Kran Inspeksjonsrapport - $date';
+    return 'Inspeksjonsrapport for kran – $date';
   }
 
   @override
-  String get emailBodyPreamble => 'Rapport Daglig Utstyrsinspeksjon';
+  String get emailBodyPreamble => 'Rapport for daglig utstyrsinspeksjon';
 
   @override
   String get emailFieldOperator => 'Operatørnavn';
@@ -1296,10 +1296,10 @@ class AppLocalizationsNo extends AppLocalizations {
   String get emailFieldID => 'ID';
 
   @override
-  String get emailFieldCertificate => 'Har Sertifikat';
+  String get emailFieldCertificate => 'Har sertifikat';
 
   @override
-  String get emailFieldManual => 'Har Manual';
+  String get emailFieldManual => 'Har manual';
 
   @override
   String get emailFieldChecklist => 'Sjekkliste';
@@ -1314,7 +1314,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get emailChecklistItemStatusChecked => 'Sjekket';
 
   @override
-  String get emailChecklistItemStatusUnchecked => 'Ikke Sjekket';
+  String get emailChecklistItemStatusUnchecked => 'Ikke sjekket';
 
   @override
   String get savingLabel => 'Lagrer…';
@@ -1340,7 +1340,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get previousLiftsTitle => 'Tidligere løft';
 
   @override
-  String get noSavedLifts => 'Ingen lagrede løft enda';
+  String get noSavedLifts => 'Ingen lagrede løft ennå';
 
   @override
   String get partsLabel => 'Parter';
@@ -1433,7 +1433,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get calculate => 'Beregn';
 
   @override
-  String get volumeFlowCalculatorDisplacementLabel => 'Fortregningsvolum';
+  String get volumeFlowCalculatorDisplacementLabel => 'Fortrengningsvolum';
 
   @override
   String get volumeFlow => 'Volumstrøm';
@@ -1466,16 +1466,16 @@ class AppLocalizationsNo extends AppLocalizations {
   String get efficiencyCalculatorTitle => 'Virkningsgrad';
 
   @override
-  String get efficiencyCalculatorInputPowerLabel => 'Tilført Effekt (P.tilf)';
+  String get efficiencyCalculatorInputPowerLabel => 'Tilført effekt (P.tilf)';
 
   @override
-  String get efficiencyCalculatorOutputPowerLabel => 'Avgitt Effekt (P.avg)';
+  String get efficiencyCalculatorOutputPowerLabel => 'Avgitt effekt (P.avg)';
 
   @override
   String get efficiency => 'Virkningsgrad (η)';
 
   @override
-  String get forcePressureAreaCalculatorTitle => 'Kraft fra Trykk & Areal';
+  String get forcePressureAreaCalculatorTitle => 'Kraft fra trykk og areal';
 
   @override
   String get forcePressureAreaCalculatorDescription => 'Beregner kraft på en stempelstang';
@@ -1505,7 +1505,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get forcePressureAreaCalculatorResultUnit => 'kilo';
 
   @override
-  String get oilSpeedCalculatorTitle => 'Oljehastighet fra Flow & Diameter';
+  String get oilSpeedCalculatorTitle => 'Oljehastighet fra volumstrøm og diameter';
 
   @override
   String get oilSpeedCalculatorDescription => 'Beregner oljehastighet i et rør';
@@ -1532,7 +1532,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get oilSpeedCalculatorResultUnit => 'm/s';
 
   @override
-  String get pistonSpeedCalculatorTitle => 'Stempelhastighet fra Flow & Areal';
+  String get pistonSpeedCalculatorTitle => 'Stempelhastighet fra volumstrøm og areal';
 
   @override
   String get pistonSpeedCalculatorDescription => 'Beregner stempelhastighet';
@@ -1562,7 +1562,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get pistonSpeedCalculatorResultUnit => 'm/s';
 
   @override
-  String get volumeFlowCalculatorTitle => 'Volumstrøm fra Slagvolum & Turtall';
+  String get volumeFlowCalculatorTitle => 'Volumstrøm fra slagvolum og turtall';
 
   @override
   String get volumeFlowCalculatorDescription => 'Beregner volumstrøm';
@@ -1583,7 +1583,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get volumeFlowCalculatorResultUnit => 'dm³/min';
 
   @override
-  String get torqueCalculatorTitle => 'Dreiemoment fra Slagvolum & Trykk';
+  String get torqueCalculatorTitle => 'Dreiemoment fra slagvolum og trykk';
 
   @override
   String get torqueCalculatorDescription => 'Beregner motormoment';
@@ -1610,13 +1610,13 @@ class AppLocalizationsNo extends AppLocalizations {
   String get torqueCalculatorResultUnit => 'Nm';
 
   @override
-  String get hydraulicPowerCalculatorTitle => 'Effekt fra Flow & Trykk';
+  String get hydraulicPowerCalculatorTitle => 'Effekt fra volumstrøm og trykk';
 
   @override
   String get hydraulicPowerCalculatorDescription => 'Beregner hydraulisk effekt';
 
   @override
-  String get hydraulicPowerCalculatorPageTitle => 'Hydraulisk Effektkalkulator';
+  String get hydraulicPowerCalculatorPageTitle => 'Hydraulisk effektkalkulator';
 
   @override
   String get hydraulicPowerCalculatorFormula => 'P = (p * q) / 600';
@@ -1719,7 +1719,7 @@ class AppLocalizationsNo extends AppLocalizations {
 
   @override
   String emailSubjectTypeControl(Object date) {
-    return 'Typekontrollrapport - $date';
+    return 'Typekontrollrapport – $date';
   }
 
   @override
@@ -1765,7 +1765,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get areaRatio => 'Arealforhold';
 
   @override
-  String get displacement => 'Sylinder volum (m³/omdr)';
+  String get displacement => 'Sylindervolum (m³/omdr.)';
 
   @override
   String get speed => 'Hastighet (RPM)';
@@ -1804,7 +1804,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get velocity => 'Hastighet';
 
   @override
-  String get reynoldsNumber => 'Reynolds tall';
+  String get reynoldsNumber => 'Reynolds-tall';
 
   @override
   String get orificeCoefficient => 'Blenderkoeffisient (K)';
@@ -1870,7 +1870,7 @@ class AppLocalizationsNo extends AppLocalizations {
   String get formFieldImprovementsRemarksHint => 'Skriv inn forbedringer eller merknader her...';
 
   @override
-  String get helloWorld => 'Hallo Verden!';
+  String get helloWorld => 'Hallo, verden!';
 
   @override
   String get formAnswerNotProvided => 'Ikke oppgitt';

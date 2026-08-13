@@ -15,6 +15,7 @@ class PdfMenuWidget extends StatelessWidget {
     String assetPath,
     String title, {
     AssetPdfFitPolicy fitPolicy = AssetPdfFitPolicy.width,
+    bool startInLandscape = false,
   }) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -24,6 +25,7 @@ class PdfMenuWidget extends StatelessWidget {
             title: title,
             assetPath: assetPath,
             fitPolicy: fitPolicy,
+            startInLandscape: startInLandscape,
           ),
         ),
       ),
