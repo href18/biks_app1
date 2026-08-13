@@ -9,6 +9,7 @@ import 'package:biks/views/crane_plan_examples.dart';
 import 'package:biks/views/lift_data_view.dart';
 import 'package:biks/views/my_lifts.dart';
 import 'package:biks/views/risk_assesment.dart';
+import 'package:biks/views/rigging.dart';
 import 'package:biks/views/type_control_truck.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -218,6 +219,16 @@ class InspectionsMenuScreen extends StatelessWidget {
         action: () =>
             _navigateWithAnimation(context, const RiskAssessmentScreen()),
       ),
+      _MenuItem(
+        title: 'Rigging',
+        subtitle: 'Tillatt løftelast for klemmer, kjettingløkker og profiler',
+        leadingWidget: Icon(
+          Icons.hardware_outlined,
+          color: theme.colorScheme.onPrimaryContainer,
+          size: 24,
+        ),
+        action: () => _navigateWithAnimation(context, const RiggingScreen()),
+      ),
     ];
 
     return Scaffold(
@@ -306,7 +317,7 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
       ),
       _MenuItem(
         title: l10n?.firstMenu ?? 'Lift calculator',
-        subtitle: 'Beregning av loft og vinkler',
+        subtitle: 'Beregning av løft og vinkler',
         leadingWidget: Image.asset(
           'lib/assets/icons/crane.png',
           width: 24,
@@ -338,7 +349,7 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
       ),
       _MenuItem(
         title: l10n?.myLifts ?? 'My lifts',
-        subtitle: 'Historikk og lagrede loft',
+        subtitle: 'Historikk og lagrede løft',
         leadingWidget: Icon(
           Icons.history,
           color: theme.colorScheme.onPrimaryContainer,
@@ -517,7 +528,7 @@ class _SecondScreenState extends ConsumerState<SecondScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: Text(
                       l10n?.qrDownloadHint ??
-                          'Skann med telefonen for å åpne BIKS i din butikk.',
+                          'Skann med telefonen for å åpne BIKS i appbutikken.',
                       style: const TextStyle(fontSize: 12),
                       textAlign: TextAlign.center,
                     ),

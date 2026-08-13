@@ -54,6 +54,10 @@ class EquipmentTypes {
     return type == grade80Chain || type == grade100Chain;
   }
 
+  static bool isSteelRope(EquipmentType type) {
+    return type.name == steelRopeFc.name || type.name == steelRopeIwrc.name;
+  }
+
   static bool usesRecommendedDiameterTable(EquipmentType type) {
     return type.name != fiberSling.name;
   }

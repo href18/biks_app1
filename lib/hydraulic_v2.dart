@@ -261,7 +261,8 @@ class _SlingDiagramCard extends StatelessWidget {
               'lib/assets/images/reference/sling_tension_diagram.png',
               fit: BoxFit.fitWidth,
               width: double.infinity,
-              semanticLabel: 'Tegning av strekkbelastning ved to-parts løft',
+              semanticLabel:
+                  'Tegning av strekkbelastning ved løft med to parter',
             ),
           ),
         ),
@@ -578,7 +579,7 @@ class HydraulicHosesPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Siden slangene bruker tomme eller din-mål (metrisk), kan det være vanskelig å huske alle dimensjonene.',
+                    'Siden slangene bruker tomme- eller DN-mål (metrisk), kan det være vanskelig å huske alle dimensjonene.',
                     style: theme.textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 16),
@@ -1097,8 +1098,9 @@ class CylinderCalculatorPageState extends State<CylinderCalculatorPage> {
       results = {
         'boreArea': boreArea,
         'rodArea': validRodArea,
-        'boreForce': pressure * boreArea * 1.019716,
-        'rodForce': pressure * validRodArea * 1.019716,
+        // 1 bar acting on 1 cm² produces 10 N.
+        'boreForce': pressure * boreArea * 10,
+        'rodForce': pressure * validRodArea * 10,
         'boreSpeed': boreArea > 0 ? flow / (6 * boreArea) : 0,
         'rodSpeed': validRodArea > 0 ? flow / (6 * validRodArea) : 0,
       };
@@ -1130,8 +1132,8 @@ class CylinderCalculatorPageState extends State<CylinderCalculatorPage> {
                   ),
                   _InfoNote(
                     text: l10n?.localeName.startsWith('no') == true
-                        ? 'Enheter: diameter i mm, trykk i bar og volumstrøm i dm³/min. Areal vises i cm², kraft i kgf og hastighet i m/s.'
-                        : 'Units: diameter in mm, pressure in bar, and flow in dm³/min. Area is shown in cm², force in kgf, and speed in m/s.',
+                        ? 'Enheter: diameter i mm, trykk i bar og volumstrøm i dm³/min. Areal vises i cm², kraft i newton og hastighet i m/s.'
+                        : 'Units: diameter in mm, pressure in bar, and flow in dm³/min. Area is shown in cm², force in newtons, and speed in m/s.',
                   ),
                   _InputRow(
                       controller: _boreDiaCtrl,
@@ -1178,7 +1180,7 @@ class CylinderCalculatorPageState extends State<CylinderCalculatorPage> {
                   _ResultRow(
                       label: l10n?.boreSideForce ?? 'Bore Side Force',
                       value: (results['boreForce'] ?? 0).toStringAsFixed(2),
-                      unit: "kgf"),
+                      unit: "N"),
                   _ResultRow(
                       label: l10n?.rodSideArea ?? 'Rod Side Area',
                       value: (results['rodArea'] ?? 0).toStringAsFixed(2),
@@ -1186,7 +1188,7 @@ class CylinderCalculatorPageState extends State<CylinderCalculatorPage> {
                   _ResultRow(
                       label: l10n?.rodSideForce ?? 'Rod Side Force',
                       value: (results['rodForce'] ?? 0).toStringAsFixed(2),
-                      unit: "kgf"),
+                      unit: "N"),
                   _ResultRow(
                       label: l10n?.boreSideVelocity ?? 'Bore Side Velocity',
                       value: (results['boreSpeed'] ?? 0).toStringAsFixed(2),

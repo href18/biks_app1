@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class EquipmentConfig {
   // Fiber slings use the color-based table format.
   // Chain and steel-rope tables share the diameter/recommended-diameter format.
-  bool get isChain =>
+  bool get usesRecommendedDiameterTable =>
       EquipmentTypes.usesRecommendedDiameterTable(equipmentType);
 
   static const List<double> _workingLoadFactorsByLiftIndex = [
@@ -114,7 +114,10 @@ class EquipmentConfig {
         double referenceLimit,
       })> findBestLiftData() async {
     final List<LiftData> liftDatas = await readLiftDataFromCSV(
-        'lib/assets/Løftetabeller/${equipmentType.name}.csv', isChain);
+      'lib/assets/Løftetabeller/${equipmentType.name}.csv',
+      usesRecommendedDiameterTable,
+      useSingleLegWll: EquipmentTypes.isSteelRope(equipmentType),
+    );
 
     for (final liftData in liftDatas) {
       if (liftData.lift != lift) continue;

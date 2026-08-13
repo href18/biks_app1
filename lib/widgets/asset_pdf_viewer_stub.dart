@@ -8,11 +8,13 @@ class AssetPdfViewer extends StatelessWidget {
     required this.title,
     required this.assetPath,
     this.fitPolicy = AssetPdfFitPolicy.width,
+    this.startInLandscape = false,
   });
 
   final String title;
   final String assetPath;
   final AssetPdfFitPolicy fitPolicy;
+  final bool startInLandscape;
 
   @override
   Widget build(BuildContext context) {

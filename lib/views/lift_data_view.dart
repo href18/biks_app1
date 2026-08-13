@@ -273,19 +273,14 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
                           const Icon(Icons.error_outline, size: 50),
                     ),
               const SizedBox(height: 16),
-              Text(
-                [
-                  equipmentConfig.bestLiftData?.lift.parts,
-                  l10n.del,
-                  equipmentConfig.equipmentType.displayName,
-                  l10n.medWLL,
-                  equipmentConfig.bestLiftData?.wll.toString(),
-                  l10n.togd,
-                  equipmentConfig.bestLiftData?.diameter.toString(),
-                  l10n.mm
-                ].where((s) => s != null).join(' '),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge,
+              _buildRecommendedEquipmentSummary(
+                context: context,
+                l10n: l10n,
+                equipmentType: equipmentConfig.equipmentType.displayName,
+                parts: bestLiftData?.lift.parts,
+                wll: bestLiftData?.wll,
+                diameter: bestLiftData?.diameter,
+                numberFormat: numberFormat,
               ),
               const SizedBox(height: 16),
               _buildCapacitySummary(
@@ -349,6 +344,102 @@ class _LiftDataViewState extends ConsumerState<LiftDataView> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildRecommendedEquipmentSummary({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required String equipmentType,
+    required int? parts,
+    required double? wll,
+    required double? diameter,
+    required NumberFormat numberFormat,
+  }) {
+    final theme = Theme.of(context);
+    final isNorwegian = l10n.localeName.startsWith('no');
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            isNorwegian
+                ? 'Anbefalt løfteutstyr'
+                : 'Recommended lifting equipment',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          const SizedBox(height: 14),
+          _buildEquipmentDetailRow(
+            context,
+            label: isNorwegian ? 'Utstyrstype' : 'Equipment type',
+            value: equipmentType,
+          ),
+          const Divider(height: 20),
+          _buildEquipmentDetailRow(
+            context,
+            label: l10n.partsLabel,
+            value: parts?.toString() ?? '–',
+          ),
+          const Divider(height: 20),
+          _buildEquipmentDetailRow(
+            context,
+            label: l10n.wllLabel,
+            value:
+                wll == null ? '–' : '${numberFormat.format(wll)} ${l10n.ton}',
+          ),
+          const Divider(height: 20),
+          _buildEquipmentDetailRow(
+            context,
+            label: l10n.diameterLabel,
+            value: diameter == null
+                ? '–'
+                : 'Ø ${numberFormat.format(diameter)} ${l10n.mm}',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEquipmentDetailRow(
+    BuildContext context, {
+    required String label,
+    required String value,
+  }) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: textTheme.bodyMedium,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
